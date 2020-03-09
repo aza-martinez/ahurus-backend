@@ -7,8 +7,8 @@ const fs = require("fs");
 const crypto = require("crypto");
 const axios = require("axios");
 const URL_EJECUTAR_TRANSF_STP =
-"http://10.5.1.1/speidemows/rest/ordenPago/registra";
-//"https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
+//"http://10.5.1.1/speidemows/rest/ordenPago/registra";
+"https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
 const Mailer = require("./../../mailer");
 const MongooseConnect = require("./../../MongooseConnect");
 

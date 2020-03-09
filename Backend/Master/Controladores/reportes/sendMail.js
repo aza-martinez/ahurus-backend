@@ -18,17 +18,17 @@ var controller = {
                 if (!usuario || usuario.length <= 0) {}
                 console.log(usuario);
                 var transporter = nodemailer.createTransport({
-                    host: "binary-solutions.com.mx",
+                    host: "",
                     port: 465,
                     auth: {
-                      user: "srendon@binary-solutions.com.mx",
-                      pass: "Jsarm270819"
+                      user: "",
+                      pass: ""
                     }
                   });
               // Definimos el email
               var mailOptions = {
-                  from: 'srendon@binary-solutions.com.mx',
-                  to: 'alejandro.rendon@itcom.mx, srendon@binary-solutions.com.mx, js.alejandro.rendon.mireles@gmail.com',
+                  from: '',
+                  to: ', , ',
                   subject: 'Asunto',
                   text: 'Contenido del email'
               };
