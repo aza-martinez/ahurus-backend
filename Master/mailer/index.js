@@ -38,13 +38,13 @@ class Mailer {
 
   getTransporter () { 
     return nodemailer.createTransport({
-    name: "https://www.azamartinez.com",
-    host: "mail.azamartinez.com",
+    name: "https://www.ahurus.com",
+    host: "mail.ahurus.com",
     port: 465,
     pool: true,
     secure: true,
     auth: {
-      user: "test-ahurus@azamartinez.com",
+      user: "comprobantes@ahurus.com",
       pass: "b}gJwE9L0liQoWI"
     }
   });
