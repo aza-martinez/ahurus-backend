@@ -46,6 +46,7 @@
         "path": "^0.12.7",
         "pdfkit": "^0.10.0",
         "pdfmake": "^0.1.62",
+        "phantomjs-prebuilt": "^2.1.16",
         "phantomjs2": "^2.2.0",
         "read-excel-file": "^4.0.3",
         "sha256": "^0.2.0",
