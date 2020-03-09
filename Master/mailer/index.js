@@ -45,15 +45,15 @@ class Mailer {
     secure: true,
     auth: {
       user: "comprobantes@ahurus.com",
-      pass: "b}gJwE9L0liQoWI"
+      pass: "yimt;kyp9TzmLdb"
     }
   });
   }
 
   getHeadersMail(pathPDF) {
     return {
-      from: "test-ahurus@azamartinez.com",
-      to: "azael.martinez@itcom.mx",
+      from: "comprobantes@ahurus.com",
+      to: "alejandro.rendon@itcom.mx",
       subject: "Probando correos de recibos",
       html: generateHTMLMail(),
       attachments: [
