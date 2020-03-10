@@ -71,6 +71,7 @@ class Mailer {
       const htmlGenerated = generateHTMLReciboExitoso(this.path_logo_ahurus);
 
       pdf.create(htmlGenerated).toStream(function(err, stream) {
+        console.log(stream);
         if (err) {
           console.log(err);
           reject(new Error("No se pudo generar PDF..."))

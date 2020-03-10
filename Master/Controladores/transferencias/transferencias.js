@@ -10,6 +10,7 @@ const URL_EJECUTAR_TRANSF_STP =
   "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
 const Mailer = require("./../../mailer");
 const MongooseConnect = require("./../../MongooseConnect");
+const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require("constants");
 
 const controller = {
   save: async (req, res) => {
@@ -136,6 +137,9 @@ const controller = {
       axios
         .put(URL_EJECUTAR_TRANSF_STP, dataT, { httpsAgent: agent })
         .then(response => {
+          
+          console.log(response);
+          
           if (response.data.resultado.descripcionError) {
             Transferencia.findOneAndUpdate(
               { _id: transID },
