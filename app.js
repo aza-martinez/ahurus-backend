@@ -7,11 +7,11 @@ var jwks = require('jwks-rsa');
 var fs = require('fs');
 var https = require('https');
 var app = express();
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 443;
 
 https.createServer({
-    key: fs.readFileSync('ahurus.key'),
-    cert: fs.readFileSync('ahurus.crt')
+    key: fs.readFileSync('./../ahurus.key'),
+    cert: fs.readFileSync('./../ahurus.crt')
   }, app).listen(port, function(){
     console.log("My https server listening on port " + port + "...");
   });
