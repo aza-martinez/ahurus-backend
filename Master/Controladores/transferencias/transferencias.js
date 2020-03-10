@@ -109,16 +109,12 @@ const controller = {
     signer.end();
     const signature = signer.sign(
       { key: private_key, passphrase: "12345678" },
-      "base64"
-    );
+      "base64");
     transferencias.firma = signature;
-    console.log(signature);
-    console.log(params);
     transferencias.save(async (err, transferenciaStored) => {
-      const close = await mongo.close();
+    const close = await mongo.close();
 
       if (err || !transferenciaStored) return res.status(400).send(err);
-
       return res.status(200).send({ ...transferenciaStored._doc });
     });
   },
@@ -140,7 +136,6 @@ const controller = {
       axios
         .put(URL_EJECUTAR_TRANSF_STP, dataT, { httpsAgent: agent })
         .then(response => {
-          console.log(response);
           if (response.data.resultado.descripcionError) {
             Transferencia.findOneAndUpdate(
               { _id: transID },
@@ -366,7 +361,6 @@ const controller = {
   response: async (req, res) => {
     const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
     console.log("==== CAMBIO DE ESTADO ====");
-    console.log(req.body);
 
     const newMail = new Mailer(
       id,
@@ -375,30 +369,8 @@ const controller = {
       causaDevolucion,
       folioOrigen
     );
-
     await newMail.send();
-
     return res.status(200).send({ estado: "Exito" });
-
-    /* try {
-      console.log(res);
-    return res.status(200).send({ estado: 'xito', });
-      console.log(params);
-
-      Transferencia.findOneAndUpdate(
-        { idSTP: transID },
-        {
-          descripcionError: res.data.resultado.causaDevolucion,
-          estatus_stp: res.data.resultado.estado
-        },
-        (err, transferenciaUpdated) => {
-          return res.status(400).send("OK ENTRANDO SIN JWT");
-        }
-      );
-    } catch (error) {
-      console.log('=== ERROR CAMBIO DE ESTADO ===');
-      console.log(error);
-    } */
   },
 
   getTransferenciasC: (req, res) => {
