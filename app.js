@@ -10,10 +10,10 @@ var app = express();
 var port = process.env.PORT || 443;
 
 https.createServer({
-    key: fs.readFileSync('./../ahurus.key'),
-    cert: fs.readFileSync('./../ahurus.crt')
+    key: fs.readFileSync('certs/SSL/ahurus.key'),
+    cert: fs.readFileSync('certs/SSL/ahurus.crt')
   }, app).listen(port, function(){
-    console.log("My https server listening on port " + port + "...");
+    console.log("Servidor Ahurus Corriendo En: " + port + "...");
   });
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');

@@ -72,6 +72,7 @@ class Mailer {
 
       pdf.create(htmlGenerated).toStream(function(err, stream) {
         console.log(stream);
+        console.log("SE GENERO PDF");
         if (err) {
           console.log(err);
           reject(new Error("No se pudo generar PDF..."))
