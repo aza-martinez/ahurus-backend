@@ -4,7 +4,17 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
+var fs = require('fs');
+var https = require('https');
 var app = express();
+var port = process.env.PORT || 80;
+
+https.createServer({
+    key: fs.readFileSync('ahurus.key'),
+    cert: fs.readFileSync('ahurus.crt')
+  }, app).listen(port, function(){
+    console.log("My https server listening on port " + port + "...");
+  });
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
 const propietarios_routes = require('./Master/Rutas/propietarios/propietarios');
