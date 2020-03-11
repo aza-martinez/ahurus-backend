@@ -1,5 +1,5 @@
 
-const generateHTMLReciboExitoso = (path_logo_ahurus) => `
+const generateHTMLReciboExitoso = (path_logo_ahurus, fechaOperacion, claveRastreo) => `
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -118,7 +118,7 @@ const generateHTMLReciboExitoso = (path_logo_ahurus) => `
           <span><span>Orden:</span> 50398849</span>
         </div>
         <div>
-          <span><span>Fecha de Operación:</span> 23/01/2020</span>
+          <span><span>Fecha de Operación:</span> ${fechaOperacion} </span>
         </div>
       </div>
       <div class="content-list">
@@ -126,7 +126,7 @@ const generateHTMLReciboExitoso = (path_logo_ahurus) => `
           <li>
             <span>
               <strong>Clave de Rastreo:</strong>
-              RMUNO165
+              ${claveRastreo}
             </span>
           </li>
           <li>

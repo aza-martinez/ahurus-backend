@@ -122,7 +122,6 @@ const controller = {
 
   async ejecutar(req, res) {
     var transID = req.params.id;
-
     const SERVER_BD = req.empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
@@ -137,9 +136,8 @@ const controller = {
       axios
         .put(URL_EJECUTAR_TRANSF_STP, dataT, { httpsAgent: agent })
         .then(response => {
-          
           console.log(response);
-          
+          console.log(dataT);
           if (response.data.resultado.descripcionError) {
             Transferencia.findOneAndUpdate(
               { _id: transID },

@@ -38,21 +38,21 @@ class Mailer {
 
   getTransporter () { 
     return nodemailer.createTransport({
-    name: "https://www.ahurus.com",
-    host: "mail.ahurus.com",
+    name: "https://www.azamartinez.com",
+    host: "mail.azamartinez.com",
     port: 465,
     pool: true,
     secure: true,
     auth: {
-      user: "comprobantes@ahurus.com",
-      pass: "yimt;kyp9TzmLdb"
+      user: "test-ahurus@azamartinez.com",
+      pass: "b}gJwE9L0liQoWI"
     }
   });
   }
 
   getHeadersMail(pathPDF) {
     return {
-      from: "comprobantes@ahurus.com",
+      from: "test-ahurus@azamartinez.com",
       to: "alejandro.rendon@itcom.mx",
       subject: "Probando correos de recibos",
       html: generateHTMLMail(),

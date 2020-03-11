@@ -1,5 +1,5 @@
 
-const generateHTMLMail = () => `
+const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -30,7 +30,7 @@ const generateHTMLMail = () => `
                 <tbody>
                   <tr bgcolor="#ffffff" style="color: #191919;">
                     <td style="padding: 15px 40px;">
-                      <h1 style="font-size: 18px; margin-top: 35px;">Hola, AZAEL MARTINEZ CARMONA:</h1>
+                      <h1 style="font-size: 18px; margin-top: 35px;">Hola, ${nombreOrdenante}:</h1>
                     </td>
                   </tr>
                 </tbody>
@@ -39,7 +39,7 @@ const generateHTMLMail = () => `
                 <tbody>
                   <tr bgcolor="#ffffff" style="color: #191919;">
                     <td style="padding:0 40px;">
-                      <p style="width: 80%; line-height: 23px;">La <strong>transferencia a cuenta</strong> BBVA fue exitosa, te compartimos los detalles:</p>
+                      <p style="width: 80%; line-height: 23px;">La <strong>transferencia a cuenta</strong> ${institucionContraparte} fue exitosa, te compartimos los detalles:</p>
                     </td>
                   </tr>
                 </tbody>
