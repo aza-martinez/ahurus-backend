@@ -37,14 +37,14 @@ const controller = {
 
         var query = CC.find({ "estatus": true });
 
-        query.sort('-_id').exec(async (err, centro) => {
+        const centros = await query.sort('_id').exec(async (err, centro) => {
             console.log(centro);
+            const closed = await mongo.close();
 
             if (err) return res.status(500).send({});
 
             if (!centro) return res.status(404).send({});
 
-            const closed = await mongo.close();
             return res.status(200).send({ centro });
         });
     },

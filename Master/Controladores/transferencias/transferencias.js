@@ -2,7 +2,7 @@
 const https = require("https");
 const Transferencia = require("../../Modelos/transferencias/transferencias");
 const moment = require("moment");
-const momentz = require('moment-timezone');
+const momentz = require("moment-timezone");
 const fs = require("fs");
 const crypto = require("crypto");
 const axios = require("axios");
@@ -110,10 +110,11 @@ const controller = {
     signer.end();
     const signature = signer.sign(
       { key: private_key, passphrase: "12345678" },
-      "base64");
+      "base64"
+    );
     transferencias.firma = signature;
     transferencias.save(async (err, transferenciaStored) => {
-    const close = await mongo.close();
+      const close = await mongo.close();
 
       if (err || !transferenciaStored) return res.status(400).send(err);
       return res.status(200).send({ ...transferenciaStored._doc });
@@ -135,7 +136,7 @@ const controller = {
 
       axios
         .put(URL_EJECUTAR_TRANSF_STP, dataT, { httpsAgent: agent })
-        .then(response => {
+        .then((response) => {
           console.log(response);
           console.log(dataT);
           if (response.data.resultado.descripcionError) {
@@ -144,7 +145,7 @@ const controller = {
               {
                 descripcionError: response.data.resultado.descripcionError,
                 idSTP: response.data.resultado.id,
-                estatus_stp: estatusError
+                estatus_stp: estatusError,
               },
               async (err, transferenciaUpdated) => {
                 const close = await mongo.close();
@@ -161,7 +162,7 @@ const controller = {
               {
                 descripcionError: response.data.resultado.descripcionError,
                 idSTP: response.data.resultado.id,
-                estatus_stp: estatusOk
+                estatus_stp: estatusOk,
               },
               async (err, transferenciaUpdated) => {
                 const close = await mongo.close();
@@ -172,7 +173,7 @@ const controller = {
             );
           }
         })
-        .catch(async error => {
+        .catch(async (error) => {
           const close = await mongo.close();
           console.log(error);
           return res.status(400).send(error);
@@ -328,25 +329,26 @@ const controller = {
   },
   getTransferenciasA: async (req, res) => {
     const now = new Date();
-    const fechaMX = moment(now)
-      .tz("America/Mexico_City")
-      .format("YYYYMMDD");
+    const fechaMX = moment(now).tz("America/Mexico_City").format("YYYYMMDD");
 
     const SERVER_BD = req.empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    const transferencias = Transferencia.find({
+    const transferencias = await Transferencia.find({
       estatus_stp: "Pendiente",
       medio: "Transferencia",
       estatus: true,
-      fechaOperacion: { $gte: fechaMX }
+      fechaOperacion: { $gte: fechaMX },
     })
       .sort([["date", "descending"]])
       .exec(async (err, Transferencias) => {
         const close = await mongo.close();
 
         if (err) return res.status(500).send({});
+
+        if (!Transferencias && Transferencias.length <= 0)
+          return res.status(404).send({});
 
         return res.status(200).send(Transferencias);
       });
@@ -410,6 +412,6 @@ const controller = {
       }
       return res.status(200).send(transferencias);
     });
-  }
+  },
 };
 module.exports = controller;

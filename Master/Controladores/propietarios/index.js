@@ -191,13 +191,15 @@ class PropietarioController {
   }
 
   async getPropietarios(req, res) {
-    const query = this.model.find({ estatus: true });
 
     const SERVER_BD = req.empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    query.sort("-_id").exec(async (err, propietarios) => {
+    const query = this.model.find({ estatus: true });
+
+    const propietarios = query.sort("_id").exec(async (err, propietarios) => {
+      console.log('PROPIETARIOS', propietarios);
       const close = await mongo.close();
 
       if (err) return res.status(500).send({});

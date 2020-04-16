@@ -7,7 +7,7 @@ const userProfile = require('./../../Middleware/getUserProfile');
 var router = express.Router();
 router.get('/transferencias/listar/:search?', [auth0, userProfile],  TransferenciasController.getTransferencias);
 router.get('/transferencias/listarCanceladas/:search?',  [auth0, userProfile], TransferenciasController.getTransferenciasC);
-router.get('/transferencias/listarA/:search?',  [auth0, userProfile], TransferenciasController.getTransferenciasA);
+router.get('/transferencias/listarA/:search?',  [userProfile], TransferenciasController.getTransferenciasA);
 router.get('/transferencias/buscar/:search',  [auth0, userProfile], TransferenciasController.getTransferencia);
 router.get('/transferencias/buscarTransferencia/:id', [auth0, userProfile],  TransferenciasController.buscarTransferencia);
 router.get('/transferencia/ejecutar/:id',  [auth0, userProfile], TransferenciasController.ejecutar);

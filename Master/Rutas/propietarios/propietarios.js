@@ -13,7 +13,7 @@ router.get('/propietarios/personasFisicas/listarI',[auth0, userProfile], (...arg
 router.get('/propietarios/personasFisicas/listarA',[auth0, userProfile], (...args) =>  PropietariosController.getPropietariosPFA(...args));
 router.get('/propietarios/personasMorales/listarI/:last?',[auth0, userProfile], (...args) =>  PropietariosController.getPropietariosPMI(...args));
 router.get('/propietarios/personasMorales/listarA/:last?',[auth0, userProfile], (...args) =>  PropietariosController.getPropietariosPMA(...args));
-router.get('/propietarios/listar/:last?', [auth0, userProfile], (...args) =>  PropietariosController.getPropietarios(...args));
+router.get('/propietarios/listar/:last?', [ userProfile], (...args) =>  PropietariosController.getPropietarios(...args));
 router.get('/propietario/buscar/:id',[auth0, userProfile], (...args) =>  PropietariosController.getPropietario(...args));
 router.put('/propietario/desactivar/:id', [auth0, userProfile], (...args) => PropietariosController.update(...args));
 
