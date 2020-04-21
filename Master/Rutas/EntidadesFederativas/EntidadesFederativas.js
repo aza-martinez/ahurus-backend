@@ -7,6 +7,6 @@ const userProfile = require('./../../Middleware/getUserProfile');
 const router = express.Router();
 
 
-router.get('/entidades-federativas/listar', [auth0, userProfile], EntidadesFederativasController.getEntidadesFederativas);
+router.get('/entidades-federativas/listar', [auth0], EntidadesFederativasController.getEntidadesFederativas);
 
 module.exports = router;

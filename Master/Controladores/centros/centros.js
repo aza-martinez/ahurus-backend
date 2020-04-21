@@ -20,24 +20,27 @@ const controller = {
         centro.estatus = true;
         var fechaMX = new Date();
         fechaMX.setUTCHours(fechaMX.getUTCHours());
-        centro.timestamp=fechaMX;
+        centro.timestamp = fechaMX;
         centro.cuenta_stp = params.cuenta_stp;
         centro.save((err, centroStored) => {
             if (err || !centroStored) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({ ...centroStored._doc });
+            return res.status(200).send({...centroStored._doc });
         });
     },
 
-    getCCA: async (req, res) => {
+    getCCA: async(req, res) => {
         const mongo = new MongooseConnect();
         const SERVER_BD = req.empresa;
         const cnx = await mongo.connect(SERVER_BD);
 
+
+
+
         var query = CC.find({ "estatus": true });
 
-        const centros = await query.sort('_id').exec(async (err, centro) => {
+        const centros = await query.sort('_id').exec(async(err, centro) => {
             console.log(centro);
             const closed = await mongo.close();
 
@@ -55,7 +58,7 @@ const controller = {
             !validator.isEmpty(params.estatus);
             var fechaMX = new Date();
             fechaMX.setUTCHours(fechaMX.getUTCHours());
-            centro.timestamp=fechaMX;
+            centro.timestamp = fechaMX;
         } catch (err) {
             return res.status(200).send({});
         }
@@ -82,7 +85,7 @@ const controller = {
             if (!centro) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({...centro});
+            return res.status(200).send({...centro });
         });
     },
 
@@ -100,10 +103,10 @@ const controller = {
     search: (req, res) => {
         var searchString = req.params.search;
         centro.find({
-            "$or": [
-                { "razon_social": { "$regex": searchString, "$options": "i" } }
-            ]
-        })
+                "$or": [
+                    { "razon_social": { "$regex": searchString, "$options": "i" } }
+                ]
+            })
             .sort([
                 ['date', 'descending']
             ])
@@ -111,7 +114,7 @@ const controller = {
                 if (err) {
                     return res.status(500).send({});
                 }
-                             return res.status(200).send({ centro });
+                return res.status(200).send({ centro });
 
             });
     }

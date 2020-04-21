@@ -7,6 +7,6 @@ const userProfile = require('./../../Middleware/getUserProfile');
 
 const router = express.Router();
 
-router.get('/actividades-economicas/listar', [auth0, userProfile], ActividadesEconomicasController.getActividadesEconomicas);
+router.get('/actividades-economicas/listar', [auth0], ActividadesEconomicasController.getActividadesEconomicas);
 
 module.exports = router;

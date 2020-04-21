@@ -7,9 +7,9 @@ const userProfile = require('./../../Middleware/getUserProfile');
 var router = express.Router();
 
 // Rutas útiles
-router.post('/plaza/guardar',[auth0, userProfile],  PlazasController.save);
-router.get('/plazas/listar/:last?',[auth0, userProfile],  PlazasController.getPlazas);
-router.get('/plaza/buscar/:id',[auth0, userProfile],  PlazasController.getPlaza);
-router.get('/plazas/filtrar/:search',[auth0, userProfile],  PlazasController.search);
+router.post('/plaza/guardar', [auth0], PlazasController.save);
+router.get('/plazas/listar/:last?', [auth0], PlazasController.getPlazas);
+router.get('/plaza/buscar/:id', [auth0], PlazasController.getPlaza);
+router.get('/plazas/filtrar/:search', [auth0], PlazasController.search);
 
 module.exports = router;

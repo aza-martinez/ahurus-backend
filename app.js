@@ -39,12 +39,12 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Headers', 'Authorization, E-CLIENT, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
     next();
 });
 
-app.use('/api', [reportes_routes, paises_nacimiento_routes, actividades_economicas_routes, entidades_federativas_routes, dispersiones_routes,  estados_routes, centros_routes, devoluciones_routes, errores_routes, instituciones_routes, registros_routes, propietarios_routes, usuario_routes, tipos_cuentas_routes, plazas_routes, cuentas_routes, tipos_pagos_routes]);
+app.use('/api', [reportes_routes, paises_nacimiento_routes, actividades_economicas_routes, entidades_federativas_routes, dispersiones_routes, estados_routes, centros_routes, devoluciones_routes, errores_routes, instituciones_routes, registros_routes, propietarios_routes, usuario_routes, tipos_cuentas_routes, plazas_routes, cuentas_routes, tipos_pagos_routes]);
 
 module.exports = app;
