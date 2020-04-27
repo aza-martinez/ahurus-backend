@@ -8,7 +8,7 @@ var controller = {
     save: async (req, res) => {
         var params = req.body;
 
-        const SERVER_BD = req.empresa;
+        const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
@@ -28,7 +28,7 @@ var controller = {
             query.limit(5);
         }
 
-        const SERVER_BD = req.empresa;
+        const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
@@ -43,7 +43,7 @@ var controller = {
 
     getInstitucion: async (req, res) => {
         var institucionId = req.params.id;
-        const SERVER_BD = req.empresa;
+        const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
@@ -58,7 +58,7 @@ var controller = {
     search: async (req, res) => {
         var searchString = req.params.search;
 
-        const SERVER_BD = req.empresa;
+        const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 

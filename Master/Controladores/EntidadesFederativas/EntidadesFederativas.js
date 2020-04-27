@@ -6,7 +6,7 @@ const MongooseConnect = require('./../../MongooseConnect');
 const controller = {
     getEntidadesFederativas: async (req, res) => {
         const query = EntidadFederativa.find({});
-        const SERVER_BD = req.empresa;
+        const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 

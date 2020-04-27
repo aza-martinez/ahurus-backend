@@ -32,22 +32,14 @@ const controller = {
 
     getCCA: async(req, res) => {
         const mongo = new MongooseConnect();
-        const SERVER_BD = req.empresa;
+        const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const cnx = await mongo.connect(SERVER_BD);
 
-
-
-
         var query = CC.find({ "estatus": true });
-
         const centros = await query.sort('_id').exec(async(err, centro) => {
-            console.log(centro);
             const closed = await mongo.close();
-
             if (err) return res.status(500).send({});
-
             if (!centro) return res.status(404).send({});
-
             return res.status(200).send({ centro });
         });
     },

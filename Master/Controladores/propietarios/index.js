@@ -18,7 +18,7 @@ class PropietarioController {
     try {
       const params = req.body;
 
-      const SERVER_BD = req.empresa;
+      const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
       const mongo = new MongooseConnect();
       await mongo.connect(SERVER_BD);
 
@@ -130,7 +130,7 @@ class PropietarioController {
       return res.status(200).send({});
     }
 
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -149,7 +149,7 @@ class PropietarioController {
   }
 
   async getPropietariosPFA(req, res) {
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -175,7 +175,7 @@ class PropietarioController {
   }
 
   async getPropietario(req, res) {
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -192,7 +192,7 @@ class PropietarioController {
 
   async getPropietarios(req, res) {
 
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -211,7 +211,7 @@ class PropietarioController {
   }
 
   async getPropietariosPMI(req, res) {
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -233,7 +233,7 @@ class PropietarioController {
 
   async getPropietariosPMA(req, res) {
 
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -254,7 +254,7 @@ class PropietarioController {
   }
 
   async getPropietariosPFI(req, res) {
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 

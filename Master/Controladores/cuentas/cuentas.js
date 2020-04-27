@@ -23,7 +23,7 @@ const controller = {
   update: async (req, res) => {
     var cuentaID = req.params.id;
 
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -56,7 +56,7 @@ const controller = {
 
   save: async (req, res) => {
     try {
-      const SERVER_BD = req.empresa;
+      const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
       const mongo = new MongooseConnect();
       await mongo.connect(SERVER_BD);
 
@@ -95,11 +95,11 @@ const controller = {
   },
 
   getCuentasPA: async (req, res) => {
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    const cuentas = Cuenta.find({
+    Cuenta.find({
       tipo_registro: "personaMoral",
       estatus: true
     })
@@ -117,11 +117,11 @@ const controller = {
   },
 
   getCuentasCA: async (req, res) => {
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    const cuentas = Cuenta.find({
+   Cuenta.find({
       tipo_registro: "personaFisica",
       estatus: true
     })
@@ -139,7 +139,7 @@ const controller = {
   },
   getPropietariosA: async (req, res) => {
     var searchString = req.params.search;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -198,7 +198,7 @@ const controller = {
       return res.status(200).send({});
     }
 
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 

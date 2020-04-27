@@ -9,7 +9,7 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -35,7 +35,7 @@ var controller = {
 
   ftPendientes: async (req, res) => {
     var params = req.body;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
@@ -63,7 +63,7 @@ var controller = {
 
   ftExitosas: async (req, res) => {
     var params = req.body;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
@@ -93,7 +93,7 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -121,7 +121,7 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -148,7 +148,7 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -175,7 +175,7 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -203,7 +203,7 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -229,7 +229,7 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -256,7 +256,7 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = req.empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 

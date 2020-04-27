@@ -19,18 +19,12 @@ var jwtCheck = jwt({
     algorithms: ['RS256'],
     getToken: function fromHeaderOrQuerystring(req) {
 
-        // console.log(req.headers);
-        console.log(req.headers['e-client']);
-        req.empresa = req.headers['e-client'];
-
-
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
             return req.headers.authorization.split(' ')[1];
         } else if (req.query && req.query.token) {
             return res.status(401).send('Acceso Denegado, Token Incorrecto...');
         }
-        next();
-        return null;
+        return
     }
 });
 
