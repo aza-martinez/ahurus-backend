@@ -259,13 +259,13 @@ var controller = {
                                 cadenaOriginal += `${prioridad}|`;
                                 cadenaOriginal += `${transferencia.iva}||`;
                                 const private_key = fs.readFileSync(
-                                    "certs/prueba-key.pem",
+                                    "certs/llavePrivada.pem",
                                     "utf-8"
                                 );
                                 const signer = crypto.createSign("sha256");
                                 signer.update(cadenaOriginal);
                                 signer.end();
-                                const signature = signer.sign({ key: private_key, passphrase: "12345678" },
+                                const signature = signer.sign({ key: private_key, passphrase: "mWEYKJ4Zdi" },
                                     "base64"
                                 );
                                 transferencia.idDispersion = dispersion._id;
