@@ -21,6 +21,7 @@ const MongooseConnect = require('./../../MongooseConnect');
 var controller = {
     saveFile: async(req, res) => {
         var file_name = "Documento no subido..";
+        const user = req.user['http://localhost:3000/user_metadata'].user;
         //var last_invoice = counter.invoice + 1;
         var params = req.body;
         if (!req.files) { return res.status(404).send({}); }
@@ -52,11 +53,8 @@ var controller = {
             file_path,
             async(e, result, req) => {
                 if (e) {
-                     console.log("no se guardo...");
                     return;
                 }
-                console.log(result);
-
 
                 const token = await blobService.generateSharedAccessSignature(
                     STORAGE_CONTAINER,
@@ -202,14 +200,12 @@ var controller = {
                                 transferencia.medio = "Dispersion";
 
                                 //DATOS DE LA DISPERSION
-                                dispersion.usuario = "USUARIO LOGEADO";
+                                dispersion.usuario = user;
                                 dispersion.ruta = fileURLStorage;
                                 dispersion.fechaSubida = fechaMX._d;
                                 dispersion.estatus = true;
                                 dispersion.estatus_stp = "Pendiente";
                                 dispersion.fechaOperacion = fechaOperacion;
-
-                                //console.log(req.user['http://localhost:3000/user_metadata'])
 
                                 // 1. Obtención de la cadena original.
                                 var cadenaOriginal = `||${transferencia.institucionContraparte}|`;
@@ -262,11 +258,9 @@ var controller = {
                                 dispersion.idTransferencia.push(transferencia._id);
                                 await  transferencia.save((err, transStored) => {
                                     if (err || !transStored) {}
-                                     console.log(transStored);
                                     });
                                      await dispersion.save((err, dispersionStored) => {
                                         if (err || !dispersionStored) {}
-                                          console.log(dispersionStored);
                                 });
 
                                 // registro = {};
@@ -376,12 +370,9 @@ var controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        await Transferencia.find({
-            idDispersion: idDispersion,
-            estatus: true
-        }).exec(async(err, transferenciasFind) => {
+        const trans = Transferencia.find({ estatus: true, idDispersion: idDispersion})
+        .exec(async(err, transferenciasFind) => {
             // inicio del FIND, operaciones con las transferencias encontradas
-            //console.log(transferenciasFind);
             for (i = 0; i < transferenciasFind.length; i++) {
                 //Inicio del FOR
                 dataT = transferenciasFind[i];
@@ -414,14 +405,17 @@ var controller = {
                         }
                     }); // FIN de la API Ejecutar
             } //FIN DEL FOR
+        
+            const close = await mongo.close();
         });
+
 
         Dispersion.findOneAndUpdate({ _id: idDispersion }, { estatus_stp: "Ejecutada" },
             (err, transferenciaUpdated) => {}
         );
 
-        const close = await mongo.close();
         return res.status(200).send("Dispersión Terminada De Procesar");
+        
     },
 
     response: async(req, res) => {

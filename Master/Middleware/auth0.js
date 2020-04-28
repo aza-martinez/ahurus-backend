@@ -17,14 +17,13 @@ var jwtCheck = jwt({
     audience: 'http://ahurus',
     issuer: 'https://ahurus.auth0.com/',
     algorithms: ['RS256'],
-    getToken: function fromHeaderOrQuerystring(req) {
-
+    getToken: function fromHeaderOrQuerystring(req) {        
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
             return req.headers.authorization.split(' ')[1];
         } else if (req.query && req.query.token) {
             return res.status(401).send('Acceso Denegado, Token Incorrecto...');
         }
-        return
+        return;
     }
 });
 
