@@ -113,7 +113,7 @@ const controller = {
             signer.update(cadenaOriginal);
             console.log(cadenaOriginal);
             signer.end();
-            const signature = signer.sign({ key: private_key, passphrase: "mWEYKJ4Zdi" },
+            const signature = signer.sign({ key: private_key, passphrase: "wiQy5DkS4h" },
                 "base64"
             );
             transferencias.firma = signature;
@@ -273,7 +273,7 @@ const controller = {
         const signer = crypto.createSign("sha256");
         signer.update(cadenaOriginal);
         signer.end();
-        const signature = signer.sign({ key: private_key, passphrase: "12345678" },
+        const signature = signer.sign({ key: private_key, passphrase: "wiQy5DkS4h" },
             "base64"
         );
         params.firma = signature;

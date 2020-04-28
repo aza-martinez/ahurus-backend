@@ -1,2 +1,2 @@
 alias: prueba
-password: 12345678
+password: wiQy5DkS4h

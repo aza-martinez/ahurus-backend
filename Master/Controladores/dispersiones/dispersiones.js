@@ -21,21 +21,15 @@ const MongooseConnect = require('./../../MongooseConnect');
 var controller = {
     saveFile: async(req, res) => {
         var file_name = "Documento no subido..";
-
-
         //var last_invoice = counter.invoice + 1;
-
         var params = req.body;
         if (!req.files) { return res.status(404).send({}); }
-
-        const dispersion = new Dispersion();
-        const SERVER_BD = 'sefince'; //req.empresa;
+        var dispersion = new Dispersion();
+        const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
         const folio = await Counter.findByIdAndUpdate({ _id: 'dispersiones' }, { $inc: { invoice: 1 } })
-            //if (!folio) { return res.status(404).send('Imposible obtener el folio'); }
-
         var file_path = req.files.file_path.path;
         var file_name = folio.invoice + '_' + req.files.file_path.originalFilename;
         var extension_split = file_name.split(".");
@@ -58,9 +52,11 @@ var controller = {
             file_path,
             async(e, result, req) => {
                 if (e) {
-                    // console.log("no se guardo...");
+                     console.log("no se guardo...");
                     return;
                 }
+                console.log(result);
+
 
                 const token = await blobService.generateSharedAccessSignature(
                     STORAGE_CONTAINER,
@@ -100,7 +96,7 @@ var controller = {
                             return;
                         }
 
-                        switch (fila.substr(0, 1)) {
+                         switch   (fila.substr(0, 1)) {
                             case "A":
                                 registro["institucionContraparte"] = FILAS[fila]["w"];
                                 break;
@@ -161,47 +157,37 @@ var controller = {
                                 registro["idSTP"] = "";
                                 registro["descripcionError"] = "";
 
-                                const transferencia = new Transferencia();
+                                var transferencia = new Transferencia();
                                 // DATOS DE LA TRANSFERENCIA
                                 transferencia.claveRastreo = registro["claveRastreo"];
                                 transferencia.conceptoPago = registro["conceptoPago"].trim();
                                 const conceptoPago2 = registro["conceptoPago2"];
-                                transferencia.cuentaBeneficiario =
-                                    registro["cuentaBeneficiario"];
+                                transferencia.cuentaBeneficiario = registro["cuentaBeneficiario"];
                                 const cuentaBeneficiario2 = registro["cuentaBeneficiario2"];
                                 transferencia.cuentaOrdenante = registro["cuentaOrdenante"];
                                 transferencia.emailBeneficiario = registro["emailBeneficiario"];
                                 transferencia.empresa = registro["empresa"];
                                 transferencia.fechaOperacion = registro["fechaOperacion"];
                                 const folioOrigen = registro["folioOrigen"];
-                                transferencia.institucionContraparte =
-                                    registro["institucionContraparte"];
-                                transferencia.institucionOperante =
-                                    registro["institucionOperante"];
+                                transferencia.institucionContraparte = registro["institucionContraparte"];
+                                transferencia.institucionOperante = registro["institucionOperante"];
                                 transferencia.monto = registro["monto"];
-                                transferencia.nombreBeneficiario = registro[
-                                    "nombreBeneficiario"
-                                ].trim();
+                                transferencia.nombreBeneficiario = registro["nombreBeneficiario"].trim();
                                 const nombreBeneficiario2 = registro["nombreBeneficiario2"];
                                 transferencia.nombreOrdenante = registro["nombreOrdenante"];
-                                transferencia.rfcCurpBeneficiario =
-                                    registro["rfcCurpBeneficiario"];
+                                transferencia.rfcCurpBeneficiario =registro["rfcCurpBeneficiario"];
                                 const rfcCurpBeneficiario2 = registro["rfcCurpBeneficiario2"];
                                 transferencia.rfcCurpOrdenante = registro["rfcCurpOrdenante"];
-                                transferencia.tipoCuentaBeneficiario =
-                                    registro["tipoCuentaBeneficiario"];
-                                const tipoCuentaBeneficiario2 =
-                                    registro["tipoCuentaBeneficiario2"];
-                                transferencia.tipoCuentaOrdenante =
-                                    registro["tipoCuentaOrdenante"];
+                                transferencia.tipoCuentaBeneficiario =registro["tipoCuentaBeneficiario"];
+                                const tipoCuentaBeneficiario2 =registro["tipoCuentaBeneficiario2"];
+                                transferencia.tipoCuentaOrdenante =registro["tipoCuentaOrdenante"];
                                 transferencia.tipoPago = registro["tipoPago"];
                                 transferencia.estatus = true;
                                 const claveUsuario = registro["claveUsuario"];
                                 const claveUsuario2 = registro["claveUsuario2"];
                                 const clavePago = registro["clavePago"];
                                 const refCobranza = registro["refCobranza"];
-                                transferencia.referenciaNumerica =
-                                    registro["referenciaNumerica"];
+                                transferencia.referenciaNumerica = registro["referenciaNumerica"];
                                 const tipoOperacion = registro["tipoOperacion"];
                                 transferencia.topologia = registro["topologia"];
                                 const usuario = registro["usuario"];
@@ -218,7 +204,7 @@ var controller = {
                                 //DATOS DE LA DISPERSION
                                 dispersion.usuario = "USUARIO LOGEADO";
                                 dispersion.ruta = fileURLStorage;
-                                dispersion.fechaSubida = fechaMX;
+                                dispersion.fechaSubida = fechaMX._d;
                                 dispersion.estatus = true;
                                 dispersion.estatus_stp = "Pendiente";
                                 dispersion.fechaOperacion = fechaOperacion;
@@ -265,19 +251,19 @@ var controller = {
                                 const signer = crypto.createSign("sha256");
                                 signer.update(cadenaOriginal);
                                 signer.end();
-                                const signature = signer.sign({ key: private_key, passphrase: "mWEYKJ4Zdi" },
+                                const signature = signer.sign({ key: private_key, passphrase: "wiQy5DkS4h" },
                                     "base64"
                                 );
                                 transferencia.idDispersion = dispersion._id;
                                 transferencia.firma = signature;
                                 registro["firma"] = signature;
                                 dispersion.idTransferencia.push(transferencia._id);
-                                transferencia.save((err, dispersionStored) => {
-                                    if (err || !dispersionStored) {}
-                                    // console.log(dispersionStored); // return res.status(200).send({...dispersionStored._doc });
-                                    dispersion.save((err, dispersionStored) => {
-                                        if (err || !dispersionStored) {}
-                                        //   console.log(dispersionStored); // return res.status(200).send({...dispersionStored._doc });
+                                  transferencia.save((err, transStored) => {
+                                    if (err || !transStored) {console.log(err);}
+                                     console.log(transStored); // return res.status(200).send({...dispersionStored._doc });
+                                      dispersion.save((err, dispersionStored) => {
+                                        if (err || !dispersionStored) {console.log(err);}
+                                          console.log(dispersionStored); // return res.status(200).send({...dispersionStored._doc });
                                     });
                                 });
 
@@ -340,7 +326,7 @@ var controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        Dispersion.find({ estatus: true })
+        await Dispersion.find({ estatus: true })
             .exec(async(err, registros) => {
                 const close = await mongo.close();
 
