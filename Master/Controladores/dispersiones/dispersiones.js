@@ -209,6 +209,8 @@ var controller = {
                                 dispersion.estatus_stp = "Pendiente";
                                 dispersion.fechaOperacion = fechaOperacion;
 
+                                //console.log(req.user['http://localhost:3000/user_metadata'])
+
                                 // 1. Obtención de la cadena original.
                                 var cadenaOriginal = `||${transferencia.institucionContraparte}|`;
                                 cadenaOriginal += `${transferencia.empresa}|`;

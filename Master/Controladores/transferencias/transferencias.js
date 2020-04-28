@@ -351,13 +351,17 @@ const controller = {
             });
     },
 
-    getTransferenciasDispersion: (req, res) => {
+    getTransferenciasDispersion: async(req, res) => {
         var id = req.params.id;
-        Transferencia.find({ medio: "Dispersion", idDispersion: id })
+        const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+        const mongo = new MongooseConnect();
+        await mongo.connect(SERVER_BD);
+        await Transferencia.find({ medio: "Dispersion", idDispersion: id })
             .sort([
                 ["date", "descending"]
             ])
-            .exec((err, Transferencias) => {
+            .exec(async(err, Transferencias) => {
+                const close = await mongo.close();
                 return res.status(200).send(Transferencias);
             });
     },
