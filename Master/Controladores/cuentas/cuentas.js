@@ -99,7 +99,7 @@ const controller = {
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    Cuenta.find({
+   await  Cuenta.find({
       tipo_registro: "personaMoral",
       estatus: true
     })
@@ -121,7 +121,7 @@ const controller = {
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-   Cuenta.find({
+   await Cuenta.find({
       tipo_registro: "personaFisica",
       estatus: true
     })
@@ -155,9 +155,9 @@ const controller = {
         return res.status(200).send(registros);
       });
   },
-  getCuentasPropietarios: (req, res) => {
+  getCuentasPropietarios: async (req, res) => {
     var searchString = req.params.search;
-    Cuenta.find({ propietario: searchString, estatus: true })
+    await Cuenta.find({ propietario: searchString, estatus: true })
       .populate("institucion")
       .populate("tipo_cuenta")
       .populate("institucion")

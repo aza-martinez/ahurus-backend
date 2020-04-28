@@ -330,7 +330,7 @@ const controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        Transferencia.find({
+       await Transferencia.find({
                 estatus_stp: "Pendiente",
                 medio: "Transferencia",
                 estatus: true,

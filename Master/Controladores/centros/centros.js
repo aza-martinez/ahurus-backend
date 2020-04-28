@@ -35,8 +35,8 @@ const controller = {
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const cnx = await mongo.connect(SERVER_BD);
 
-        var query = CC.find({ "estatus": true });
-        const centros = await query.sort('_id').exec(async(err, centro) => {
+        var query =  CC.find({ "estatus": true });
+         await query.sort('_id').exec(async(err, centro) => {
             const closed = await mongo.close();
             if (err) return res.status(500).send({});
             if (!centro) return res.status(404).send({});

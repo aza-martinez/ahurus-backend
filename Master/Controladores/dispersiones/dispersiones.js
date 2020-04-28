@@ -90,8 +90,8 @@ var controller = {
                     var fechaOperacion = moment(fechaMX).format("YYYYMMDD");
                     var fechaMX = moment(fecha).tz("America/Mexico_City");
 
-                    Object.keys(FILAS).map((fila, index) => {
-                        if (fila.substr(1) === "1") {
+                    Object.keys(FILAS).map(async(fila, index) => {
+                        if  (fila.substr(1) === "1") {
                             delete FILAS[fila];
                             return;
                         }
@@ -258,13 +258,13 @@ var controller = {
                                 transferencia.firma = signature;
                                 registro["firma"] = signature;
                                 dispersion.idTransferencia.push(transferencia._id);
-                                  transferencia.save((err, transStored) => {
-                                    if (err || !transStored) {console.log(err);}
-                                     console.log(transStored); // return res.status(200).send({...dispersionStored._doc });
-                                      dispersion.save((err, dispersionStored) => {
-                                        if (err || !dispersionStored) {console.log(err);}
-                                          console.log(dispersionStored); // return res.status(200).send({...dispersionStored._doc });
+                                await  transferencia.save((err, transStored) => {
+                                    if (err || !transStored) {}
+                                     console.log(transStored);
                                     });
+                                     await dispersion.save((err, dispersionStored) => {
+                                        if (err || !dispersionStored) {}
+                                          console.log(dispersionStored);
                                 });
 
                                 // registro = {};
@@ -274,13 +274,14 @@ var controller = {
                                 break;
                         }
                     });
-                    const close = await mongo.close();
+                  
                     return res.status(200).send({});
                 });
 
                 return;
             }
         );
+        const close = await mongo.close();
     },
     getTransferenciasC: async(req, res) => {
 
