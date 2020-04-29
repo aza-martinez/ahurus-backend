@@ -7,14 +7,14 @@ var jwks = require('jwks-rsa');
 var fs = require('fs');
 var https = require('https');
 var app = express();
-/* var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3002;
 
 https.createServer({
     key: fs.readFileSync('certs/SSL/ahurus.key'),
     cert: fs.readFileSync('certs/SSL/ahurus.crt')
   }, app).listen(port, function(){
     console.log("Servidor Ahurus Corriendo En: " + port);
-  }); */
+  });
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
 const propietarios_routes = require('./Master/Rutas/propietarios/propietarios');
