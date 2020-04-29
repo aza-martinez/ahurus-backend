@@ -7,20 +7,30 @@ const Counter = require('../../Modelos/counters/counters');
 const fs = require("fs");
 const crypto = require("crypto");
 const axios = require("axios");
+const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
+const passphrase_certificado = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
 const URL_EJECUTAR_TRANSF_STP =
     "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
 const Mailer = require("./../../mailer");
 const MongooseConnect = require("./../../MongooseConnect");
-const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require("constants");
+const {
+    SSL_OP_CRYPTOPRO_TLSEXT_BUG
+} = require("constants");
 
 const controller = {
-    save: async(req, res) => {
+    save: async (req, res) => {
         var params = req.body;
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        Counter.findByIdAndUpdate({ _id: 'transferencias' }, { $inc: { invoice: 1 } }, function(error, counter) {
+        Counter.findByIdAndUpdate({
+            _id: 'transferencias'
+        }, {
+            $inc: {
+                invoice: 1
+            }
+        }, function (error, counter) {
             if (error)
                 return next(error);
             let last_invoice = counter.invoice + 1;
@@ -30,36 +40,36 @@ const controller = {
             transferencias.empresa = params.centro_costo.nombreCentro;
             transferencias.fechaOperacion = params.fecha_aplicacion;
             const folioOrigen = params.folioOrigen || params.centro_costo.nombreCentro + last_invoice;
-             transferencias.claveRastreo = params.centro_costo.nombreCentro + last_invoice;
-             transferencias.institucionOperante = "90646";            
-             transferencias.monto = parseFloat(params.importe).toFixed(2);
-             transferencias.tipoPago = "1";
-             transferencias.tipoCuentaOrdenante = params.cuenta.tipo_cuenta.clave;
-            transferencias.nombreOrdenante = params.centro_costo.razon_social;            
-             transferencias.cuentaOrdenante = params.centro_costo.cuenta_stp;            
-             transferencias.rfcCurpOrdenante = params.centro_costo.rfcCentro;            
+            transferencias.claveRastreo = params.centro_costo.nombreCentro + last_invoice;
+            transferencias.institucionOperante = "90646";
+            transferencias.monto = parseFloat(params.importe).toFixed(2);
+            transferencias.tipoPago = "1";
+            transferencias.tipoCuentaOrdenante = params.cuenta.tipo_cuenta.clave;
+            transferencias.nombreOrdenante = params.centro_costo.razon_social;
+            transferencias.cuentaOrdenante = params.centro_costo.cuenta_stp;
+            transferencias.rfcCurpOrdenante = params.centro_costo.rfcCentro;
             transferencias.tipoCuentaBeneficiario = params.cuenta.tipo_cuenta.clave;
-             transferencias.nombreBeneficiario = params.propietario.razon_social || params.propietario.nombreCompleto;
+            transferencias.nombreBeneficiario = params.propietario.razon_social || params.propietario.nombreCompleto;
             transferencias.cuentaBeneficiario = params.cuenta.clabe
-             transferencias.rfcCurpBeneficiario = params.propietario.rfc;
+            transferencias.rfcCurpBeneficiario = params.propietario.rfc;
             transferencias.emailBeneficiario = params.propietario.correo1;
-             const tipoCuentaBeneficiario2 = "";
+            const tipoCuentaBeneficiario2 = "";
             const nombreBeneficiario2 = "";
             const cuentaBeneficiario2 = "";
             const rfcCurpBeneficiario2 = "";
             transferencias.conceptoPago = params.conceptoPago;
-           const conceptoPago2 = "";
+            const conceptoPago2 = "";
             const claveUsuario = "";
             const claveUsuario2 = "";
-             const clavePago = "";
+            const clavePago = "";
             const refCobranza = "";
             transferencias.referenciaNumerica = params.numero_referencia;
-    const tipoOperacion = "";
-             transferencias.topologia = "T";
+            const tipoOperacion = "";
+            transferencias.topologia = "T";
             const usuario = "";
-             transferencias.medioEntrega = "3";
+            transferencias.medioEntrega = "3";
             transferencias.iva = parseFloat(params.iva).toFixed(2);
-            const prioridad = "";    
+            const prioridad = "";
             transferencias.estatus = true;
             transferencias.estatus_stp = "Pendiente";
             var fecha = new Date();
@@ -69,58 +79,63 @@ const controller = {
             transferencias.descripcionError = "";
             transferencias.resultado = "";
             transferencias.medio = "Transferencia";
-                  // 1. Obtención de la cadena original.
-                  var cadenaOriginal = `||${transferencias.institucionContraparte}|`;
-                  cadenaOriginal += `${transferencias.empresa}|`;
-                  cadenaOriginal += `${transferencias.fechaOperacion}|`;
-                  cadenaOriginal += `${folioOrigen}|`;
-                  cadenaOriginal += `${transferencias.claveRastreo}|`;
-                  cadenaOriginal += `${transferencias.institucionOperante}|`;
-                  cadenaOriginal += `${transferencias.monto}|`;
-                  cadenaOriginal += `${transferencias.tipoPago}|`;
-                  cadenaOriginal += `${transferencias.tipoCuentaOrdenante}|`;
-                  cadenaOriginal += `${transferencias.nombreOrdenante}|`;
-                  cadenaOriginal += `${transferencias.cuentaOrdenante}|`;
-                  cadenaOriginal += `${transferencias.rfcCurpOrdenante}|`;
-                  cadenaOriginal += `${transferencias.tipoCuentaBeneficiario}|`;
-                  cadenaOriginal += `${transferencias.nombreBeneficiario}|`;
-                  cadenaOriginal += `${transferencias.cuentaBeneficiario}|`;
-                  cadenaOriginal += `${transferencias.rfcCurpBeneficiario}|`;
-                  cadenaOriginal += `${transferencias.emailBeneficiario}|`;
-                  cadenaOriginal += `${tipoCuentaBeneficiario2}|`;
-                  cadenaOriginal += `${nombreBeneficiario2}|`;
-                  cadenaOriginal += `${cuentaBeneficiario2}|`;
-                  cadenaOriginal += `${rfcCurpBeneficiario2}|`;
-                  cadenaOriginal += `${transferencias.conceptoPago}|`;
-                  cadenaOriginal += `${conceptoPago2}|`;
-                  cadenaOriginal += `${claveUsuario}|`;
-                  cadenaOriginal += `${claveUsuario2}|`;
-                  cadenaOriginal += `${clavePago}|`;
-                  cadenaOriginal += `${refCobranza}|`;
-                  cadenaOriginal += `${transferencias.referenciaNumerica}|`;
-                  cadenaOriginal += `${tipoOperacion}|`;
-                  cadenaOriginal += `${transferencias.topologia}|`;
-                  cadenaOriginal += `${usuario}|`;
-                  cadenaOriginal += `${transferencias.medioEntrega}|`;
-                  cadenaOriginal += `${prioridad}|`;
-                  cadenaOriginal += `${transferencias.iva}||`;
-                  const private_key = fs.readFileSync(
-                      "certs/llavePrivada.pem",
-                      "utf-8"
-                  );
-                  console.log(cadenaOriginal);
-                  const signer = crypto.createSign("sha256");
-                  signer.update(cadenaOriginal);
-                  signer.end();
-                  const signature = signer.sign({ key: private_key, passphrase: "wiQy5DkS4h" },
-                      "base64"
-                  );
+            // 1. Obtención de la cadena original.
+            var cadenaOriginal = `||${transferencias.institucionContraparte}|`;
+            cadenaOriginal += `${transferencias.empresa}|`;
+            cadenaOriginal += `${transferencias.fechaOperacion}|`;
+            cadenaOriginal += `${folioOrigen}|`;
+            cadenaOriginal += `${transferencias.claveRastreo}|`;
+            cadenaOriginal += `${transferencias.institucionOperante}|`;
+            cadenaOriginal += `${transferencias.monto}|`;
+            cadenaOriginal += `${transferencias.tipoPago}|`;
+            cadenaOriginal += `${transferencias.tipoCuentaOrdenante}|`;
+            cadenaOriginal += `${transferencias.nombreOrdenante}|`;
+            cadenaOriginal += `${transferencias.cuentaOrdenante}|`;
+            cadenaOriginal += `${transferencias.rfcCurpOrdenante}|`;
+            cadenaOriginal += `${transferencias.tipoCuentaBeneficiario}|`;
+            cadenaOriginal += `${transferencias.nombreBeneficiario}|`;
+            cadenaOriginal += `${transferencias.cuentaBeneficiario}|`;
+            cadenaOriginal += `${transferencias.rfcCurpBeneficiario}|`;
+            cadenaOriginal += `${transferencias.emailBeneficiario}|`;
+            cadenaOriginal += `${tipoCuentaBeneficiario2}|`;
+            cadenaOriginal += `${nombreBeneficiario2}|`;
+            cadenaOriginal += `${cuentaBeneficiario2}|`;
+            cadenaOriginal += `${rfcCurpBeneficiario2}|`;
+            cadenaOriginal += `${transferencias.conceptoPago}|`;
+            cadenaOriginal += `${conceptoPago2}|`;
+            cadenaOriginal += `${claveUsuario}|`;
+            cadenaOriginal += `${claveUsuario2}|`;
+            cadenaOriginal += `${clavePago}|`;
+            cadenaOriginal += `${refCobranza}|`;
+            cadenaOriginal += `${transferencias.referenciaNumerica}|`;
+            cadenaOriginal += `${tipoOperacion}|`;
+            cadenaOriginal += `${transferencias.topologia}|`;
+            cadenaOriginal += `${usuario}|`;
+            cadenaOriginal += `${transferencias.medioEntrega}|`;
+            cadenaOriginal += `${prioridad}|`;
+            cadenaOriginal += `${transferencias.iva}||`;
+            const private_key = fs.readFileSync(
+                url_certificado,
+                "utf-8"
+            );
+            console.log(cadenaOriginal);
+            const signer = crypto.createSign("sha256");
+            signer.update(cadenaOriginal);
+            signer.end();
+            const signature = signer.sign({
+                    key: private_key,
+                    passphrase: passphrase_certificado
+                },
+                "base64"
+            );
             transferencias.firma = signature;
-            transferencias.save(async(err, transferenciaStored) => {
+            transferencias.save(async (err, transferenciaStored) => {
                 const close = await mongo.close();
 
                 if (err || !transferenciaStored) return res.status(400).send(err);
-                return res.status(200).send({...transferenciaStored._doc });
+                return res.status(200).send({
+                    ...transferenciaStored._doc
+                });
             });
         });
     },
@@ -131,23 +146,31 @@ const controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        Transferencia.findById(transID, async(err, transferenciaFind) => {
+        Transferencia.findById(transID, async (err, transferenciaFind) => {
             const estatusError = "Error";
             const estatusOk = "Ejecutada";
 
-            global.dataT = {...transferenciaFind._doc };
-            const agent = new https.Agent({ rejectUnauthorized: false });
+            global.dataT = {
+                ...transferenciaFind._doc
+            };
+            const agent = new https.Agent({
+                rejectUnauthorized: false
+            });
 
             axios
-                .put(URL_EJECUTAR_TRANSF_STP, dataT, { httpsAgent: agent })
+                .put(URL_EJECUTAR_TRANSF_STP, dataT, {
+                    httpsAgent: agent
+                })
                 .then((response) => {
                     if (response.data.resultado.descripcionError) {
-                        Transferencia.findOneAndUpdate({ _id: transID }, {
+                        Transferencia.findOneAndUpdate({
+                                _id: transID
+                            }, {
                                 descripcionError: response.data.resultado.descripcionError,
                                 idSTP: response.data.resultado.id,
                                 estatus_stp: estatusError,
                             },
-                            async(err, transferenciaUpdated) => {
+                            async (err, transferenciaUpdated) => {
                                 const close = await mongo.close();
                                 return res
                                     .status(400)
@@ -157,12 +180,14 @@ const controller = {
                     }
 
                     if (!response.data.resultado.descripcionError) {
-                        Transferencia.findOneAndUpdate({ _id: transID }, {
+                        Transferencia.findOneAndUpdate({
+                                _id: transID
+                            }, {
                                 descripcionError: response.data.resultado.descripcionError,
                                 idSTP: response.data.resultado.id,
                                 estatus_stp: estatusOk,
                             },
-                            async(err, transferenciaUpdated) => {
+                            async (err, transferenciaUpdated) => {
                                 const close = await mongo.close();
                                 return res
                                     .status(200)
@@ -171,13 +196,13 @@ const controller = {
                         );
                     }
                 })
-                .catch(async(error) => {
+                .catch(async (error) => {
                     const close = await mongo.close();
                     return res.status(400).send(error);
                 });
         });
     },
-    update: async(req, res) => {
+    update: async (req, res) => {
         var tranferenciaID = req.params.id;
         var params = req.body;
 
@@ -230,7 +255,7 @@ const controller = {
         const resultado = "";
         transferencias.medio = "Transferencia";
 
-  
+
         var cadenaOriginal = `||${transferencias.institucionContraparte}|`;
         cadenaOriginal += `${transferencias.empresa}|`;
         cadenaOriginal += `${transferencias.fechaOperacion}|`;
@@ -270,26 +295,39 @@ const controller = {
         const signer = crypto.createSign("sha256");
         signer.update(cadenaOriginal);
         signer.end();
-        const signature = signer.sign({ key: private_key, passphrase: "wiQy5DkS4h" },
+        const signature = signer.sign({
+                key: private_key,
+                passphrase: "wiQy5DkS4h"
+            },
             "base64"
         );
         params.firma = signature;
         transferencias.firma = signature;
-        Transferencia.findOneAndUpdate({ _id: tranferenciaID },
-            params, { new: true },
-            async(err, transferenciaUpdated) => {
+        Transferencia.findOneAndUpdate({
+                _id: tranferenciaID
+            },
+            params, {
+                new: true
+            },
+            async (err, transferenciaUpdated) => {
                 const close = await mongo.close();
 
-                if (err) return res.status(500).send({ err });
+                if (err) return res.status(500).send({
+                    err
+                });
 
-                if (!transferenciaUpdated) return res.status(404).send({ err });
+                if (!transferenciaUpdated) return res.status(404).send({
+                    err
+                });
 
-                return res.status(200).send({ transferenciaUpdated });
+                return res.status(200).send({
+                    transferenciaUpdated
+                });
             }
         );
     },
 
-    hide: async(req, res) => {
+    hide: async (req, res) => {
         var transID = req.params.id;
         const estatusCancel = "Cancelada";
 
@@ -297,8 +335,13 @@ const controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        Transferencia.findOneAndUpdate({ _id: transID }, { estatus_stp: estatusCancel, estatus: false },
-            async(err, transferenciaUpdated) => {
+        Transferencia.findOneAndUpdate({
+                _id: transID
+            }, {
+                estatus_stp: estatusCancel,
+                estatus: false
+            },
+            async (err, transferenciaUpdated) => {
                 const close = await mongo.close();
                 return res.status(200).send("Transferencia Cancelada.");
             }
@@ -307,18 +350,21 @@ const controller = {
 
     getTransferencia: (req, res) => {
         var searchString = req.params.search;
-        Transferencia.find({ rfcCurpBeneficiario: searchString }).exec(
+        Transferencia.find({
+            rfcCurpBeneficiario: searchString
+        }).exec(
             (err, transferencias) => {
                 if (err) {
                     return res.status(500).send({});
                 }
+
                 if (!transferencias || transferencias.length <= 0) {}
 
                 return res.status(200).send(transferencias);
             }
         );
     },
-    getTransferenciasA: async(req, res) => {
+    getTransferenciasA: async (req, res) => {
         // NUEVO OBTENER EMPRESA
         const now = new Date();
         const fechaMX = moment(now).tz("America/Mexico_City").format("YYYYMMDD");
@@ -326,16 +372,18 @@ const controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-       await Transferencia.find({
+        await Transferencia.find({
                 estatus_stp: "Pendiente",
                 medio: "Transferencia",
                 estatus: true,
-                fechaOperacion: { $gte: fechaMX },
+                fechaOperacion: {
+                    $gte: fechaMX
+                },
             })
             .sort([
                 ["date", "descending"]
             ])
-            .exec(async(err, Transferencias) => {
+            .exec(async (err, Transferencias) => {
                 const close = await mongo.close();
 
                 if (err) return res.status(500).send({});
@@ -347,22 +395,31 @@ const controller = {
             });
     },
 
-    getTransferenciasDispersion: async(req, res) => {
+    getTransferenciasDispersion: async (req, res) => {
         var id = req.params.id;
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
-        await Transferencia.find({ medio: "Dispersion", idDispersion: id })
+        await Transferencia.find({
+                medio: "Dispersion",
+                idDispersion: id
+            })
             .sort([
                 ["date", "descending"]
             ])
-            .exec(async(err, Transferencias) => {
+            .exec(async (err, Transferencias) => {
                 const close = await mongo.close();
                 return res.status(200).send(Transferencias);
             });
     },
-    response: async(req, res) => {
-        const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
+    response: async (req, res) => {
+        const {
+            id,
+            empresa,
+            estado,
+            causaDevolucion,
+            folioOrigen
+        } = req.body;
         const newMail = new Mailer(
             id,
             empresa,
@@ -371,11 +428,15 @@ const controller = {
             folioOrigen
         );
         await newMail.send();
-        return res.status(200).send({ estado: "Exito" });
+        return res.status(200).send({
+            estado: "Exito"
+        });
     },
 
     getTransferenciasC: (req, res) => {
-        Transferencia.find({ estatus_stp: "Cancelada" })
+        Transferencia.find({
+                estatus_stp: "Cancelada"
+            })
             .sort([
                 ["date", "descending"]
             ])
@@ -389,7 +450,9 @@ const controller = {
     },
 
     getTransferencias: (req, res) => {
-        Transferencia.find({ medio: "Transferencia" })
+        Transferencia.find({
+                medio: "Transferencia"
+            })
             .sort([
                 ["date", "descending"]
             ])
@@ -403,7 +466,9 @@ const controller = {
     },
     buscarTransferencia: (req, res) => {
         var id = req.params.id;
-        Transferencia.find({ _id: id }).exec((err, transferencias) => {
+        Transferencia.find({
+            _id: id
+        }).exec((err, transferencias) => {
             if (err) {
                 return res.status(500).send({});
             }

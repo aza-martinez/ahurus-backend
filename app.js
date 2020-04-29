@@ -8,12 +8,16 @@ var fs = require('fs');
 var https = require('https');
 var app = express();
 var port = process.env.PORT || 3002;
+const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
+const passphrase_certificado = process.env.PASSPHRASE_CERT || "mWEYKJ4Zdi";
 
 https.createServer({
     key: fs.readFileSync('certs/SSL/ahurus.key'),
     cert: fs.readFileSync('certs/SSL/ahurus.crt')
   }, app).listen(port, function(){
     console.log("Servidor Ahurus Corriendo En: " + port);
+    console.log(url_certificado);
+    console.log(passphrase_certificado);
   });
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
