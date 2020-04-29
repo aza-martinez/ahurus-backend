@@ -1,9 +1,15 @@
 "use strict";
-const https = require("https");
 
+const https = require("https");
+var request = require("request");
 const PropietarioModel = require("../../Modelos/propietarios/propietarios");
 const fs = require("fs");
-const crypto = require("crypto");
+const Cuenta = require("../../Modelos/cuentas/cuentas");
+var azure = require("azure-storage");
+var XLSX = require("xlsx");
+const moment = require("moment");
+const Counter = require('../../Modelos/counters/counters');
+var crypto = require("crypto");
 const axios = require("axios");
 const URL_STP_REGISTRO_CUENTA =
   "https://demo.stpmex.com:7024/speidemows/rest/cuentaModule/fisica";
@@ -304,9 +310,9 @@ class PropietarioController {
     const user = req.user['http://localhost:3000/user_metadata'].user;
     var params = req.body;
     if (!req.files) {
+      console.log(req.files);
       return res.status(404).send({});
     }
-    var propietario = new PropietarioModel();
     const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
@@ -318,8 +324,8 @@ class PropietarioController {
         invoice: 1
       }
     })
-    var file_path = req.files.file_path.path;
-    var file_name = folio.invoice + '_' + req.files.file_path.originalFilename;
+    var file_path = req.files.file.path;
+    var file_name = folio.invoice + '_' + req.files.file.originalFilename;
     var extension_split = file_name.split(".");
     var file_ext = extension_split[1];
     const blobService = azure.createBlobService(STORAGE_ACCOUNT, KEY_STORAGE);
@@ -415,7 +421,56 @@ class PropietarioController {
                 break;
               case "J":
                 registro["nombre_contacto"] = FILAS[fila]["w"];
+                break;
+              case "K":
+                registro["telefono"] = FILAS[fila]["w"];
+                break;
+              case "L":
+                registro["tipo_propietario"] = FILAS[fila]["w"];
+                break;
+              case "M":
+                registro["actividadEconomica"] = FILAS[fila]["w"];
+                break;
+              case "N":
+                registro["paisNacimiento"] = FILAS[fila]["w"];
+                break;
+              case "O":
+                registro["entidadFederativa"] = FILAS[fila]["w"];
+                break;
+              case "P":
+                registro["municipio"] = FILAS[fila]["w"];
+                break;
+              case "Q":
+                registro["codigoPostal"] = FILAS[fila]["w"];
+                break;
+              case "R":
+                registro["colonia"] = FILAS[fila]["w"];
+                break;
+              case "S":
+                registro["calle"] = FILAS[fila]["w"];
+                break;
+              case "T":
+                registro["numInterior"] = FILAS[fila]["w"];
+                break;
+              case "U":
+                registro["numExterior"] = FILAS[fila]["w"];
+                break;
+              case "V":
+                registro["tipoCuenta"] = FILAS[fila]["w"];
+                break;
+              case "W":
+                registro["descripcion"] = FILAS[fila]["w"];
+                break;
+              case "X":
+                registro["tarjeta_clabe"] = FILAS[fila]["w"];
+                break;
+              case "Y":
+                registro["banco"] = FILAS[fila]["w"];
+                break;
+              case "Z":
+                registro["tipo_registro"] = FILAS[fila]["w"];
 
+                var propietario = new PropietarioModel();
                 propietario.id_terceros = registro["id_terceros"];
                 propietario.nombre = registro["nombre"].trim();
                 propietario.apellidoPaterno = registro["apellidoPaterno"].trim();
@@ -441,23 +496,43 @@ class PropietarioController {
                 propietario.numInterior = registro["numInterior"];
                 propietario.numExterior = registro["numExterior"];
 
-                await propietario.save((err, propStored) => {
-                  if (err || !propStored) {}
+                var cuenta = new Cuenta();
+                //DATOS DE LA CUENTA
+                cuenta.tipo_cuenta = registro["tipoCuenta"]; //id
+                cuenta.descripcion = registro["descripcion"];
+                cuenta.timestamp = fechaMX._d;
+                cuenta.estatus = true;
+                cuenta.clabe = registro["tarjeta_clabe"];
+                cuenta.tipo_registro = registro["tipo_registro"];
+                cuenta.institucion = registro["banco"]; //id
+
+                //propietario.cuenta = cuenta._id;
+                //cuenta.propietario.push(propietario._id);
+                await propietario.save((err, propietarioStored) => {
+                  if (err || !propietarioStored) {
+                    console.log(err);
+                  }
+                  // console.log(propietarioStored);
                 });
 
-                // registro = {};
+                await cuenta.save((err, cuentaStored) => {
+                  if (err || !cuentaStored) {
+                    console.log(err);
+                  }
+                  //console.log(cuentaStored);
+                });
                 break;
-
               default:
                 break;
+
             }
           });
-
           return res.status(200).send({});
         });
 
         return;
       }
+
     );
     const close = await mongo.close();
   }

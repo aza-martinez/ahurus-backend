@@ -26,7 +26,6 @@ var controller = {
     saveFile: async (req, res) => {
         var file_name = "Documento no subido..";
         const user = req.user['http://localhost:3000/user_metadata'].user;
-        //var last_invoice = counter.invoice + 1;
         var params = req.body;
         if (!req.files) {
             return res.status(404).send({});
@@ -279,6 +278,7 @@ var controller = {
                                 await transferencia.save((err, transStored) => {
                                     if (err || !transStored) {}
                                 });
+
                                 await dispersion.save((err, dispersionStored) => {
                                     if (err || !dispersionStored) {}
                                 });
