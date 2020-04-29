@@ -246,6 +246,7 @@ var controller = {
                                     "certs/llavePrivada.pem",
                                     "utf-8"
                                 );
+                                console.log(cadenaOriginal);
                                 const signer = crypto.createSign("sha256");
                                 signer.update(cadenaOriginal);
                                 signer.end();
