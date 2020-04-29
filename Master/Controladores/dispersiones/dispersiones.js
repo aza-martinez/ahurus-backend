@@ -12,11 +12,13 @@ var crypto = require("crypto");
 const axios = require("axios");
 const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
 const passphrase_certificado = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
+const URL_EJECUTAR_STP = process.env.ENDPOINT_STP_PRODUCCION || "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
+
 
 const KEY_STORAGE =
     "ytq2QZ6b5mqLZxj8BD5Js2ZEHCMpZSVSCYjGXniHE8/YO1jPakmL+RMMwG/nLXxh1lrKcES74na5NCR3hE+K6g==";
 const STORAGE_ACCOUNT = "smahurus";
-const STORAGE_CONTAINER = "masterahurus";
+const STORAGE_CONTAINER = "dispersiones";
 const MongooseConnect = require('./../../MongooseConnect');
 
 
@@ -413,11 +415,14 @@ var controller = {
                     //Inicio del FOR
                     dataT = transferenciasFind[i];
                     idTransferencia = dataT._id;
-
+                    const agent = new https.Agent({
+                        rejectUnauthorized: false
+                    });
                     await axios
                         .put(
-                            "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra", {
-                                ...dataT._doc
+                            URL_EJECUTAR_STP, {
+                                ...dataT._doc,
+                                httpsAgent: agent
                             }
                         )
                         .then(respuesta_stp => {

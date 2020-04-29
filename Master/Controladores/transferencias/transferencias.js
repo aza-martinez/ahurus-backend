@@ -9,8 +9,8 @@ const crypto = require("crypto");
 const axios = require("axios");
 const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
 const passphrase_certificado = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
-const URL_EJECUTAR_TRANSF_STP =
-    "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
+const URL_EJECUTAR_STP = process.env.ENDPOINT_STP_PRODUCCION || "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
+
 const Mailer = require("./../../mailer");
 const MongooseConnect = require("./../../MongooseConnect");
 const {
@@ -157,8 +157,8 @@ const controller = {
                 rejectUnauthorized: false
             });
 
-            axios
-                .put(URL_EJECUTAR_TRANSF_STP, dataT, {
+            await axios
+                .put(URL_EJECUTAR_STP, dataT, {
                     httpsAgent: agent
                 })
                 .then((response) => {

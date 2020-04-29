@@ -16,22 +16,38 @@ var PropietariosSchema = Schema({
     tipo_propietario: String,
     estatus: Boolean,
     timestamp: Date,
-    paisNacimiento: { type: Schema.ObjectId, ref: "paises" },
-    actividadEconomica: { type: Schema.ObjectId, ref: "actividadeseconomicas" },
+    paisNacimiento: {
+        type: Schema.ObjectId,
+        ref: "paises"
+    },
+    actividadEconomica: {
+        type: Schema.ObjectId,
+        ref: "actividadeseconomicas"
+    },
     apellidoPaterno: String,
     apellidoMaterno: String,
     nombre: String,
     nombreCompleto: String,
-    entidadFederativa: { type: Schema.ObjectId, ref: "entidadesfederativas" },
+    entidadFederativa: {
+        type: Schema.ObjectId,
+        ref: "entidadesfederativas"
+    },
     municipio: String,
     Colonia: String,
     Calle: String,
     numExterior: Number,
     numInterior: Number,
     codigoPostal: Number,
-    empleado: Boolean,
-    empresa: { type: Schema.ObjectId, ref: "empresas" },
-    cuentas:  [{ type: Schema.ObjectId, ref: "Transferencias" }],
-}, { versionKey: false });
+    empresa: {
+        type: Schema.ObjectId,
+        ref: "empresas"
+    },
+    cuentas: [{
+        type: Schema.ObjectId,
+        ref: "Transferencias"
+    }],
+}, {
+    versionKey: false
+});
 
 module.exports = mongoose.model('Propietario', PropietariosSchema);
