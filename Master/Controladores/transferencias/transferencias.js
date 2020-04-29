@@ -291,13 +291,13 @@ const controller = {
         cadenaOriginal += `${prioridad}|`;
         cadenaOriginal += `${transferencias.iva}||`;
 
-        const private_key = fs.readFileSync("certs/llavePrivada.pem", "utf-8");
+        const private_key = fs.readFileSync(url_certificado, "utf-8");
         const signer = crypto.createSign("sha256");
         signer.update(cadenaOriginal);
         signer.end();
         const signature = signer.sign({
                 key: private_key,
-                passphrase: "wiQy5DkS4h"
+                passphrase: passphrase_certificado
             },
             "base64"
         );

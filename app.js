@@ -11,14 +11,14 @@ var port = process.env.PORT || 3002;
 const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
 const passphrase_certificado = process.env.PASSPHRASE_CERT || "mWEYKJ4Zdi";
 
-https.createServer({
-    key: fs.readFileSync('certs/SSL/ahurus.key'),
-    cert: fs.readFileSync('certs/SSL/ahurus.crt')
-  }, app).listen(port, function(){
-    console.log("Servidor Ahurus Corriendo En: " + port);
-    console.log(url_certificado);
-    console.log(passphrase_certificado);
-  });
+/* http.createServer({
+  //key: fs.readFileSync('certs/SSL/ahurus.key'),
+  //cert: fs.readFileSync('certs/SSL/ahurus.crt')
+}, app).listen(port, function () {
+  console.log("Servidor Ahurus Corriendo En: " + port);
+  console.log(url_certificado);
+  console.log(passphrase_certificado);
+}); */
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
 const propietarios_routes = require('./Master/Rutas/propietarios/propietarios');
@@ -38,15 +38,17 @@ const entidades_federativas_routes = require('./Master/Rutas/EntidadesFederativa
 const actividades_economicas_routes = require('./Master/Rutas/ActividadesEconomicas');
 const paises_nacimiento_routes = require('./Master/Rutas/PaisesNacimiento');
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, E-CLIENT, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
-    next();
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Authorization, E-CLIENT, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+  next();
 });
 
 app.use('/api', [reportes_routes, paises_nacimiento_routes, actividades_economicas_routes, entidades_federativas_routes, dispersiones_routes, estados_routes, centros_routes, devoluciones_routes, errores_routes, instituciones_routes, registros_routes, propietarios_routes, usuario_routes, tipos_cuentas_routes, plazas_routes, cuentas_routes, tipos_pagos_routes]);

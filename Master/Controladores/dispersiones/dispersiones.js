@@ -10,6 +10,8 @@ const moment = require("moment");
 const Counter = require('../../Modelos/counters/counters');
 var crypto = require("crypto");
 const axios = require("axios");
+const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
+const passphrase_certificado = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
 
 const KEY_STORAGE =
     "ytq2QZ6b5mqLZxj8BD5Js2ZEHCMpZSVSCYjGXniHE8/YO1jPakmL+RMMwG/nLXxh1lrKcES74na5NCR3hE+K6g==";
@@ -19,18 +21,26 @@ const MongooseConnect = require('./../../MongooseConnect');
 
 
 var controller = {
-    saveFile: async(req, res) => {
+    saveFile: async (req, res) => {
         var file_name = "Documento no subido..";
         const user = req.user['http://localhost:3000/user_metadata'].user;
         //var last_invoice = counter.invoice + 1;
         var params = req.body;
-        if (!req.files) { return res.status(404).send({}); }
+        if (!req.files) {
+            return res.status(404).send({});
+        }
         var dispersion = new Dispersion();
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        const folio = await Counter.findByIdAndUpdate({ _id: 'dispersiones' }, { $inc: { invoice: 1 } })
+        const folio = await Counter.findByIdAndUpdate({
+            _id: 'dispersiones'
+        }, {
+            $inc: {
+                invoice: 1
+            }
+        })
         var file_path = req.files.file_path.path;
         var file_name = folio.invoice + '_' + req.files.file_path.originalFilename;
         var extension_split = file_name.split(".");
@@ -51,7 +61,7 @@ var controller = {
             STORAGE_CONTAINER,
             file_name,
             file_path,
-            async(e, result, req) => {
+            async (e, result, req) => {
                 if (e) {
                     return;
                 }
@@ -68,8 +78,12 @@ var controller = {
                     true
                 );
 
-                request(fileURLStorage, { encoding: null }, async(error, response, body) => {
-                    var workbook = XLSX.read(body, { type: "buffer" });
+                request(fileURLStorage, {
+                    encoding: null
+                }, async (error, response, body) => {
+                    var workbook = XLSX.read(body, {
+                        type: "buffer"
+                    });
 
                     const referencia = workbook.Sheets["Hoja1"]["!ref"];
                     const primeraFila = referencia.split(":")[0].substr(1);
@@ -88,13 +102,13 @@ var controller = {
                     var fechaOperacion = moment(fechaMX).format("YYYYMMDD");
                     var fechaMX = moment(fecha).tz("America/Mexico_City");
 
-                    Object.keys(FILAS).map(async(fila, index) => {
-                        if  (fila.substr(1) === "1") {
+                    Object.keys(FILAS).map(async (fila, index) => {
+                        if (fila.substr(1) === "1") {
                             delete FILAS[fila];
                             return;
                         }
 
-                         switch   (fila.substr(0, 1)) {
+                        switch (fila.substr(0, 1)) {
                             case "A":
                                 registro["institucionContraparte"] = FILAS[fila]["w"];
                                 break;
@@ -173,12 +187,12 @@ var controller = {
                                 transferencia.nombreBeneficiario = registro["nombreBeneficiario"].trim();
                                 const nombreBeneficiario2 = registro["nombreBeneficiario2"];
                                 transferencia.nombreOrdenante = registro["nombreOrdenante"];
-                                transferencia.rfcCurpBeneficiario =registro["rfcCurpBeneficiario"];
+                                transferencia.rfcCurpBeneficiario = registro["rfcCurpBeneficiario"];
                                 const rfcCurpBeneficiario2 = registro["rfcCurpBeneficiario2"];
                                 transferencia.rfcCurpOrdenante = registro["rfcCurpOrdenante"];
-                                transferencia.tipoCuentaBeneficiario =registro["tipoCuentaBeneficiario"];
-                                const tipoCuentaBeneficiario2 =registro["tipoCuentaBeneficiario2"];
-                                transferencia.tipoCuentaOrdenante =registro["tipoCuentaOrdenante"];
+                                transferencia.tipoCuentaBeneficiario = registro["tipoCuentaBeneficiario"];
+                                const tipoCuentaBeneficiario2 = registro["tipoCuentaBeneficiario2"];
+                                transferencia.tipoCuentaOrdenante = registro["tipoCuentaOrdenante"];
                                 transferencia.tipoPago = registro["tipoPago"];
                                 transferencia.estatus = true;
                                 const claveUsuario = registro["claveUsuario"];
@@ -243,25 +257,28 @@ var controller = {
                                 cadenaOriginal += `${prioridad}|`;
                                 cadenaOriginal += `${transferencia.iva}||`;
                                 const private_key = fs.readFileSync(
-                                    "certs/llavePrivada.pem",
+                                    url_certificado,
                                     "utf-8"
                                 );
                                 console.log(cadenaOriginal);
                                 const signer = crypto.createSign("sha256");
                                 signer.update(cadenaOriginal);
                                 signer.end();
-                                const signature = signer.sign({ key: private_key, passphrase: "wiQy5DkS4h" },
+                                const signature = signer.sign({
+                                        key: private_key,
+                                        passphrase: passphrase_certificado
+                                    },
                                     "base64"
                                 );
                                 transferencia.idDispersion = dispersion._id;
                                 transferencia.firma = signature;
                                 registro["firma"] = signature;
                                 dispersion.idTransferencia.push(transferencia._id);
-                                await  transferencia.save((err, transStored) => {
+                                await transferencia.save((err, transStored) => {
                                     if (err || !transStored) {}
-                                    });
-                                     await dispersion.save((err, dispersionStored) => {
-                                        if (err || !dispersionStored) {}
+                                });
+                                await dispersion.save((err, dispersionStored) => {
+                                    if (err || !dispersionStored) {}
                                 });
 
                                 // registro = {};
@@ -271,7 +288,7 @@ var controller = {
                                 break;
                         }
                     });
-                  
+
                     return res.status(200).send({});
                 });
 
@@ -280,14 +297,16 @@ var controller = {
         );
         const close = await mongo.close();
     },
-    getTransferenciasC: async(req, res) => {
+    getTransferenciasC: async (req, res) => {
 
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        const transferencias = Transferencia.find({ estatus_stp: "Cancelada" }).exec(
-            async(err, transferencias) => {
+        const transferencias = Transferencia.find({
+            estatus_stp: "Cancelada"
+        }).exec(
+            async (err, transferencias) => {
                 const close = await mongo.close();
 
                 if (err) return res.status(500).send({});
@@ -296,7 +315,7 @@ var controller = {
             }
         );
     },
-    hide: async(req, res) => {
+    hide: async (req, res) => {
         var transID = req.params.id;
         const estatusCancel = "Cancelada";
 
@@ -304,14 +323,20 @@ var controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        const dispersiones = Dispersion.findOneAndUpdate({ _id: transID }, { estatus: false },
+        const dispersiones = Dispersion.findOneAndUpdate({
+                _id: transID
+            }, {
+                estatus: false
+            },
             (err, transferenciaUpdated) => {
-                Transferencia.updateMany({ idDispersion: transID }, {
+                Transferencia.updateMany({
+                        idDispersion: transID
+                    }, {
                         estatus_stp: estatusCancel,
                         estatus: false,
                         estatus_stp: "Ejecución Cancelada"
                     },
-                    async(err, transferenciaUpdated) => {
+                    async (err, transferenciaUpdated) => {
                         const close = await mongo.close();
                         return res.status(200).send("Dispersion Cancelada Correctamente");
                     }
@@ -319,13 +344,15 @@ var controller = {
             }
         );
     },
-    getAllDispersion: async(req, res) => {
+    getAllDispersion: async (req, res) => {
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        await Dispersion.find({ estatus: true })
-            .exec(async(err, registros) => {
+        await Dispersion.find({
+                estatus: true
+            })
+            .exec(async (err, registros) => {
                 const close = await mongo.close();
 
                 if (err) return res.status(500).send({});
@@ -333,13 +360,15 @@ var controller = {
                 return res.status(200).send(registros);
             });
     },
-    buscarDispersion: async(req, res) => {
+    buscarDispersion: async (req, res) => {
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
         var searchString = req.params.search;
 
-        const dispersion = Dispersion.find({ _id: searchString }).exec(async(err, dispersion) => {
+        const dispersion = Dispersion.find({
+            _id: searchString
+        }).exec(async (err, dispersion) => {
             const close = await mongo.close();
 
             if (err) return res.status(500).send({});
@@ -347,14 +376,17 @@ var controller = {
             return res.status(200).send(dispersion);
         });
     },
-    getDispersiones: async(req, res) => {
+    getDispersiones: async (req, res) => {
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        const dispersiones = Dispersion.find({ estatus: true, estatus_stp: "Pendiente" })
+        const dispersiones = Dispersion.find({
+                estatus: true,
+                estatus_stp: "Pendiente"
+            })
             .populate("idTransferencia")
-            .exec(async(err, registros) => {
+            .exec(async (err, registros) => {
                 const close = await mongo.close();
 
                 if (err) return res.status(500).send({});
@@ -362,7 +394,7 @@ var controller = {
                 return res.status(200).send(registros);
             });
     },
-    ejecutar: async(req, res) => {
+    ejecutar: async (req, res) => {
         var idDispersion = req.params.id;
         var i;
         var dataT = "";
@@ -371,55 +403,68 @@ var controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        const trans = Transferencia.find({ estatus: true, idDispersion: idDispersion})
-        .exec(async(err, transferenciasFind) => {
-            // inicio del FIND, operaciones con las transferencias encontradas
-            for (i = 0; i < transferenciasFind.length; i++) {
-                //Inicio del FOR
-                dataT = transferenciasFind[i];
-                idTransferencia = dataT._id;
+        const trans = Transferencia.find({
+                estatus: true,
+                idDispersion: idDispersion
+            })
+            .exec(async (err, transferenciasFind) => {
+                // inicio del FIND, operaciones con las transferencias encontradas
+                for (i = 0; i < transferenciasFind.length; i++) {
+                    //Inicio del FOR
+                    dataT = transferenciasFind[i];
+                    idTransferencia = dataT._id;
 
-                await axios
-                    .put(
-                        "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra", {...dataT._doc }
-                    )
-                    .then(respuesta_stp => {
-                        // inicio de las respuestas de STP Mandamos a ejecutar la transferencia
+                    await axios
+                        .put(
+                            "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra", {
+                                ...dataT._doc
+                            }
+                        )
+                        .then(respuesta_stp => {
+                            // inicio de las respuestas de STP Mandamos a ejecutar la transferencia
 
-                        if (respuesta_stp.data.resultado.descripcionError) {
-                            Transferencia.findOneAndUpdate({ _id: idTransferencia }, {
-                                    descripcionError: respuesta_stp.data.resultado.descripcionError,
-                                    idSTP: respuesta_stp.data.resultado.id,
-                                    estatus_stp: "Error"
-                                },
-                                (err, transferenciaUpdated) => {}
-                            );
-                        }
-                        if (!respuesta_stp.data.resultado.descripcionError) {
-                            Transferencia.findOneAndUpdate({ _id: idTransferencia }, {
-                                    descripcionError: respuesta_stp.data.resultado.descripcionError,
-                                    idSTP: respuesta_stp.data.resultado.id,
-                                    estatus_stp: "Ejecutada"
-                                },
-                                (err, transferenciaUpdated) => {}
-                            );
-                        }
-                    }); // FIN de la API Ejecutar
-            } //FIN DEL FOR
-        
-            const close = await mongo.close();
-        });
+                            if (respuesta_stp.data.resultado.descripcionError) {
+                                Transferencia.findOneAndUpdate({
+                                        _id: idTransferencia
+                                    }, {
+                                        descripcionError: respuesta_stp.data.resultado.descripcionError,
+                                        idSTP: respuesta_stp.data.resultado.id,
+                                        estatus_stp: "Error"
+                                    },
+                                    (err, transferenciaUpdated) => {}
+                                );
+                            }
+                            if (!respuesta_stp.data.resultado.descripcionError) {
+                                Transferencia.findOneAndUpdate({
+                                        _id: idTransferencia
+                                    }, {
+                                        descripcionError: respuesta_stp.data.resultado.descripcionError,
+                                        idSTP: respuesta_stp.data.resultado.id,
+                                        estatus_stp: "Ejecutada"
+                                    },
+                                    (err, transferenciaUpdated) => {}
+                                );
+                            }
+                        }); // FIN de la API Ejecutar
+                } //FIN DEL FOR
+
+                const close = await mongo.close();
+            });
 
 
-        Dispersion.findOneAndUpdate({ _id: idDispersion }, { estatus_stp: "Ejecutada" },
+        Dispersion.findOneAndUpdate({
+                _id: idDispersion
+            }, {
+                estatus_stp: "Ejecutada"
+            },
             (err, transferenciaUpdated) => {}
         );
 
         return res.status(200).send("Dispersión Terminada De Procesar");
-        
+
     },
 
-    response: async(req, res) => {
+    response: async (req, res) => {
         var transferenciaID = req.params.id;
         var params = req.body;
 
@@ -427,14 +472,20 @@ var controller = {
         const mongo = new MongooseConnect();
         await mongo.connect(SERVER_BD);
 
-        const transferencia = Transferencia.findOneAndUpdate({ _id: transferenciaID },
-            params, { new: true },
-            async(err, transferenciaResponse) => {
+        const transferencia = Transferencia.findOneAndUpdate({
+                _id: transferenciaID
+            },
+            params, {
+                new: true
+            },
+            async (err, transferenciaResponse) => {
                 const close = await mongo.close();
 
                 if (err) return res.status(500).send({});
 
-                return res.status(200).send({ transferenciaResponse });
+                return res.status(200).send({
+                    transferenciaResponse
+                });
             }
         );
     }
