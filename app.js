@@ -9,7 +9,7 @@ var https = require('https');
 var app = express();
 var port = process.env.PORT || 3002;
 const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
-const passphrase_certificado = process.env.PASSPHRASE_CERT || "mWEYKJ4Zdi";
+const passphrase_certificado = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
 
 /* http.createServer({
   //key: fs.readFileSync('certs/SSL/ahurus.key'),
