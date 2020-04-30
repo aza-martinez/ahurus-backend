@@ -4,30 +4,34 @@ const validator = require("validator");
 const Propietario = require("../../Modelos/propietarios/propietarios");
 const Cuenta = require("../../Modelos/cuentas/cuentas");
 const MongooseConnect = require("./../../MongooseConnect");
+const moment =  require('moment');
 
 const controller = {
   delete: (req, res) => {
     var cuentaId = req.params.id;
-    Cuenta.findOneAndDelete({
-      _id: cuentaId
-    }, (err, cuentaRemoved) => {
-      if (err) {
-        return res.status(500).send({});
-      }
+    Cuenta.findOneAndDelete(
+      {
+        _id: cuentaId,
+      },
+      (err, cuentaRemoved) => {
+        if (err) {
+          return res.status(500).send({});
+        }
 
-      if (!cuentaRemoved) {
-        return res.status(404).send({});
+        if (!cuentaRemoved) {
+          return res.status(404).send({});
+        }
+        return res.status(200).send({
+          cuentaRemoved,
+        });
       }
-      return res.status(200).send({
-        cuentaRemoved
-      });
-    });
+    );
   },
 
   update: async (req, res) => {
     var cuentaID = req.params.id;
 
-    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -42,11 +46,13 @@ const controller = {
       !validator.isEmpty(params.institucion);
     } catch (err) {}
 
-    Cuenta.findOneAndUpdate({
-        _id: cuentaID
+    Cuenta.findOneAndUpdate(
+      {
+        _id: cuentaID,
       },
-      params, {
-        new: true
+      params,
+      {
+        new: true,
       },
       async (err, cuentaUpdated) => {
         const close = await mongo.close();
@@ -56,75 +62,58 @@ const controller = {
         if (!cuentaUpdated) return res.status(404).send({});
 
         return res.status(200).send({
-          cuentaUpdated
+          cuentaUpdated,
         });
       }
     );
   },
 
   save: async (req, res) => {
+    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
+    const mongo = new MongooseConnect();
+    await mongo.connect(SERVER_BD);
+    const params = req.body;
     try {
-      const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
-      const mongo = new MongooseConnect();
-      await mongo.connect(SERVER_BD);
+      // OBTENEMOS LA FECHA
+      const fecha = new Date();
+      const timestamp = moment(fecha).tz("America/Mexico_City");
 
-      const params = req.body;
-      const cuenta = new Cuenta();
-      cuenta.tipo_cuenta = params.tipo_cuenta;
-      cuenta.descripcion = params.descripcion;
-      cuenta.clabe = params.clabe;
-      cuenta.tipo_registro = params.tipo_registro;
-      cuenta.propietario = params.propietario;
-      cuenta.estatus = true;
-      cuenta.institucion = params.institucion;
-      var fecha = new Date();
-      var fechaMX = moment(fecha).tz("America/Mexico_City");
-      cuenta.timestamp = fechaMX._d;
+      // VALIDAMOS PROPIETARIO EXISTENTE
+      const propietario = await Propietario.findById(params.propietario);
 
-      cuenta.save((err, cuentaStored) => {
-        if (err || !cuentaStored) return res.status(404).send({
-          err
-        });
+      if(!propietario) throw new Error('Propietario no existente');
 
-        const queryUpdate = {
-          $push: {
-            cuentas: cuentaStored._id
-          }
-        };
+      // INSTANCIAMOS NUEVA CUENTA
+      const cuentaNueva = new Cuenta(params);
+      cuentaNueva.timestamp = timestamp._d;
 
-        Propietario.findByIdAndUpdate(
-          params.propietario,
-          queryUpdate,
-          async (err, propietario) => {
-            const close = await mongo.close();
-            return res.status(200).send({
-              cuentaStored,
-              propietario
-            });
-          }
-        );
-      });
+      // GUARDAMOS CUENTA NUEVA
+      const cuenta = await cuentaNueva.save();
+
+      if (!cuenta) throw new Error("Error al registrar cuenta");
+
+      // FINALIZAMOS
+      await mongo.close();
+      return res.status(200).send({ cuenta, propietario });
     } catch (error) {
-      const close = await mongo.close();
-      return res.status(500).send();
+      await mongo.close();
+      return res.status(500).send(error);
     }
   },
 
   getCuentasPA: async (req, res) => {
-    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     await Cuenta.find({
-        tipo_registro: "personaMoral",
-        estatus: true
-      })
+      tipo_registro: "personaMoral",
+      estatus: true,
+    })
       .populate("propietario")
       .populate("tipo_cuenta")
       .populate("institucion")
-      .sort([
-        ["date", "descending"]
-      ])
+      .sort([["date", "descending"]])
       .exec(async (err, registros) => {
         const close = await mongo.close();
 
@@ -135,23 +124,21 @@ const controller = {
   },
 
   getCuentasCA: async (req, res) => {
-    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     await Cuenta.find({
-        tipo_registro: "personaFisica",
-        estatus: true
-      })
+      tipo_registro: "personaFisica",
+      estatus: true,
+    })
       .populate({
         path: "propietario",
-        select: "razon_social"
+        select: "razon_social",
       })
       .populate("tipo_cuenta")
       .populate("institucion")
-      .sort([
-        ["date", "descending"]
-      ])
+      .sort([["date", "descending"]])
       .exec(async (err, registros) => {
         const close = await mongo.close();
 
@@ -162,19 +149,17 @@ const controller = {
   },
   getPropietariosA: async (req, res) => {
     var searchString = req.params.search;
-    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     const cuentas = Cuenta.find({
-        estatus: true
-      })
+      estatus: true,
+    })
       .populate("propietario")
       .populate("tipo_cuenta")
       .populate("institucion")
-      .sort([
-        ["date", "descending"]
-      ])
+      .sort([["date", "descending"]])
       .exec(async (err, registros) => {
         if (err) return res.status(500).send({});
 
@@ -185,40 +170,38 @@ const controller = {
   getCuentasPropietarios: async (req, res) => {
     var searchString = req.params.search;
     await Cuenta.find({
-        propietario: searchString,
-        estatus: true
-      })
+      propietario: searchString,
+      estatus: true,
+    })
       .populate("institucion")
       .populate("tipo_cuenta")
       .populate("institucion")
-      .sort([
-        ["date", -1]
-      ])
+      .sort([["date", -1]])
       .exec((err, registros) => {
         if (err) {
           console.log(err);
           return res.status(500).send({});
         }
-        if (!registros || registros.length <= 0) {}
+        if (!registros || registros.length <= 0) {
+        }
         return res.status(200).send(registros);
       });
   },
   getCuentas: (req, res) => {
     var searchString = req.params.search;
     Cuenta.find({
-        estatus: true
-      })
+      estatus: true,
+    })
       .populate("propietario")
       .populate("tipo_cuenta")
       .populate("institucion")
-      .sort([
-        ["date", "descending"]
-      ])
+      .sort([["date", "descending"]])
       .exec((err, registros) => {
         if (err) {
           return res.status(500).send({});
         }
-        if (!registros || registros.length <= 0) {}
+        if (!registros || registros.length <= 0) {
+        }
         return res.status(200).send(registros);
       });
   },
@@ -232,15 +215,17 @@ const controller = {
       return res.status(200).send({});
     }
 
-    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    Cuenta.findOneAndUpdate({
-        _id: cuentaID
+    Cuenta.findOneAndUpdate(
+      {
+        _id: cuentaID,
       },
-      params, {
-        new: true
+      params,
+      {
+        new: true,
       },
       async (err, cuentaHide) => {
         const close = await mongo.close();
@@ -248,7 +233,7 @@ const controller = {
         if (err) return res.status(500).send({});
 
         return res.status(200).send({
-          cuentaHide
+          cuentaHide,
         });
       }
     );
@@ -256,16 +241,15 @@ const controller = {
   getPropietario: (req, res) => {
     var searchString = req.params.search;
     Propietario.find({
-        razon_social: searchString
-      })
-      .sort([
-        ["date", "descending"]
-      ])
+      razon_social: searchString,
+    })
+      .sort([["date", "descending"]])
       .exec((err, propietarios) => {
         if (err) {
           return res.status(500).send({});
         }
-        if (!propietarios || propietarios.length <= 0) {}
+        if (!propietarios || propietarios.length <= 0) {
+        }
         return res.status(200).send(propietarios);
       });
   },
@@ -301,6 +285,6 @@ const controller = {
       console.log(JSON.stringify(convertToJSON(data)));
       //console.log(data);
     });
-  }
+  },
 };
 module.exports = controller;

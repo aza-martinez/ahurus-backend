@@ -44,7 +44,7 @@ var PropietariosSchema = Schema({
     },
     cuentas: [{
         type: Schema.ObjectId,
-        ref: "Transferencias"
+        ref: "Cuentas"
     }],
 }, {
     versionKey: false

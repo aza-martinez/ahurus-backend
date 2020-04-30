@@ -19,6 +19,7 @@ class MongooseConncect {
     async close() {
         await mongoose.connection.close();
         console.log('cnx cerrada');
+        return true;
     }
 }
 
