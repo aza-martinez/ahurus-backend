@@ -2,18 +2,16 @@
 
 var mongoose = require("mongoose");
 var app = require("./app");
-var port = process.env.PORT || 3002;
-var env = require('node-env-file');
-env(__dirname + '/.env.dist');
-var cert_stp = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
-var passphras_stp = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
-
-
+var envJSON = require('./env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+var puerto = envJSON[node_env].PORT;
+var certificado = envJSON[node_env].CERTS_URL;
+var passphrase = envJSON[node_env].PASSPHRASE_CERT;
 
 mongoose.set("useFindAndModify", false);
 mongoose.Promise = global.Promise;
-app.listen(port, () => {
-    console.log('Servidor corriendo en http://localhost: ' + port);
-    console.log('URL CERTIFICADO: ' + cert_stp);
-    console.log('PASSPHRASE: ' + passphras_stp);
+app.listen(puerto, () => {
+    console.log('Servidor corriendo en http://localhost: ' + puerto);
+    console.log('URL CERTIFICADO: ' + certificado);
+    console.log('PASSPHRASE: ' + passphrase);
 });

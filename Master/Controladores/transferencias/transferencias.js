@@ -7,9 +7,11 @@ const Counter = require('../../Modelos/counters/counters');
 const fs = require("fs");
 const crypto = require("crypto");
 const axios = require("axios");
-const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
-const passphrase_certificado = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
-const URL_EJECUTAR_STP = process.env.ENDPOINT_STP_PRODUCCION || "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
+var envJSON = require('../../../env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+var certificado = envJSON[node_env].CERTS_URL;
+var passphrase = envJSON[node_env].PASSPHRASE_CERT;
+var endpoint_stp = envJSON[node_env].ENDPOINT_STP;
 
 const Mailer = require("./../../mailer");
 const MongooseConnect = require("./../../MongooseConnect");
@@ -115,7 +117,7 @@ const controller = {
             cadenaOriginal += `${prioridad}|`;
             cadenaOriginal += `${transferencias.iva}||`;
             const private_key = fs.readFileSync(
-                url_certificado,
+                certificado,
                 "utf-8"
             );
             console.log(cadenaOriginal);
@@ -124,7 +126,7 @@ const controller = {
             signer.end();
             const signature = signer.sign({
                     key: private_key,
-                    passphrase: passphrase_certificado
+                    passphrase: passphrase
                 },
                 "base64"
             );
@@ -158,7 +160,7 @@ const controller = {
             });
 
             await axios
-                .put(URL_EJECUTAR_STP, dataT, {
+                .put(endpoint_stp, dataT, {
                     httpsAgent: agent
                 })
                 .then((response) => {
@@ -291,13 +293,13 @@ const controller = {
         cadenaOriginal += `${prioridad}|`;
         cadenaOriginal += `${transferencias.iva}||`;
 
-        const private_key = fs.readFileSync(url_certificado, "utf-8");
+        const private_key = fs.readFileSync(certificado, "utf-8");
         const signer = crypto.createSign("sha256");
         signer.update(cadenaOriginal);
         signer.end();
         const signature = signer.sign({
                 key: private_key,
-                passphrase: passphrase_certificado
+                passphrase: passphrase
             },
             "base64"
         );

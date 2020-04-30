@@ -10,9 +10,11 @@ const moment = require("moment");
 const Counter = require('../../Modelos/counters/counters');
 var crypto = require("crypto");
 const axios = require("axios");
-const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
-const passphrase_certificado = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
-const URL_EJECUTAR_STP = process.env.ENDPOINT_STP_PRODUCCION || "https://demo.stpmex.com:7024/speidemows/rest/ordenPago/registra";
+var envJSON = require('../../../env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+var certificado = envJSON[node_env].CERTS_URL;
+var passphrase = envJSON[node_env].PASSPHRASE_CERT;
+var endpoint_stp = envJSON[node_env].ENDPOINT_STP;
 
 
 const KEY_STORAGE =
@@ -258,7 +260,7 @@ var controller = {
                                 cadenaOriginal += `${prioridad}|`;
                                 cadenaOriginal += `${transferencia.iva}||`;
                                 const private_key = fs.readFileSync(
-                                    url_certificado,
+                                    certificado,
                                     "utf-8"
                                 );
                                 console.log(cadenaOriginal);
@@ -267,7 +269,7 @@ var controller = {
                                 signer.end();
                                 const signature = signer.sign({
                                         key: private_key,
-                                        passphrase: passphrase_certificado
+                                        passphrase: passphrase
                                     },
                                     "base64"
                                 );
@@ -420,7 +422,7 @@ var controller = {
                     });
                     await axios
                         .put(
-                            URL_EJECUTAR_STP, {
+                            endpoint_stp, {
                                 ...dataT._doc,
                                 httpsAgent: agent
                             }
