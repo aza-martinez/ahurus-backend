@@ -4,7 +4,11 @@ const validator = require("validator");
 const Propietario = require("../../Modelos/propietarios/propietarios");
 const Cuenta = require("../../Modelos/cuentas/cuentas");
 const MongooseConnect = require("./../../MongooseConnect");
+<<<<<<< HEAD
 const moment =  require('moment');
+=======
+const moment = require("moment");
+>>>>>>> cf91e022c8ac61cab9f9dd1ec08ce78bd55172a0
 
 const controller = {
   delete: (req, res) => {
@@ -74,9 +78,35 @@ const controller = {
     await mongo.connect(SERVER_BD);
     const params = req.body;
     try {
+<<<<<<< HEAD
       // OBTENEMOS LA FECHA
       const fecha = new Date();
       const timestamp = moment(fecha).tz("America/Mexico_City");
+=======
+      const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+      const mongo = new MongooseConnect();
+      await mongo.connect(SERVER_BD);
+
+      const params = req.body;
+      const cuenta = new Cuenta();
+      cuenta.tipo_cuenta = params.tipo_cuenta;
+      cuenta.descripcion = params.descripcion;
+      cuenta.clabe = params.clabe;
+      cuenta.tipo_registro = params.tipo_registro;
+      cuenta.propietario = params.propietario;
+      cuenta.estatus = true;
+      cuenta.institucion = params.institucion;
+
+      var fecha = new Date();
+      var fechaMX = moment(fecha).tz("America/Mexico_City");
+      cuenta.timestamp = fechaMX._d;
+
+      cuenta.save((err, cuentaStored) => {
+        console.log(err);
+        if (err || !cuentaStored) return res.status(404).send({
+          err
+        });
+>>>>>>> cf91e022c8ac61cab9f9dd1ec08ce78bd55172a0
 
       // VALIDAMOS PROPIETARIO EXISTENTE
       const propietario = await Propietario.findById(params.propietario);
@@ -96,8 +126,14 @@ const controller = {
       await mongo.close();
       return res.status(200).send({ cuenta, propietario });
     } catch (error) {
+<<<<<<< HEAD
       await mongo.close();
       return res.status(500).send(error);
+=======
+      console.log(error);
+      const close = await mongo.close();
+      return res.status(500).send();
+>>>>>>> cf91e022c8ac61cab9f9dd1ec08ce78bd55172a0
     }
   },
 
