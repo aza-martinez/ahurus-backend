@@ -33,8 +33,8 @@ class PropietarioController {
       await mongo.connect(SERVER_BD);
 
       // OBTENEMOS FECHA
-      const fechaMX = new Date();
-      fechaMX.setUTCHours(fechaMX.getUTCHours());
+      var fecha = new Date();
+      var fechaMX = moment(fecha).tz("America/Mexico_City");
 
       // CREAMOS INSTANCIA DE PROPIETARIO Y SETEAMOS VALORES
       const propietario = new this.model();
@@ -63,7 +63,7 @@ class PropietarioController {
       propietario.telefono = params.telefono;
       propietario.estatus = true;
       propietario.empresa = params.empresa;
-      propietario.timestamp = fechaMX;
+      propietario.timestamp = fechaMX._d;
       propietario.tipo_propietario = params.tipo_propietario;
 
       await this.model.exists({

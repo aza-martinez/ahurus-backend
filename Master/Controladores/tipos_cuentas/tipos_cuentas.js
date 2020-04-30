@@ -22,16 +22,17 @@ var controller = {
     tipo.clave = params.clave;
     tipo.descripcion = params.descripcion;
     tipo.estatus = true;
-    var fechaMX = new Date();
-
-    fechaMX.setUTCHours(fechaMX.getUTCHours());
-    tipo.timestamp = fechaMX;
+    var fecha = new Date();
+    var fechaMX = moment(fecha).tz("America/Mexico_City");
+    tipo.timestamp = fechaMX._d;
     const tipo_pago = tipo.save(async (err, tipoStored) => {
       const close = await mongo.close();
 
       if (err || !tipoStored) return res.status(404).send({});
 
-      return res.status(200).send({ ...tipoStored._doc });
+      return res.status(200).send({
+        ...tipoStored._doc
+      });
     });
   },
   update: async (req, res) => {
@@ -39,9 +40,9 @@ var controller = {
     var params = req.body;
     try {
       !validator.isEmpty(params.estatus);
-      var fechaMX = new Date();
-      fechaMX.setUTCHours(fechaMX.getUTCHours());
-      tipo.timestamp = fechaMX;
+      var fecha = new Date();
+      var fechaMX = moment(fecha).tz("America/Mexico_City");
+      tipo.timestamp = fechaMX._d;
     } catch (err) {
       return res.status(200).send({});
     }
@@ -49,10 +50,12 @@ var controller = {
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    const tipo_pago = Tipo.findOneAndUpdate(
-      { _id: tipoId },
-      params,
-      { new: true },
+    const tipo_pago = Tipo.findOneAndUpdate({
+        _id: tipoId
+      },
+      params, {
+        new: true
+      },
       async (err, tipoUpdated) => {
         const close = await mongo.close();
 
@@ -60,13 +63,17 @@ var controller = {
 
         if (!tipoUpdated) return res.status(404).send({});
 
-        return res.status(200).send({ tipoUpdated });
+        return res.status(200).send({
+          tipoUpdated
+        });
       }
     );
   },
 
   getTiposA: async (req, res) => {
-    var query = Tipo.find({ estatus: true });
+    var query = Tipo.find({
+      estatus: true
+    });
     var last = req.params.last;
     if (last || last != undefined) {
       query.limit(5);
@@ -87,7 +94,9 @@ var controller = {
     });
   },
   getTiposI: async (req, res) => {
-    var query = Tipo.find({ estatus: false });
+    var query = Tipo.find({
+      estatus: false
+    });
     var last = req.params.last;
     if (last || last != undefined) {
       query.limit(5);
@@ -98,13 +107,13 @@ var controller = {
     await mongo.connect(SERVER_BD);
 
     query.sort("-_id").exec(async (err, tipos) => {
-        const close = await mongo.close();
+      const close = await mongo.close();
 
-        if (err) return res.status(500).send({});
+      if (err) return res.status(500).send({});
 
-        if (!tipos) return res.status(404).send({});
+      if (!tipos) return res.status(404).send({});
 
-        return res.status(200).send([...tipos]);
+      return res.status(200).send([...tipos]);
     });
   },
 
@@ -122,7 +131,9 @@ var controller = {
 
       if (err || !tipoId) return res.status(404).send({});
 
-      return res.status(200).send({ ...tipo._doc });
+      return res.status(200).send({
+        ...tipo._doc
+      });
     });
   },
 
@@ -133,12 +144,23 @@ var controller = {
     await mongo.connect(SERVER_BD);
 
     const tipos_Cuentas = Tipo.find({
-      $or: [
-        { clave: { $regex: searchString, $options: "i" } },
-        { descripcion: { $regex: searchString, $options: "i" } }
-      ]
-    })
-      .sort([["date", "descending"]])
+        $or: [{
+            clave: {
+              $regex: searchString,
+              $options: "i"
+            }
+          },
+          {
+            descripcion: {
+              $regex: searchString,
+              $options: "i"
+            }
+          }
+        ]
+      })
+      .sort([
+        ["date", "descending"]
+      ])
       .exec(async (err, tipos) => {
         const close = await mongo.close();
 
@@ -146,7 +168,9 @@ var controller = {
 
         if (!tipos || tipos.length <= 0) return res.status(404).send({});
 
-        return res.status(200).send({ tipos });
+        return res.status(200).send({
+          tipos
+        });
       });
   }
 };

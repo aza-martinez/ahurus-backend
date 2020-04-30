@@ -23,8 +23,6 @@ if (node_env == "production") {
     var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
 }
 
-
-
 const KEY_STORAGE =
     "ytq2QZ6b5mqLZxj8BD5Js2ZEHCMpZSVSCYjGXniHE8/YO1jPakmL+RMMwG/nLXxh1lrKcES74na5NCR3hE+K6g==";
 const STORAGE_ACCOUNT = "smahurus";

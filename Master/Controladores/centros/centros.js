@@ -18,29 +18,35 @@ const controller = {
         centro.tipocuenta = params.tipocuenta;
         centro.telefono_contacto = params.telefono_contacto;
         centro.estatus = true;
-        var fechaMX = new Date();
-        fechaMX.setUTCHours(fechaMX.getUTCHours());
-        centro.timestamp = fechaMX;
+        var fecha = new Date();
+        var fechaMX = moment(fecha).tz("America/Mexico_City");
+        centro.timestamp = fechaMX._d;
         centro.cuenta_stp = params.cuenta_stp;
         centro.save((err, centroStored) => {
             if (err || !centroStored) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({...centroStored._doc });
+            return res.status(200).send({
+                ...centroStored._doc
+            });
         });
     },
 
-    getCCA: async(req, res) => {
+    getCCA: async (req, res) => {
         const mongo = new MongooseConnect();
         const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
         const cnx = await mongo.connect(SERVER_BD);
 
-        var query =  CC.find({ "estatus": true });
-         await query.sort('_id').exec(async(err, centro) => {
+        var query = CC.find({
+            "estatus": true
+        });
+        await query.sort('_id').exec(async (err, centro) => {
             const closed = await mongo.close();
             if (err) return res.status(500).send({});
             if (!centro) return res.status(404).send({});
-            return res.status(200).send({ centro });
+            return res.status(200).send({
+                centro
+            });
         });
     },
     update: (req, res) => {
@@ -48,24 +54,32 @@ const controller = {
         var params = req.body;
         try {
             !validator.isEmpty(params.estatus);
-            var fechaMX = new Date();
-            fechaMX.setUTCHours(fechaMX.getUTCHours());
-            centro.timestamp = fechaMX;
+            var fecha = new Date();
+            var fechaMX = moment(fecha).tz("America/Mexico_City");
+            centro.timestamp = fechaMX._d;
         } catch (err) {
             return res.status(200).send({});
         }
-        CC.findOneAndUpdate({ _id: centroId }, params, { new: true }, (err, centroUpdated) => {
+        CC.findOneAndUpdate({
+            _id: centroId
+        }, params, {
+            new: true
+        }, (err, centroUpdated) => {
             if (err) {
                 return res.status(500).send({});
             }
             if (!centroUpdated) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({ centroUpdated });
+            return res.status(200).send({
+                centroUpdated
+            });
         });
     },
     getCCI: (req, res) => {
-        var query = CC.find({ "estatus": false });
+        var query = CC.find({
+            "estatus": false
+        });
         var last = req.params.last;
         if (last || last != undefined) {
             query.limit(5);
@@ -77,7 +91,9 @@ const controller = {
             if (!centro) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({...centro });
+            return res.status(200).send({
+                ...centro
+            });
         });
     },
 
@@ -88,16 +104,21 @@ const controller = {
             if (err || !centroID) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({ centro });
+            return res.status(200).send({
+                centro
+            });
         });
     },
 
     search: (req, res) => {
         var searchString = req.params.search;
         centro.find({
-                "$or": [
-                    { "razon_social": { "$regex": searchString, "$options": "i" } }
-                ]
+                "$or": [{
+                    "razon_social": {
+                        "$regex": searchString,
+                        "$options": "i"
+                    }
+                }]
             })
             .sort([
                 ['date', 'descending']
@@ -106,7 +127,9 @@ const controller = {
                 if (err) {
                     return res.status(500).send({});
                 }
-                return res.status(200).send({ centro });
+                return res.status(200).send({
+                    centro
+                });
 
             });
     }

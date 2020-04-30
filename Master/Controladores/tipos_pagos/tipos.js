@@ -12,16 +12,17 @@ var controller = {
         tipo.clave = params.clave;
         tipo.descripcion = params.descripcion;
         tipo.estatus = true;
-        var fechaMX = new Date();
-        
-        fechaMX.setUTCHours(fechaMX.getUTCHours());
-        tipo.timestamp=fechaMX;
+        var fecha = new Date();
+        var fechaMX = moment(fecha).tz("America/Mexico_City");
+        tipo.timestamp = fechaMX._d;
         tipo.save((err, tipoStored) => {
 
             if (err || !tipoStored) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({ ...tipoStored._doc });
+            return res.status(200).send({
+                ...tipoStored._doc
+            });
         });
     },
     update: (req, res) => {
@@ -29,26 +30,33 @@ var controller = {
         var params = req.body;
         try {
             !validator.isEmpty(params.estatus);
-            var fechaMX = new Date();
-            
-        fechaMX.setUTCHours(fechaMX.getUTCHours());
-            tipo.timestamp=fechaMX;
+            var fecha = new Date();
+            var fechaMX = moment(fecha).tz("America/Mexico_City");
+            tipo.timestamp = fechaMX._d;
         } catch (err) {
             return res.status(200).send({});
         }
-        TipoPago.findOneAndUpdate({ _id: tipoId }, params, { new: true }, (err, tipoUpdated) => {
+        TipoPago.findOneAndUpdate({
+            _id: tipoId
+        }, params, {
+            new: true
+        }, (err, tipoUpdated) => {
             if (err) {
                 return res.status(500).send({});
             }
             if (!tipoUpdated) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({ tipoUpdated });
+            return res.status(200).send({
+                tipoUpdated
+            });
         });
     },
 
     getTiposPagosA: (req, res) => {
-        var query = TipoPago.find({ "estatus": true });
+        var query = TipoPago.find({
+            "estatus": true
+        });
         var last = req.params.last;
         if (last || last != undefined) {
             query.limit(5);
@@ -64,7 +72,9 @@ var controller = {
         });
     },
     getTiposPagosI: (req, res) => {
-        var query = TipoPago.find({ "estatus": false });
+        var query = TipoPago.find({
+            "estatus": false
+        });
         var last = req.params.last;
         if (last || last != undefined) {
             query.limit(5);
@@ -90,16 +100,21 @@ var controller = {
             if (err || !tipoId) {
                 return res.status(404).send({});
             }
-            return res.status(200).send({ tipo });
+            return res.status(200).send({
+                tipo
+            });
         });
     },
 
     search: (req, res) => {
         var searchString = req.params.search;
         Tipo.find({
-                "$or": [
-                    { "descripcion": { "$regex": searchString, "$options": "i" } }
-                ]
+                "$or": [{
+                    "descripcion": {
+                        "$regex": searchString,
+                        "$options": "i"
+                    }
+                }]
             })
             .sort([
                 ['date', 'descending']
@@ -112,7 +127,9 @@ var controller = {
                     return res.status(404).send({});
                 }
 
-                return res.status(200).send({ tipos });
+                return res.status(200).send({
+                    tipos
+                });
 
             });
     }
