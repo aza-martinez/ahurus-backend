@@ -8,12 +8,8 @@ var node_env = process.env.NODE_ENV || 'development';
 
 if (node_env == "production") {
     var puerto = envJSON[node_env].PORT_P;
-    var certificado = envJSON[node_env].CERTS_URL_P;
-    var passphrase = envJSON[node_env].PASSPHRASE_CERT_P;
 } else {
     var puerto = envJSON[node_env].PORT_D;
-    var certificado = envJSON[node_env].CERTS_URL_D;
-    var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
 }
 
 mongoose.set("useFindAndModify", false);

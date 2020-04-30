@@ -12,9 +12,17 @@ var crypto = require("crypto");
 const axios = require("axios");
 var envJSON = require('../../../env.variables.json');
 var node_env = process.env.NODE_ENV || 'development';
-var certificado = envJSON[node_env].CERTS_URL;
-var passphrase = envJSON[node_env].PASSPHRASE_CERT;
-var endpoint_stp = envJSON[node_env].ENDPOINT_STP;
+
+if (node_env == "production") {
+    var certificado = envJSON[node_env].CERTS_URL_P;
+    var passphrase = envJSON[node_env].PASSPHRASE_CERT_P;
+    var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
+} else {
+    var certificado = envJSON[node_env].CERTS_URL_D;
+    var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
+    var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
+}
+
 
 
 const KEY_STORAGE =
