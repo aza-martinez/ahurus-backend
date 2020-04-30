@@ -46,9 +46,7 @@ class PropietarioController {
       propietario.correo1 = params.correo1;
       propietario.correo2 = params.correo2;
       propietario.genero = params.genero;
-      propietario.fechaNacimiento = params.fechaNacimiento;
       propietario.paisNacimiento = params.paisNacimiento;
-      propietario.actividadEconomica = params.actividadEconomica;
       propietario.apellidoPaterno = params.apellidoPaterno;
       propietario.apellidoMaterno = params.apellidoMaterno;
       propietario.nombre = params.nombre;
@@ -417,57 +415,51 @@ class PropietarioController {
                 registro["genero"] = FILAS[fila]["w"];
                 break;
               case "I":
-                registro["fechaNacimiento"] = FILAS[fila]["w"];
-                break;
-              case "J":
                 registro["nombre_contacto"] = FILAS[fila]["w"];
                 break;
-              case "K":
+              case "J":
                 registro["telefono"] = FILAS[fila]["w"];
                 break;
-              case "L":
+              case "K":
                 registro["tipo_propietario"] = FILAS[fila]["w"];
                 break;
-              case "M":
-                registro["actividadEconomica"] = FILAS[fila]["w"];
-                break;
-              case "N":
+              case "L":
                 registro["paisNacimiento"] = FILAS[fila]["w"];
                 break;
-              case "O":
+              case "M":
                 registro["entidadFederativa"] = FILAS[fila]["w"];
                 break;
-              case "P":
+              case "N":
                 registro["municipio"] = FILAS[fila]["w"];
                 break;
-              case "Q":
+              case "O":
                 registro["codigoPostal"] = FILAS[fila]["w"];
                 break;
-              case "R":
+              case "P":
                 registro["colonia"] = FILAS[fila]["w"];
                 break;
-              case "S":
+              case "Q":
                 registro["calle"] = FILAS[fila]["w"];
                 break;
-              case "T":
+              case "R":
                 registro["numInterior"] = FILAS[fila]["w"];
                 break;
-              case "U":
+              case "S":
                 registro["numExterior"] = FILAS[fila]["w"];
                 break;
-              case "V":
+              case "T":
                 registro["tipoCuenta"] = FILAS[fila]["w"];
                 break;
-              case "W":
+              case "V":
                 registro["descripcion"] = FILAS[fila]["w"];
                 break;
-              case "X":
+              case "W":
                 registro["tarjeta_clabe"] = FILAS[fila]["w"];
                 break;
-              case "Y":
+              case "X":
                 registro["banco"] = FILAS[fila]["w"];
                 break;
-              case "Z":
+              case "Y":
                 registro["tipo_registro"] = FILAS[fila]["w"];
 
                 var propietario = new PropietarioModel();
@@ -482,12 +474,10 @@ class PropietarioController {
                 propietario.razon_social = registro["razon_social"].trim();
                 propietario.correo1 = registro["correo1"].trim();
                 propietario.genero = registro["genero"].trim();
-                propietario.fechaNacimiento = registro["fechaNacimiento"].trim();
                 propietario.nombre_contacto = registro["nombre_contacto"].trim();
                 propietario.telefono = registro["telefono"].trim();
                 propietario.tipo_propietario = registro["tipo_propietario"].trim();
                 propietario.paisNacimiento = registro["paisNacimiento"].trim();
-                propietario.actividadEconomica = registro["actividadEconomica"].trim();
                 propietario.entidadFederativa = registro["entidadFederativa"].trim();
                 propietario.municipio = registro["municipio"].trim();
                 propietario.codigoPostal = registro["codigoPostal"];
