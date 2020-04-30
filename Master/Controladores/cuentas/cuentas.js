@@ -4,6 +4,7 @@ const validator = require("validator");
 const Propietario = require("../../Modelos/propietarios/propietarios");
 const Cuenta = require("../../Modelos/cuentas/cuentas");
 const MongooseConnect = require("./../../MongooseConnect");
+const moment = require("moment");
 
 const controller = {
   delete: (req, res) => {
@@ -77,11 +78,13 @@ const controller = {
       cuenta.propietario = params.propietario;
       cuenta.estatus = true;
       cuenta.institucion = params.institucion;
+
       var fecha = new Date();
       var fechaMX = moment(fecha).tz("America/Mexico_City");
       cuenta.timestamp = fechaMX._d;
 
       cuenta.save((err, cuentaStored) => {
+        console.log(err);
         if (err || !cuentaStored) return res.status(404).send({
           err
         });
@@ -105,6 +108,7 @@ const controller = {
         );
       });
     } catch (error) {
+      console.log(error);
       const close = await mongo.close();
       return res.status(500).send();
     }
