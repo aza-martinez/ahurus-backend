@@ -4,13 +4,8 @@ var mongoose = require("mongoose");
 var app = require("./app");
 var envJSON = require('./env.variables.json');
 var node_env = process.env.NODE_ENV || 'development';
+var puerto = process.env.PORT_P || 8080;
 
-
-if (node_env == "production") {
-    var puerto = envJSON[node_env].PORT_P;
-} else {
-    var puerto = envJSON[node_env].PORT_D;
-}
 
 mongoose.set("useFindAndModify", false);
 mongoose.Promise = global.Promise;
