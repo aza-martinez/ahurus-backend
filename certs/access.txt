@@ -1,2 +1,0 @@
-alias: prueba
-password: wiQy5DkS4h

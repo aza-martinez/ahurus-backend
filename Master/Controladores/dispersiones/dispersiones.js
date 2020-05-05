@@ -1,6 +1,7 @@
 "use strict";
 
 var fs = require("fs");
+const https = require("https");
 var request = require("request");
 var Dispersion = require("../../Modelos/dispersiones/dispersiones");
 var Transferencia = require("../../Modelos/transferencias/transferencias");
@@ -265,11 +266,12 @@ var controller = {
                                 cadenaOriginal += `${transferencia.medioEntrega}|`;
                                 cadenaOriginal += `${prioridad}|`;
                                 cadenaOriginal += `${transferencia.iva}||`;
+
                                 const private_key = fs.readFileSync(
                                     certificado,
                                     "utf-8"
                                 );
-                                console.log(cadenaOriginal);
+
                                 const signer = crypto.createSign("sha256");
                                 signer.update(cadenaOriginal);
                                 signer.end();

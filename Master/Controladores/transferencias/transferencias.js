@@ -5,6 +5,7 @@ const moment = require("moment");
 const momentz = require("moment-timezone");
 const Counter = require('../../Modelos/counters/counters');
 const fs = require("fs");
+var path = require("path");
 const crypto = require("crypto");
 const axios = require("axios");
 var envJSON = require('../../../env.variables.json');
@@ -48,7 +49,7 @@ const controller = {
             transferencias.institucionContraparte = params.cuenta.institucion.clabe;
             transferencias.empresa = params.centro_costo.nombreCentro;
             transferencias.fechaOperacion = params.fecha_aplicacion;
-            const folioOrigen = params.folioOrigen || params.centro_costo.nombreCentro + last_invoice;
+            const folioOrigen = "";
             transferencias.claveRastreo = params.centro_costo.nombreCentro + last_invoice;
             transferencias.institucionOperante = "90646";
             transferencias.monto = parseFloat(params.importe).toFixed(2);
@@ -61,7 +62,7 @@ const controller = {
             transferencias.nombreBeneficiario = params.propietario.razon_social || params.propietario.nombreCompleto;
             transferencias.cuentaBeneficiario = params.cuenta.clabe
             transferencias.rfcCurpBeneficiario = params.propietario.rfc;
-            transferencias.emailBeneficiario = params.propietario.correo1;
+            transferencias.emailBeneficiario = /* params.propietario.correo1 */ "";
             const tipoCuentaBeneficiario2 = "";
             const nombreBeneficiario2 = "";
             const cuentaBeneficiario2 = "";
@@ -88,6 +89,8 @@ const controller = {
             transferencias.descripcionError = "";
             transferencias.resultado = "";
             transferencias.medio = "Transferencia";
+
+
             // 1. Obtención de la cadena original.
             var cadenaOriginal = `||${transferencias.institucionContraparte}|`;
             cadenaOriginal += `${transferencias.empresa}|`;
@@ -137,6 +140,18 @@ const controller = {
                 },
                 "base64"
             );
+            /*           var firma = cadenaOriginal
+                      var hash = crypto.createHash('sha256').update(firma).digest('base64');
+                      const NodeRSA = require('node-rsa');
+                      const key = new NodeRSA({
+                          b: 512
+                      });
+                      const text = hash;
+                      const encrypted = key.encrypt(text, 'base64');
+                      //transferecias.firma = encrypted;
+                      console.log(encrypted);
+                      console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ"); */
+            console.log(signature)
             transferencias.firma = signature;
             transferencias.save(async (err, transferenciaStored) => {
                 const close = await mongo.close();
@@ -159,15 +174,30 @@ const controller = {
             const estatusError = "Error";
             const estatusOk = "Ejecutada";
 
-            global.dataT = {
+            const transferencia = {
                 ...transferenciaFind._doc
             };
+            delete transferencia.estatus_stp;
+            delete transferencia.timestamp;
+            delete transferencia.idSTP;
+            delete transferencia.descripcionError;
+            delete transferencia.resultado;
+            delete transferencia.medio;
+            delete transferencia.estatus;
+            delete transferencia._id;
+
+            console.log(transferencia);
+            /*     /return;
+                global.dataT = {
+
+                    ...transferenciaFind._doc
+                }; */
             const agent = new https.Agent({
                 rejectUnauthorized: false
             });
 
             await axios
-                .put(endpoint_stp, dataT, {
+                .put(endpoint_stp, transferencia, {
                     httpsAgent: agent
                 })
                 .then((response) => {
