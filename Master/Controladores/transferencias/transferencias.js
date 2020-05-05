@@ -282,9 +282,10 @@ const controller = {
 
             await axios
                 .put(endpoint_stp, transferencia, {
-                    //httpsAgent: agent
+                    httpsAgent: agent
                 })
                 .then((response) => {
+
                     if (response.data.resultado.descripcionError) {
                         Transferencia.findOneAndUpdate({
                                 _id: transID
@@ -300,6 +301,7 @@ const controller = {
                                     .send("ERROR: " + response.data.resultado.descripcionError);
                             }
                         );
+                        console.log(response);
                     }
 
                     if (!response.data.resultado.descripcionError) {
@@ -321,6 +323,7 @@ const controller = {
                     }
                 })
                 .catch(async (error) => {
+                    console.log(error);
                     const close = await mongo.close();
                     return res.status(400).send(error);
                 });
