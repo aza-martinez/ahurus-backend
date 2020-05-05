@@ -9,13 +9,14 @@ var https = require('https');
 var app = express();
 var envJSON = require('./env.variables.json');
 var node_env = process.env.NODE_ENV || 'development';
-var puerto = process.env.PORT || 3002;
+var puerto = process.env.PORT || 3002;;
 
 https.createServer({
-  key: fs.readFileSync('certs/SSL/ahurus.key'),
-  cert: fs.readFileSync('certs/SSL/ahurus.crt')
+  key: fs.readFileSync('./certs/SSL/ahurus.key'),
+  cert: fs.readFileSync('./certs/SSL/ahurus.crt')
 }, app).listen(puerto, function () {
   console.log("Servidor Ahurus Corriendo En: " + puerto);
+  console.log('ENTORNO: ' + node_env);
 });
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
