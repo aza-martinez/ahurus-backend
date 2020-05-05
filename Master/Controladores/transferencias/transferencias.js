@@ -304,7 +304,7 @@ const controller = {
                                     .send("ERROR: " + response.data.resultado.descripcionError);
                             }
                         );
-                        console.log(response);
+                        // console.log(response);
                     }
 
                     if (!response.data.resultado.descripcionError) {

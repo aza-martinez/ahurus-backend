@@ -15,8 +15,7 @@ https.createServer({
   key: fs.readFileSync('certs/SSL/ahurus.key'),
   cert: fs.readFileSync('certs/SSL/ahurus.crt')
 }, app).listen(puerto, function () {
-  console.log('Servidor corriendo en: ' + puerto);
-  console.log('ENTORNO: ' + node_env);
+  console.log("Servidor Ahurus Corriendo En: " + puerto);
 });
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
