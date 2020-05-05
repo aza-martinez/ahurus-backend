@@ -228,6 +228,7 @@ const controller = {
                             },
                             async (err, transferenciaUpdated) => {
                                 const close = await mongo.close();
+                                console.log(response);
                                 return res
                                     .status(200)
                                     .send("EJECUTADA CON EL ID: " + response.data.resultado.id);

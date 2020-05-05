@@ -1,2 +1,0 @@
-alias: prueba
-password: 12345678

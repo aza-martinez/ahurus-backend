@@ -31,6 +31,7 @@ var controller = {
             if (!estadoUpdated) {
                 return res.status(404).send({});
             }
+            console.log(estadoUpdated);
             return res.status(200).send({
                 estadoUpdated
             });
