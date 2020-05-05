@@ -261,6 +261,8 @@ const controller = {
             const transferencia = {
                 ...transferenciaFind._doc
             };
+
+            console.log(transferencia);
             delete transferencia.estatus_stp;
             delete transferencia.timestamp;
             delete transferencia.idSTP;
