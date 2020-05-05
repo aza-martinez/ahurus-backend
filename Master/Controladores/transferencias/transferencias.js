@@ -285,7 +285,7 @@ const controller = {
             console.log(transferencia);
             await axios
                 .put(endpoint_stp, transferencia, {
-                    // httpsAgent: agent
+                    httpsAgent: agent
                 })
                 .then((response) => {
 
