@@ -7,18 +7,17 @@ var jwks = require('jwks-rsa');
 var fs = require('fs');
 var https = require('https');
 var app = express();
-var port = process.env.PORT || 3002;
-const url_certificado = process.env.URL_CERT_PRODUCCION || "certs/desarrollo/llavePrivada.pem";
-const passphrase_certificado = process.env.PASSPHRASE_CERT_PRODUCCION || "mWEYKJ4Zdi";
+var envJSON = require('./env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+var puerto = process.env.PORT || 3002;
 
-/* http.createServer({
-  //key: fs.readFileSync('certs/SSL/ahurus.key'),
-  //cert: fs.readFileSync('certs/SSL/ahurus.crt')
-}, app).listen(port, function () {
-  console.log("Servidor Ahurus Corriendo En: " + port);
-  console.log(url_certificado);
-  console.log(passphrase_certificado);
-}); */
+https.createServer({
+  key: fs.readFileSync('certs/SSL/ahurus.key'),
+  cert: fs.readFileSync('certs/SSL/ahurus.crt')
+}, app).listen(puerto, function () {
+  console.log('Servidor corriendo en: ' + puerto);
+  console.log('ENTORNO: ' + node_env);
+});
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
 const propietarios_routes = require('./Master/Rutas/propietarios/propietarios');
