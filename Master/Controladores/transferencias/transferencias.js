@@ -489,7 +489,7 @@ const controller = {
 
       const newMail = new Mailer(transferencia, centroCosto);
 
-      const mail = await newMail.send();
+      const mail = newMail.send();
 
       return res.status(200).send({
         estado: "Exito",
