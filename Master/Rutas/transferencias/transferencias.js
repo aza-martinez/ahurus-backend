@@ -15,7 +15,7 @@ router.put('/transferencia/cancelar/:id', [auth0], TransferenciasController.hide
 router.put('/transferencia/modificar/:id', [auth0], TransferenciasController.update);
 router.put('/response/:id?', TransferenciasController.response);
 router.get('/transferencias/listarTD/:id', [auth0], TransferenciasController.getTransferenciasDispersion);
-router.put('/cambioDeEstado/', auth0, TransferenciasController.response);
+router.put('/cambioDeEstado/', TransferenciasController.response);
 
 
 module.exports = router;
