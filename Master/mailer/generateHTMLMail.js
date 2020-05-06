@@ -1,5 +1,6 @@
+const moment = require('moment');
 
-const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
+const generateHTMLMail = (centroCosto, transferencia) => `
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -30,7 +31,7 @@ const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
                 <tbody>
                   <tr bgcolor="#ffffff" style="color: #191919;">
                     <td style="padding: 15px 40px;">
-                      <h1 style="font-size: 18px; margin-top: 35px;">Hola, ${nombreOrdenante}:</h1>
+                      <h1 style="font-size: 18px; margin-top: 35px;">Hola, ${centroCosto.nombre_contacto}:</h1>
                     </td>
                   </tr>
                 </tbody>
@@ -39,7 +40,7 @@ const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
                 <tbody>
                   <tr bgcolor="#ffffff" style="color: #191919;">
                     <td style="padding:0 40px;">
-                      <p style="width: 80%; line-height: 23px;">La <strong>transferencia a cuenta</strong> ${institucionContraparte} fue exitosa, te compartimos los detalles:</p>
+                      <p style="width: 80%; line-height: 23px;">La <strong>transferencia a </strong> ${transferencia.nombreBeneficiario} fue exitosa, te compartimos los detalles:</p>
                     </td>
                   </tr>
                 </tbody>
@@ -56,14 +57,14 @@ const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
                     </td>
                     <td bgcolor="#f4f4f4" style=" color: #191919;">
                       <p style="line-height: 22px; font-size: 14px;">
-                        Importe: $ 100.00 <br>
-                        Beneficiario: AZAEL MARTINEZ CARMONA <br>
-                        Cuenta depósito: 7370
+                        Importe: ${transferencia.monto} <br>
+                        Beneficiario: ${transferencia.nombreBeneficiario} <br>
+                        Cuenta depósito: ${transferencia.cuentaBeneficiario.substr(-4)}
                       </p>
                     </td>
                   </tr>
-                </tbody>                        
-                      </table>                      
+                </tbody>
+                      </table>
                     </td>
                   </tr>
                 </tbody>
@@ -82,7 +83,7 @@ const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
                   <tr bgcolor="#ffffff">
                     <td style="padding: 5px 40px;">
                       <p style="color: #4b4b4b; font-weight: 500; font-size: 15px; margin: 0 0 5px;">Concepto:</p>
-                      <p style="font-size: 16px; margin: 0;">NOMINA</p>                      
+                      <p style="font-size: 16px; margin: 0;">${transferencia.conceptoPago}</p>
                     </td>
                   </tr>
                 </tbody>
@@ -92,7 +93,7 @@ const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
                   <tr bgcolor="#ffffff">
                     <td style="padding: 5px 40px; margin-top: 40px;">
                       <p style="color: #4b4b4b; font-weight: 500; font-size: 15px; margin: 0 0 5px;">Fecha:</p>
-                      <p style="font-size: 16px; margin: 0;">25 de enero de 2020</p>                      
+                      <p style="font-size: 16px; margin: 0;">${moment(transferencia.timestamp).format('l')}</p>                      
                     </td>
                   </tr>
                 </tbody>
@@ -102,7 +103,7 @@ const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
                   <tr bgcolor="#ffffff">
                     <td style="padding: 5px 40px; margin-top: 40px;">
                       <p style="color: #4b4b4b; font-weight: 500; font-size: 15px; margin: 0 0 5px;">Hora:</p>
-                      <p style="font-size: 16px; margin: 0;">10:24:09</p>                      
+                      <p style="font-size: 16px; margin: 0;">${moment(transferencia.timestamp).format('LT')}</p>                      
                     </td>
                   </tr>
                 </tbody>
@@ -144,7 +145,6 @@ const generateHTMLMail = (institucionContraparte,nombreOrdenante) => `
   </body>
   </body>
 </html>
-
 `;
 
 module.exports = generateHTMLMail;

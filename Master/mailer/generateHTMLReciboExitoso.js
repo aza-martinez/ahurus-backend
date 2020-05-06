@@ -1,5 +1,4 @@
-
-const generateHTMLReciboExitoso = (path_logo_ahurus, fechaOperacion, claveRastreo) => `
+const generateHTMLReciboExitoso = (path_logo_ahurus, transferencia) => `
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -115,10 +114,10 @@ const generateHTMLReciboExitoso = (path_logo_ahurus, fechaOperacion, claveRastre
     <div class="content">
       <div class="content-header">
         <div>
-          <span><span>Orden:</span> 50398849</span>
+          <span><span>Orden:</span> ${transferencia.idSTP}</span>
         </div>
         <div>
-          <span><span>Fecha de Operación:</span> ${fechaOperacion} </span>
+          <span><span>Fecha de Operación:</span> ${transferencia.timestamp} </span>
         </div>
       </div>
       <div class="content-list">
@@ -126,7 +125,7 @@ const generateHTMLReciboExitoso = (path_logo_ahurus, fechaOperacion, claveRastre
           <li>
             <span>
               <strong>Clave de Rastreo:</strong>
-              ${claveRastreo}
+              ${transferencia.claveRastreo}
             </span>
           </li>
           <li>
@@ -137,86 +136,56 @@ const generateHTMLReciboExitoso = (path_logo_ahurus, fechaOperacion, claveRastre
           </li>
           <li>
             <span>
-              <strong>Usuario:</strong>
-              Azael Martinez
-            </span>
-          </li>
-          <li>
-            <span>
-              <strong>Contraparte:</strong>
-              BANORTE/IXE
-            </span>
-          </li>
-          <li>
-            <span>
               <strong>Estado:</strong>
-              Liquidada
+              ${transferencia.estatus_stp}
             </span>
           </li>
           <li>
             <span>
               <strong>Importe:</strong>
-              $ 937.65
+              $ ${transferencia.monto}
             </span>
           </li>
           <li>
             <span>
               <strong>Ordenante:</strong>
-              R MUNOZ SERVICIOS ADMINISTRATIVOS SC
-            </span>
-          </li>
-          <li>
-            <span>
-              <strong>RFC/CURP:</strong>
-              RMS930525S3A
-            </span>
-          </li>
-          <li>
-            <span>
-              <strong>Tipo Cuenta:</strong>
-              CLABE
+              ${transferencia.nombreOrdenante}
             </span>
           </li>
           <li>
             <span>
               <strong>Cuenta:</strong>
-              646180182700100004
+              ${transferencia.cuentaOrdenante}
             </span>
           </li>
           <li>
             <span>
               <strong>Beneficiario:</strong>
-              Azael Martinez Carmona
+              ${transferencia.nombreBeneficiario}
             </span>
           </li>
           <li>
             <span>
               <strong>RFC/CURP:</strong>
-              MACA950620G03
-            </span>
-          </li>
-          <li>
-            <span>
-              <strong>Tipo Cuenta:</strong>
-              CLABE
+              ${transferencia.rfcCurpBeneficiario}
             </span>
           </li>
           <li>
             <span>
               <strong>Cuenta:</strong>
-              CLABE
+              ${transferencia.cuentaBeneficiario}
             </span>
           </li>
           <li>
             <span>
               <strong>Referencia Numérica:</strong>
-              230120
+              ${transferencia.referenciaNumerica}
             </span>
           </li>
           <li>
             <span>
               <strong>Concepto:</strong>
-              NOMINA
+              ${transferencia.conceptoPago}
             </span>
           </li>
         </ul>
