@@ -13,7 +13,7 @@ router.get('/transferencia/ejecutar/:id', auth0, TransferenciasController.ejecut
 router.post('/transferencia/guardar/:id?', auth0, TransferenciasController.save);
 router.put('/transferencia/cancelar/:id', [auth0], TransferenciasController.hide);
 router.put('/transferencia/modificar/:id', [auth0], TransferenciasController.update);
-router.put('/response/:id?', [auth0], TransferenciasController.response);
+router.put('/response/:id?', TransferenciasController.response);
 router.get('/transferencias/listarTD/:id', [auth0], TransferenciasController.getTransferenciasDispersion);
 router.put('/cambioDeEstado/', auth0, TransferenciasController.response);
 

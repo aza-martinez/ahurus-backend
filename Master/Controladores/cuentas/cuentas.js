@@ -4,7 +4,7 @@ const validator = require("validator");
 const Propietario = require("../../Modelos/propietarios/propietarios");
 const Cuenta = require("../../Modelos/cuentas/cuentas");
 const MongooseConnect = require("./../../MongooseConnect");
-const moment =  require('moment');
+const moment = require("moment");
 
 const controller = {
   delete: (req, res) => {
@@ -81,7 +81,7 @@ const controller = {
       // VALIDAMOS PROPIETARIO EXISTENTE
       const propietario = await Propietario.findById(params.propietario);
 
-      if(!propietario) throw new Error('Propietario no existente');
+      if (!propietario) throw new Error("Propietario no existente");
 
       // INSTANCIAMOS NUEVA CUENTA
       const cuentaNueva = new Cuenta(params);
@@ -148,24 +148,30 @@ const controller = {
       });
   },
   getPropietariosA: async (req, res) => {
-    var searchString = req.params.search;
+    const idPropietario = req.params.last;
     const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
+    try {
+      const cuentas = await Cuenta.find({
+        propietario: idPropietario,
+        estatus: true,
+      })
+        .populate("propietario")
+        .populate("tipo_cuenta")
+        .populate("institucion")
+        .sort([["date", "descending"]]);
 
-    const cuentas = Cuenta.find({
-      estatus: true,
-    })
-      .populate("propietario")
-      .populate("tipo_cuenta")
-      .populate("institucion")
-      .sort([["date", "descending"]])
-      .exec(async (err, registros) => {
-        if (err) return res.status(500).send({});
+      if (!cuentas) return res.status(404).send({});
 
-        const close = await mongo.close();
-        return res.status(200).send(registros);
-      });
+      await mongo.close();
+
+      return res.status(200).send(cuentas);
+
+    } catch (error) {
+      await mongo.close();
+      return res.status(500).send("Error interno");
+    }
   },
   getCuentasPropietarios: async (req, res) => {
     var searchString = req.params.search;

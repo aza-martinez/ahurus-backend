@@ -450,24 +450,42 @@ const controller = {
             });
     },
     response: async (req, res) => {
-        const {
-            id,
-            empresa,
-            estado,
-            causaDevolucion,
-            folioOrigen
-        } = req.body;
-        const newMail = new Mailer(
-            id,
-            empresa,
-            estado,
-            causaDevolucion,
-            folioOrigen
-        );
-        await newMail.send();
-        return res.status(200).send({
-            estado: "Exito"
-        });
+        // recibir cambio de estado
+        // const {
+        //     id,
+        //     empresa,
+        //     estado,
+        //     causaDevolucion,
+        //     folioOrigen
+        // } = req.body;
+
+        console.log(req.body);
+
+        // hacer cambio de estatus en bd
+
+        // generar PDF
+
+        // ENVIAR CORREO
+
+
+        // const {
+        //     id,
+        //     empresa,
+        //     estado,
+        //     causaDevolucion,
+        //     folioOrigen
+        // } = req.body;
+        // const newMail = new Mailer(
+        //     id,
+        //     empresa,
+        //     estado,
+        //     causaDevolucion,
+        //     folioOrigen
+        // );
+        // await newMail.send();
+        // return res.status(200).send({
+        //     estado: "Exito"
+        // });
     },
 
     getTransferenciasC: (req, res) => {
