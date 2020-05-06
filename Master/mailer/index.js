@@ -31,6 +31,8 @@ class Mailer {
           if (err) console.log("ERROR", err);
 
           console.log("INFO", info);
+
+          return;
         });
       })
       .catch((error) => console.log(error));

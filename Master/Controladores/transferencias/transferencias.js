@@ -1,7 +1,7 @@
 "use strict";
 const https = require("https");
 const Transferencia = require("../../Modelos/transferencias/transferencias");
-const CentroCosto = require('./../../Modelos/centros/centros');
+const CentroCosto = require("./../../Modelos/centros/centros");
 
 const moment = require("moment");
 const momentz = require("moment-timezone");
@@ -458,6 +458,7 @@ const controller = {
   response: async (req, res) => {
     // DESTRUCTURING CAMBIO DE ESTADO
     const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
+    console.log("CAMBIO DE ESTADO: ", id);
     const mongo = new MongooseConnect();
     await mongo.connect(empresa);
 
@@ -469,12 +470,12 @@ const controller = {
         return res
           .status(404)
           .send("La transferencia que intenta actualizar no existe");
-      
+
       const now = new Date();
       const fechaMX = moment(now).tz("America/Mexico_City").format("YYYYMMDD");
       transferencia = await Transferencia.findByIdAndUpdate(
         { _id: id },
-        { estatus_stp: estado, timestamp: fechaMX._d},
+        { estatus_stp: estado, timestamp: fechaMX._d },
         { new: true }
       );
 
@@ -483,17 +484,21 @@ const controller = {
           .status(404)
           .send("No se ha podido realizar la actualización.");
 
-      
       // GENERAMOS PDF Y SE ENVÍA EMAIL
-      const centroCosto = await CentroCosto.find({ nombreCentro: transferencia.empresa });
+      const centroCosto = await CentroCosto.find({
+        nombreCentro: transferencia.empresa,
+      });
 
       const newMail = new Mailer(transferencia, centroCosto);
 
-      const mail = newMail.send();
+      const mail = await newMail.send();
+
+      console.log("MAIL", mail)
 
       return res.status(200).send({
         estado: "Exito",
       });
+
     } catch (error) {
       await mongo.close();
       return res.status(500).send("Error Interno");
