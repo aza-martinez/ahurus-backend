@@ -188,8 +188,8 @@ const controller = {
             const agent = new https.Agent({
                 rejectUnauthorized: false
             });
-            console.log(endpoint_stp);
-            console.log(transferencia);
+            /* console.log(endpoint_stp);
+            console.log(transferencia); */
             await axios
                 .put(endpoint_stp, transferencia, {
                     httpsAgent: agent
