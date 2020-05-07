@@ -11,10 +11,10 @@ var envJSON = require("./env.variables.json");
 var node_env = process.env.NODE_ENV || "development";
 var puerto = process.env.PORT || 3002;
 
-//https.createServer({
-//key: fs.readFileSync('./certs/SSL/ahurus.key'),
-//cert: fs.readFileSync('./certs/SSL/ahurus.crt')
-//},
+https.createServer({
+key: fs.readFileSync('./certs/SSL/ahurus.key'),
+cert: fs.readFileSync('./certs/SSL/ahurus.crt')
+},
 app.listen(puerto, function () {
   console.log("Servidor Ahurus Corriendo En: " + puerto);
   console.log("ENTORNO: " + node_env);
