@@ -1,19 +1,19 @@
-"use strict";
-const https = require("https");
-const Transferencia = require("../../Modelos/transferencias/transferencias");
-const CentroCosto = require("./../../Modelos/centros/centros");
+'use strict';
+const https = require('https');
+const Transferencia = require('../../Modelos/transferencias/transferencias');
+const CentroCosto = require('./../../Modelos/centros/centros');
 
-const moment = require("moment");
-const momentz = require("moment-timezone");
-const Counter = require("../../Modelos/counters/counters");
-const fs = require("fs");
-var path = require("path");
-const crypto = require("crypto");
-const axios = require("axios");
-var envJSON = require("../../../env.variables.json");
-var node_env = process.env.NODE_ENV || "development";
+const moment = require('moment');
+const momentz = require('moment-timezone');
+const Counter = require('../../Modelos/counters/counters');
+const fs = require('fs');
+var path = require('path');
+const crypto = require('crypto');
+const axios = require('axios');
+var envJSON = require('../../../env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
 
-if (node_env == "production") {
+if (node_env == 'production') {
   var certificado = envJSON[node_env].CERTS_URL_P;
   var passphrase = envJSON[node_env].PASSPHRASE_CERT_P;
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
@@ -23,27 +23,27 @@ if (node_env == "production") {
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
 }
 
-const Mailer = require("./../../mailer");
-const MongooseConnect = require("./../../MongooseConnect");
-const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require("constants");
+const Mailer = require('./../../mailer');
+const MongooseConnect = require('./../../MongooseConnect');
+const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require('constants');
 
 const controller = {
   save: async (req, res) => {
     var params = req.body;
-    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     Counter.findByIdAndUpdate(
       {
-        _id: "transferencias",
+        _id: 'transferencias',
       },
       {
         $inc: {
           invoice: 1,
         },
       },
-      function (error, counter) {
+      function(error, counter) {
         if (error) return next(error);
         let last_invoice = counter.invoice + 1;
         //const aleatorio = Math.round(Math.random() * 1000);
@@ -51,7 +51,7 @@ const controller = {
         transferencias.institucionContraparte = params.cuenta.institucion.clabe;
         transferencias.empresa = params.centro_costo.nombreCentro;
         transferencias.fechaOperacion = params.fecha_aplicacion;
-        const folioOrigen = "";
+        const folioOrigen = '';
         transferencias.claveRastreo =
           params.centro_costo.nombreCentro + last_invoice;
         transferencias.institucionOperante = 90646;
@@ -67,32 +67,32 @@ const controller = {
         transferencias.cuentaBeneficiario = params.cuenta.clabe;
         transferencias.rfcCurpBeneficiario = params.propietario.rfc;
         transferencias.emailBeneficiario = params.propietario.correo1;
-        const tipoCuentaBeneficiario2 = "";
-        const nombreBeneficiario2 = "";
-        const cuentaBeneficiario2 = "";
-        const rfcCurpBeneficiario2 = "";
+        const tipoCuentaBeneficiario2 = '';
+        const nombreBeneficiario2 = '';
+        const cuentaBeneficiario2 = '';
+        const rfcCurpBeneficiario2 = '';
         transferencias.conceptoPago = params.conceptoPago;
-        const conceptoPago2 = "";
-        const claveUsuario = "";
-        const claveUsuario2 = "";
-        const clavePago = "";
-        const refCobranza = "";
+        const conceptoPago2 = '';
+        const claveUsuario = '';
+        const claveUsuario2 = '';
+        const clavePago = '';
+        const refCobranza = '';
         transferencias.referenciaNumerica = params.numero_referencia;
-        const tipoOperacion = "";
-        transferencias.topologia = "T";
-        const usuario = "";
+        const tipoOperacion = '';
+        transferencias.topologia = 'T';
+        const usuario = '';
         transferencias.medioEntrega = 3;
         transferencias.iva = parseFloat(params.iva).toFixed(2);
-        const prioridad = "";
+        const prioridad = '';
         transferencias.estatus = true;
-        transferencias.estatus_stp = "Pendiente";
+        transferencias.estatus_stp = 'Pendiente';
         var fecha = new Date();
-        var fechaMX = moment(fecha).tz("America/Mexico_City");
+        var fechaMX = moment(fecha).tz('America/Mexico_City');
         transferencias.timestamp = fechaMX._d;
-        transferencias.idSTP = "";
-        transferencias.descripcionError = "";
-        transferencias.resultado = "";
-        transferencias.medio = "Transferencia";
+        transferencias.idSTP = '';
+        transferencias.descripcionError = '';
+        transferencias.resultado = '';
+        transferencias.medio = 'Transferencia';
 
         // 1. Obtención de la cadena original.
         var cadenaOriginal = `||${transferencias.institucionContraparte}|`;
@@ -129,11 +129,11 @@ const controller = {
         cadenaOriginal += `${transferencias.medioEntrega}|`;
         cadenaOriginal += `${prioridad}|`;
         cadenaOriginal += `${transferencias.iva}||`;
-        const private_key = fs.readFileSync(certificado, "utf-8");
+        const private_key = fs.readFileSync(certificado, 'utf-8');
         console.log(cadenaOriginal);
         console.log(private_key);
         console.log(passphrase);
-        const signer = crypto.createSign("sha256");
+        const signer = crypto.createSign('sha256');
         signer.update(cadenaOriginal);
         signer.end();
         const signature = signer.sign(
@@ -141,7 +141,7 @@ const controller = {
             key: private_key,
             passphrase: passphrase,
           },
-          "base64"
+          'base64'
         );
         console.log(signature);
         transferencias.firma = signature;
@@ -159,13 +159,13 @@ const controller = {
 
   async ejecutar(req, res) {
     var transID = req.params.id;
-    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     Transferencia.findById(transID, async (err, transferenciaFind) => {
-      const estatusError = "Error";
-      const estatusOk = "Ejecutada";
+      const estatusError = 'Error';
+      const estatusOk = 'Ejecutada';
 
       const transferencia = {
         ...transferenciaFind._doc,
@@ -211,7 +211,7 @@ const controller = {
                 const close = await mongo.close();
                 return res
                   .status(400)
-                  .send("ERROR: " + response.data.resultado.descripcionError);
+                  .send('ERROR: ' + response.data.resultado.descripcionError);
               }
             );
             // console.log(response);
@@ -232,7 +232,7 @@ const controller = {
                 console.log(response);
                 return res
                   .status(200)
-                  .send("EJECUTADA CON EL ID: " + response.data.resultado.id);
+                  .send('EJECUTADA CON EL ID: ' + response.data.resultado.id);
               }
             );
           }
@@ -248,54 +248,54 @@ const controller = {
     var tranferenciaID = req.params.id;
     var params = req.body;
 
-    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     const transferencias = new Transferencia();
     transferencias.claveRastreo = params.claveRastreo;
     transferencias.conceptoPago = params.conceptoPago;
-    const conceptoPago2 = "";
+    const conceptoPago2 = '';
     transferencias.cuentaBeneficiario = params.cuentaBeneficiario;
-    const cuentaBeneficiario2 = "";
+    const cuentaBeneficiario2 = '';
     transferencias.cuentaOrdenante = params.cuentaOrdenante;
     transferencias.emailBeneficiario = params.emailBeneficiario;
     transferencias.empresa = params.empresa;
     transferencias.fechaOperacion = params.fechaOperacion;
-    const folioOrigen = "";
+    const folioOrigen = '';
     transferencias.institucionContraparte = params.institucionContraparte;
-    transferencias.institucionOperante = "90646";
+    transferencias.institucionOperante = '90646';
     transferencias.monto = parseFloat(params.monto).toFixed(2);
     transferencias.nombreBeneficiario = params.nombreBeneficiario;
-    const nombreBeneficiario2 = "";
+    const nombreBeneficiario2 = '';
     transferencias.nombreOrdenante = params.nombreOrdenante;
     transferencias.rfcCurpBeneficiario = params.rfcCurpBeneficiario;
-    const rfcCurpBeneficiario2 = "";
+    const rfcCurpBeneficiario2 = '';
     transferencias.rfcCurpOrdenante = params.rfcCurpOrdenante;
     transferencias.tipoCuentaBeneficiario = params.tipoCuentaBeneficiario;
-    const tipoCuentaBeneficiario2 = "";
+    const tipoCuentaBeneficiario2 = '';
     transferencias.tipoCuentaOrdenante = params.tipoCuentaOrdenante;
-    transferencias.tipoPago = "1";
+    transferencias.tipoPago = '1';
     transferencias.estatus = true;
-    const claveUsuario = "";
-    const claveUsuario2 = "";
-    const clavePago = "";
-    const refCobranza = "";
+    const claveUsuario = '';
+    const claveUsuario2 = '';
+    const clavePago = '';
+    const refCobranza = '';
     transferencias.referenciaNumerica = params.referenciaNumerica;
-    const tipoOperacion = "";
-    transferencias.topologia = "T";
-    const usuario = "";
-    transferencias.medioEntrega = "3";
-    const prioridad = "";
+    const tipoOperacion = '';
+    transferencias.topologia = 'T';
+    const usuario = '';
+    transferencias.medioEntrega = '3';
+    const prioridad = '';
     transferencias.iva = parseFloat(params.iva).toFixed(2);
-    transferencias.estatus_stp = "Pendiente";
+    transferencias.estatus_stp = 'Pendiente';
     var fecha = new Date();
-    var fechaMX = moment(fecha).tz("America/Mexico_City");
+    var fechaMX = moment(fecha).tz('America/Mexico_City');
     transferencias.timestamp = fechaMX._d;
-    const id = "";
-    const descripcionError = "";
-    const resultado = "";
-    transferencias.medio = "Transferencia";
+    const id = '';
+    const descripcionError = '';
+    const resultado = '';
+    transferencias.medio = 'Transferencia';
 
     var cadenaOriginal = `||${transferencias.institucionContraparte}|`;
     cadenaOriginal += `${transferencias.empresa}|`;
@@ -332,8 +332,8 @@ const controller = {
     cadenaOriginal += `${prioridad}|`;
     cadenaOriginal += `${transferencias.iva}||`;
 
-    const private_key = fs.readFileSync(certificado, "utf-8");
-    const signer = crypto.createSign("sha256");
+    const private_key = fs.readFileSync(certificado, 'utf-8');
+    const signer = crypto.createSign('sha256');
     signer.update(cadenaOriginal);
     signer.end();
     const signature = signer.sign(
@@ -341,7 +341,7 @@ const controller = {
         key: private_key,
         passphrase: passphrase,
       },
-      "base64"
+      'base64'
     );
     params.firma = signature;
     transferencias.firma = signature;
@@ -375,9 +375,9 @@ const controller = {
 
   hide: async (req, res) => {
     var transID = req.params.id;
-    const estatusCancel = "Cancelada";
+    const estatusCancel = 'Cancelada';
 
-    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
@@ -391,7 +391,7 @@ const controller = {
       },
       async (err, transferenciaUpdated) => {
         const close = await mongo.close();
-        return res.status(200).send("Transferencia Cancelada.");
+        return res.status(200).send('Transferencia Cancelada.');
       }
     );
   },
@@ -414,20 +414,20 @@ const controller = {
   getTransferenciasA: async (req, res) => {
     // NUEVO OBTENER EMPRESA
     const now = new Date();
-    const fechaMX = moment(now).tz("America/Mexico_City").format("YYYYMMDD");
-    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
+    const fechaMX = moment(now).tz('America/Mexico_City').format('YYYYMMDD');
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     await Transferencia.find({
-      estatus_stp: "Pendiente",
-      medio: "Transferencia",
+      estatus_stp: 'Pendiente',
+      medio: 'Transferencia',
       estatus: true,
       fechaOperacion: {
         $gte: fechaMX,
       },
     })
-      .sort([["date", "descending"]])
+      .sort([['date', 'descending']])
       .exec(async (err, Transferencias) => {
         const close = await mongo.close();
 
@@ -442,14 +442,14 @@ const controller = {
 
   getTransferenciasDispersion: async (req, res) => {
     var id = req.params.id;
-    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
     await Transferencia.find({
-      medio: "Dispersion",
+      medio: 'Dispersion',
       idDispersion: id,
     })
-      .sort([["date", "descending"]])
+      .sort([['date', 'descending']])
       .exec(async (err, Transferencias) => {
         const close = await mongo.close();
         return res.status(200).send(Transferencias);
@@ -457,8 +457,10 @@ const controller = {
   },
   response: async (req, res) => {
     // DESTRUCTURING CAMBIO DE ESTADO
+    console.log(req);
+    console.log(res);
     const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
-    console.log("CAMBIO DE ESTADO: ", id);
+    console.log('CAMBIO DE ESTADO: ', id);
     const mongo = new MongooseConnect();
     await mongo.connect(empresa);
 
@@ -469,10 +471,10 @@ const controller = {
       if (!transferencia)
         return res
           .status(404)
-          .send("La transferencia que intenta actualizar no existe");
+          .send('La transferencia que intenta actualizar no existe');
 
       const now = new Date();
-      const fechaMX = moment(now).tz("America/Mexico_City").format("YYYYMMDD");
+      const fechaMX = moment(now).tz('America/Mexico_City').format('YYYYMMDD');
       transferencia = await Transferencia.findByIdAndUpdate(
         { _id: id },
         { estatus_stp: estado, timestamp: fechaMX._d },
@@ -482,7 +484,7 @@ const controller = {
       if (!transferencia)
         return res
           .status(404)
-          .send("No se ha podido realizar la actualización.");
+          .send('No se ha podido realizar la actualización.');
 
       // GENERAMOS PDF Y SE ENVÍA EMAIL
       const centroCosto = await CentroCosto.find({
@@ -493,23 +495,22 @@ const controller = {
 
       const mail = await newMail.send();
 
-      console.log("MAIL", mail)
+      console.log('MAIL', mail);
 
       return res.status(200).send({
-        estado: "Exito",
+        estado: 'Exito',
       });
-
     } catch (error) {
       await mongo.close();
-      return res.status(500).send("Error Interno");
+      return res.status(500).send('Error Interno');
     }
   },
 
   getTransferenciasC: (req, res) => {
     Transferencia.find({
-      estatus_stp: "Cancelada",
+      estatus_stp: 'Cancelada',
     })
-      .sort([["date", "descending"]])
+      .sort([['date', 'descending']])
       .exec((err, transferencias) => {
         if (err) {
           return res.status(500).send({});
@@ -522,9 +523,9 @@ const controller = {
 
   getTransferencias: (req, res) => {
     Transferencia.find({
-      medio: "Transferencia",
+      medio: 'Transferencia',
     })
-      .sort([["date", "descending"]])
+      .sort([['date', 'descending']])
       .exec((err, transferencias) => {
         if (err) {
           return res.status(500).send({});
