@@ -131,8 +131,6 @@ const controller = {
         cadenaOriginal += `${transferencias.iva}||`;
         const private_key = fs.readFileSync(certificado, 'utf-8');
         console.log(cadenaOriginal);
-        console.log(private_key);
-        console.log(passphrase);
         const signer = crypto.createSign('sha256');
         signer.update(cadenaOriginal);
         signer.end();
