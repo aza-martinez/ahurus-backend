@@ -49,7 +49,6 @@ router.put(
   [auth0],
   TransferenciasController.update
 );
-//router.put('/response/:id?', TransferenciasController.response);
 router.get(
   '/transferencias/listarTD/:id',
   [auth0],
