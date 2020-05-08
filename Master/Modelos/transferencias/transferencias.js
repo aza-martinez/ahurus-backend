@@ -25,6 +25,7 @@ var TransferenciasSchema = Schema({
     tipoCuentaOrdenante: String,
     tipoPago: String,
     estatus: Boolean,
+    entorno: String,
     topologia: String,
     medioEntrega: String,
     timestamp: Date,
