@@ -44,7 +44,7 @@ class Mailer {
           layoutsDir: "./Master/views/",
           partialsDir: "./Master/views/",
         },
-        viewPath: "./Master/views/",
+        viewPath: "./Master/views/operacionNoExitosa",
       })
     );
 
@@ -56,7 +56,7 @@ class Mailer {
       from: "comprobantes@ahurus.com",
       to: `${this.centroCosto.correo_contacto}`,
       subject: `Comprobante transferencia - ${transferencia.idSTP}`,
-      template: "main",
+      template: "operacionNoExitosa",
       context: {
         ...transferencia,
         nombre_contacto: this.centroCosto.nombre_contacto,

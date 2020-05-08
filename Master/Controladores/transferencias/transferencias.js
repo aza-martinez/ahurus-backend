@@ -455,8 +455,6 @@ const controller = {
   },
   response: async (req, res) => {
     // DESTRUCTURING CAMBIO DE ESTADO
-    console.log(req);
-    console.log(res);
     const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
     console.log('CAMBIO DE ESTADO: ', id);
     const mongo = new MongooseConnect();
