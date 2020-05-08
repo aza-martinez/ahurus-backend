@@ -1,4 +1,3 @@
-const generateHTMLReciboExitoso = (path_logo_ahurus, transferencia) => `
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -106,7 +105,7 @@ const generateHTMLReciboExitoso = (path_logo_ahurus, transferencia) => `
       <picture>
         <img
           width="100"
-          src="${path_logo_ahurus}"
+          src="https://smahurus.blob.core.windows.net/assets/ahurus_blue.svg"
         />
       </picture>
       <span class="container-title">Comprobante de Transferencia</span>
@@ -114,10 +113,10 @@ const generateHTMLReciboExitoso = (path_logo_ahurus, transferencia) => `
     <div class="content">
       <div class="content-header">
         <div>
-          <span><span>Orden:</span> ${transferencia.idSTP}</span>
+          <span><span>Orden:</span>{{idSTP}}</span>
         </div>
         <div>
-          <span><span>Fecha de Operación:</span> ${transferencia.timestamp} </span>
+          <span><span>Fecha de Operación:</span> {{fecha}} </span>
         </div>
       </div>
       <div class="content-list">
@@ -125,7 +124,7 @@ const generateHTMLReciboExitoso = (path_logo_ahurus, transferencia) => `
           <li>
             <span>
               <strong>Clave de Rastreo:</strong>
-              ${transferencia.claveRastreo}
+              {{claveRastreo}}
             </span>
           </li>
           <li>
@@ -137,55 +136,55 @@ const generateHTMLReciboExitoso = (path_logo_ahurus, transferencia) => `
           <li>
             <span>
               <strong>Estado:</strong>
-              ${transferencia.estatus_stp}
+              {{estatus_stp}}
             </span>
           </li>
           <li>
             <span>
               <strong>Importe:</strong>
-              $ ${transferencia.monto}
+              $ {{monto}}
             </span>
           </li>
           <li>
             <span>
               <strong>Ordenante:</strong>
-              ${transferencia.nombreOrdenante}
+              {{nombreOrdenante}}
             </span>
           </li>
           <li>
             <span>
               <strong>Cuenta:</strong>
-              ${transferencia.cuentaOrdenante}
+              {{cuentaOrdenante}}
             </span>
           </li>
           <li>
             <span>
               <strong>Beneficiario:</strong>
-              ${transferencia.nombreBeneficiario}
+              ${{nombreBeneficiario}}
             </span>
           </li>
           <li>
             <span>
               <strong>RFC/CURP:</strong>
-              ${transferencia.rfcCurpBeneficiario}
+              {{rfcCurpBeneficiario}}
             </span>
           </li>
           <li>
             <span>
               <strong>Cuenta:</strong>
-              ${transferencia.cuentaBeneficiario}
+              {{cuentaBeneficiario}}
             </span>
           </li>
           <li>
             <span>
               <strong>Referencia Numérica:</strong>
-              ${transferencia.referenciaNumerica}
+              {{referenciaNumerica}}
             </span>
           </li>
           <li>
             <span>
               <strong>Concepto:</strong>
-              ${transferencia.conceptoPago}
+              {{conceptoPago}}
             </span>
           </li>
         </ul>
@@ -193,6 +192,3 @@ const generateHTMLReciboExitoso = (path_logo_ahurus, transferencia) => `
     </div>
   </body>
 </html>
-`;
-
-module.exports = generateHTMLReciboExitoso;
