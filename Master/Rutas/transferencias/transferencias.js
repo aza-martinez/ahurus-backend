@@ -55,5 +55,6 @@ router.get(
   TransferenciasController.getTransferenciasDispersion
 );
 router.put('/cambioDeEstado/', TransferenciasController.response);
+router.get('/generarFirmaEmpresa/', TransferenciasController.generarFirmaEmpresa);
 
 module.exports = router;

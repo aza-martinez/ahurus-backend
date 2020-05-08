@@ -23,9 +23,9 @@ if (node_env == 'production') {
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
 }
 
-const Mailer = require('./../../mailer');
-const MongooseConnect = require('./../../MongooseConnect');
-const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require('constants');
+const Mailer = require("./../../helpers/Mailer");
+const MongooseConnect = require("./../../MongooseConnect");
+const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require("constants");
 
 const controller = {
   save: async (req, res) => {
@@ -555,22 +555,29 @@ const controller = {
     const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
     console.log('CAMBIO DE ESTADO: ', id);
     const mongo = new MongooseConnect();
-    await mongo.connect(empresa);
+    await mongo.connect(empresa.toLowerCase());
 
     try {
       // CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
-      let transferencia = await Transferencia.find({ idSTP: id, empresa });
-
+      let transferencia = await Transferencia.findOne({
+        idSTP: id,
+        empresa: empresa,
+      });
       if (!transferencia)
         return res
           .status(404)
           .send('La transferencia que intenta actualizar no existe');
 
       const now = new Date();
-      const fechaMX = moment(now).tz('America/Mexico_City').format('YYYYMMDD');
+      const fechaMX = moment(now).tz("America/Mexico_City");
+
       transferencia = await Transferencia.findByIdAndUpdate(
-        { _id: id },
-        { estatus_stp: estado, timestamp: fechaMX._d },
+        { _id: transferencia.id },
+        {
+          estatus_stp: estado,
+          timestamp: fechaMX._d,
+          descripcionError: causaDevolucion,
+        },
         { new: true }
       );
 
@@ -580,7 +587,7 @@ const controller = {
           .send('No se ha podido realizar la actualización.');
 
       // GENERAMOS PDF Y SE ENVÍA EMAIL
-      const centroCosto = await CentroCosto.find({
+      const centroCosto = await CentroCosto.findOne({
         nombreCentro: transferencia.empresa,
       });
 
@@ -588,14 +595,13 @@ const controller = {
 
       const mail = await newMail.send();
 
-      console.log('MAIL', mail);
-
       return res.status(200).send({
         estado: 'Exito',
       });
     } catch (error) {
       await mongo.close();
-      return res.status(500).send('Error Interno');
+      console.log(error)
+      return res.status(500).send("Error Interno");
     }
   },
 
@@ -640,6 +646,22 @@ const controller = {
       }
       return res.status(200).send(transferencias);
     });
+  },
+  generarFirmaEmpresa: (req, res) => {
+    const cadenaOriginal2 = "|||SEFINCE||||||||||||||||||||||||||||||||||";
+    const private_key = fs.readFileSync(certificado, "utf-8");
+    const signer2 = crypto.createSign("sha256");
+    signer2.update(cadenaOriginal2);
+    signer2.end();
+    const signature2 = signer2.sign(
+      {
+        key: private_key,
+        passphrase,
+      },
+      "base64"
+    );
+    console.log(signature2);
+    return res.send(signature2);
   },
 };
 module.exports = controller;
