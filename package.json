@@ -45,6 +45,7 @@
         "nodemailer": "^6.4.2",
         "nodemailer-express-handlebars": "^4.0.0",
         "nodemon": "^1.19.4",
+        "openssl": "^1.1.0",
         "openssl-data-sign": "0.0.2",
         "openssl-nodejs": "^1.0.5",
         "path": "^0.12.7",
