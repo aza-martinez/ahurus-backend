@@ -16,7 +16,7 @@
                 <table style="width: 100%; min-width: 100%;" cellspacing="0" cellpading="0" align="center">
                   <tbody>
                     <tr bgcolor="#000831" style="text-align: center">
-                      <td width="100%" style="padding: 15px;">
+                      <td width="100%" style="padding: 25px;">
                         <a href="https://ahurus.com">
                           <img src="https://smahurus.blob.core.windows.net/assets/ahurus.svg" alt="Ahurus" width="95">
                         </a>
@@ -28,7 +28,7 @@
                   <tbody>
                     <tr bgcolor="#ffffff" style="color: #191919;">
                       <td style="padding: 15px 40px;">
-                        <h1 style="font-size: 18px; margin-top: 35px;">Hola, {{nombre_contacto}}:</h1>
+                        <h1 style="font-size: 18px; margin-top: 35px;">Hola, {{nombreOrdenante}}:</h1>
                       </td>
                     </tr>
                   </tbody>
@@ -37,7 +37,8 @@
                   <tbody>
                     <tr bgcolor="#ffffff" style="color: #191919;">
                       <td style="padding:0 40px;">
-                        <p style="width: 80%; line-height: 23px;">La transferencia a <strong>{{nombreBeneficiario}}</strong> no se pudo completar correctamente
+                        <p style="width: 80%; line-height: 23px;">La transferencia a <strong>{{nombreBeneficiario}}</strong> fue exitosa,
+                          te compartimos los detalles:
                         </p>
                       </td>
                     </tr>
@@ -51,12 +52,16 @@
                           <tbody>
                             <tr bgcolor="#ffffff">
                               <td bgcolor="#f4f4f4" style="padding: 0; maring-right: 5px;">
-                                <img src="https://ahurusdiag.blob.core.windows.net/static/error.svg" alt="error" width="40"
+                                <img src="https://ahurusdiag.blob.core.windows.net/static/check.svg" alt="info" width="40"
                                   style="padding: 50px 0 50px 30px;">
                               </td>
                               <td bgcolor="#f4f4f4" style=" color: #191919;">
                                 <p style="line-height: 22px; font-size: 14px;">
-                                 {{descripcionError}}
+                                  Importe: {{monto}} <br>
+                                  Beneficiario: {{nombreBeneficiario}}
+                                  <br>
+                                  Cuenta depósito:
+                                  {{cuentaBeneficiario}}
                                 </p>
                               </td>
                             </tr>

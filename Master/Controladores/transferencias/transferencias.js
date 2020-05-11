@@ -23,7 +23,7 @@ if (node_env == 'production') {
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
 }
 
-const Mailer = require("./../../helpers/Mailer");
+const Mailer = require("../../helpers/Mailer");
 const MongooseConnect = require("./../../MongooseConnect");
 const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require("constants");
 
