@@ -23,9 +23,9 @@ if (node_env == 'production') {
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
 }
 
-const Mailer = require("./../../helpers/Mailer");
-const MongooseConnect = require("./../../MongooseConnect");
-const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require("constants");
+const Mailer = require('./../../helpers/Mailer');
+const MongooseConnect = require('./../../MongooseConnect');
+const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require('constants');
 
 const controller = {
   save: async (req, res) => {
@@ -142,101 +142,6 @@ const controller = {
           },
           'base64'
         );
-        console.log(signature);
-            console.log('|||||||||||||||||||||')
-
-            var cadenaOriginal2 = `||${""}|`;
-            cadenaOriginal2 += `${transferencias.empresa}|`;
-            cadenaOriginal2 += `${20200507}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}|`;
-            cadenaOriginal2 += `${""}||`;
-            console.log(cadenaOriginal2);
-            const signer2 = crypto.createSign("sha256");
-            signer2.update(cadenaOriginal2);
-            signer2.end();
-            const signature2 = signer2.sign({
-                    key: private_key,
-                    passphrase: passphrase
-                },
-                "base64"
-            );
-        console.log(signature2)
-        console.log('|||||||||||||||||||||')
-            var cadenaOriginal3 = `||${""}|`;
-            cadenaOriginal3 += `${transferencias.empresa}|`;
-            cadenaOriginal3 += `${20200507}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${"SEFINCE105"}|`;
-            cadenaOriginal3 += `${90646}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}|`;
-            cadenaOriginal3 += `${""}||`;
-            console.log(cadenaOriginal3);
-            const signer3 = crypto.createSign("sha256");
-            signer3.update(cadenaOriginal3);
-            signer3.end();
-            const signature3 = signer3.sign({
-                    key: private_key,
-                    passphrase: passphrase
-                },
-                "base64"
-            );
-            console.log(signature3)
-
         transferencias.firma = signature;
         transferencias.save(async (err, transferenciaStored) => {
           const close = await mongo.close();
@@ -569,7 +474,7 @@ const controller = {
           .send('La transferencia que intenta actualizar no existe');
 
       const now = new Date();
-      const fechaMX = moment(now).tz("America/Mexico_City");
+      const fechaMX = moment(now).tz('America/Mexico_City');
 
       transferencia = await Transferencia.findByIdAndUpdate(
         { _id: transferencia.id },
@@ -600,8 +505,8 @@ const controller = {
       });
     } catch (error) {
       await mongo.close();
-      console.log(error)
-      return res.status(500).send("Error Interno");
+      console.log(error);
+      return res.status(500).send('Error Interno');
     }
   },
 
@@ -648,9 +553,9 @@ const controller = {
     });
   },
   generarFirmaEmpresa: (req, res) => {
-    const cadenaOriginal2 = "|||SEFINCE||||||||||||||||||||||||||||||||||";
-    const private_key = fs.readFileSync(certificado, "utf-8");
-    const signer2 = crypto.createSign("sha256");
+    const cadenaOriginal2 = '|||SEFINCE||||||||||||||||||||||||||||||||||';
+    const private_key = fs.readFileSync(certificado, 'utf-8');
+    const signer2 = crypto.createSign('sha256');
     signer2.update(cadenaOriginal2);
     signer2.end();
     const signature2 = signer2.sign(
@@ -658,7 +563,7 @@ const controller = {
         key: private_key,
         passphrase,
       },
-      "base64"
+      'base64'
     );
     console.log(signature2);
     return res.send(signature2);

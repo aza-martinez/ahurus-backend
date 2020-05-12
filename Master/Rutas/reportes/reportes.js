@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var express = require('express');
 var reportController = require('../../Controladores/reportes/reportes');
@@ -10,16 +10,16 @@ var router = express.Router();
 const userProfile = require('./../../Middleware/getUserProfile');
 
 // Rutas útiles
-router.post('/reportes/transferencias/pendientes/:id?', [auth0], reportController.ftPendientes);
-router.post('/reportes/transferencias/ejecutadas/:id?', [auth0], reportController.ftEjecutadas);
-router.post('/reportes/transfeurrencias/exitosas/:id?', [auth0], reportController.ftExitosas);
-router.post('/reportes/transferencias/rechazadas/:id?', [auth0], reportController.ftDevolucion);
-router.post('/reportes/transferencias/canceladas/:id?', [auth0], reportController.ftCancelada);
+router.post('/report/t/pendientes/:id?', [], reportController.ftPendientes);
+router.post('/report/t/ejecutadas/:id?', [], reportController.ftEjecutadas);
+router.post('/report/t/exitosas/:id?', [], reportController.ftExitosas);
+router.post('/report/t/rechazadas/:id?', [], reportController.ftDevolucion);
+router.post('/report/t/track/:id?', [], reportController.getTrack);
+router.post('/report/balance/:id?', [], reportController.getBalance);
 
-router.post('/reportes/dispersiones/pendientes/:id?', [auth0], reportController.fdPendientes);
-router.post('/reportes/dispersiones/ejecutadas/:id?', [auth0], reportController.fdEjecutadas);
-router.post('/reportes/dispersiones/exitosas/:id?', [auth0], reportController.fdExitosas);
-router.post('/reportes/dispersiones/rechazadas/:id?', [auth0], reportController.fdDevolucion);
-router.post('/reportes/dispersiones/canceladas/:id?', [auth0], reportController.fdCancelada);
+router.post('/report/d/pendientes/:id?', [], reportController.fdPendientes);
+router.post('/report/d/ejecutadas/:id?', [], reportController.fdEjecutadas);
+router.post('/report/d/exitosas/:id?', [], reportController.fdExitosas);
+router.post('/report/d/rechazadas/:id?', [], reportController.fdDevolucion);
 
 module.exports = router;
