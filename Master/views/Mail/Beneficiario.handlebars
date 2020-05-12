@@ -17,7 +17,7 @@
                     align="center">
                     <tbody>
                       <tr bgcolor="#000831" style="text-align: center">
-                        <td width="100%" style="padding: 15px;">
+                        <td width="100%" style="padding: 25px;">
                           <a href="https://ahurus.com">
                           <img src="https://smahurus.blob.core.windows.net/assets/ahurus.svg"
                             alt="Ahurus" width="95">
@@ -31,7 +31,9 @@
                     <tbody>
                       <tr bgcolor="#ffffff" style="color: #191919;">
                         <td style="padding: 15px 40px;">
-                          <h1 style="font-size: 18px; margin-top: 35px;">Hola, {{nombre_contacto}}:</h1>
+                          <h1 style="font-size: 18px; margin-top: 35px;">Hola,
+                            {{nombreBeneficiario}}:
+                          </h1>
                         </td>
                       </tr>
                     </tbody>
@@ -41,8 +43,8 @@
                     <tbody>
                       <tr bgcolor="#ffffff" style="color: #191919;">
                         <td style="padding:0 40px;">
-                          <p style="width: 80%; line-height: 23px;">La <strong>transferencia a
-                            </strong> {{nombreBeneficiario}} fue exitosa, te compartimos los detalles:
+                          <p style="width: 80%; line-height: 23px;">
+                            Se ha realizado una transferencia a tu cuenta bancaria.
                           </p>
                         </td>
                       </tr>
@@ -59,15 +61,14 @@
                               <tr bgcolor="#ffffff">
                                 <td bgcolor="#f4f4f4"
                                   style="padding: 0; maring-right: 5px;">
-                                  <img src="https://smahurus.blob.core.windows.net/assets/info.svg"
+                                  <img src="https://ahurusdiag.blob.core.windows.net/static/check.svg"
                                     alt="info" width="40"
                                     style="padding: 50px 0 50px 30px;">
                                 </td>
                                 <td bgcolor="#f4f4f4" style=" color: #191919;">
                                   <p style="line-height: 22px; font-size: 14px;">
+                                    Ordenante: {{nombreOrdenante}} <br>
                                     Importe: {{monto}} <br>
-                                    Beneficiario: {{nombreBeneficiario}}
-                                    <br>
                                     Cuenta depósito:
                                     {{cuentaBeneficiario}}
                                   </p>
