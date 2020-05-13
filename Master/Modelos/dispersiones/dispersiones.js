@@ -1,13 +1,13 @@
-
-'use strict'
+'use strict';
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var DispersionesSchema = Schema({
+var DispersionesSchema = Schema(
+  {
     archivo: String,
     claveRastreo: String,
-    conceptoPago: String, // FRONT  
+    conceptoPago: String, // FRONT
     cuentaBeneficiario: String, // FRONT
     cuentaOrdenante: String,
     emailBeneficiario: String,
@@ -17,7 +17,7 @@ var DispersionesSchema = Schema({
     folioOrigen: String,
     institucionContraparte: String,
     institucionOperante: String,
-    monto: String,// {type: mongoose.Schema.Types.Decimal},
+    monto: String, // {type: mongoose.Schema.Types.Decimal},
     nombreBeneficiario: String,
     nombreOrdenante: String,
     referenciaNumerica: String,
@@ -25,16 +25,17 @@ var DispersionesSchema = Schema({
     rfcCurpOrdenante: String,
     tipoCuentaBeneficiario: String,
     tipoCuentaOrdenante: String,
-    tipoPago: String,
+    tipoCuentaOrdenante: String,
+    entorno: String,
     estatus: Boolean,
     topologia: String,
     medioEntrega: String,
     timestamp: Date,
     iva: String, //{type: mongoose.Schema.Types.Decimal},
     estatus_stp: String,
-    institucion: { type: Schema.ObjectId, ref: "Instituciones" },
-    idDispersion: { type: Schema.ObjectId, ref: "Dispersiones" },
-    idTransferencia: [{ type: Schema.ObjectId, ref: "Transferencias" }],
+    institucion: { type: Schema.ObjectId, ref: 'Instituciones' },
+    idDispersion: { type: Schema.ObjectId, ref: 'Dispersiones' },
+    idTransferencia: [{ type: Schema.ObjectId, ref: 'Transferencias' }],
     Id: String,
     descripcionError: String,
     resultado: String,
@@ -42,7 +43,9 @@ var DispersionesSchema = Schema({
     usuario: String,
     ruta: String,
     fechaSubida: String,
-    medio:String,
-}, { versionKey: false });
+    medio: String,
+  },
+  { versionKey: false }
+);
 
 module.exports = mongoose.model('Dispersiones', DispersionesSchema);
