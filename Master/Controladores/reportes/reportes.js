@@ -324,7 +324,7 @@ var controller = {
     });
     await axios
       .post(
-        'https://prod.stpmex.com/speiws/rest/ordenPago/consSaldoCuenta ',
+        'https://10.5.1.1:7002/speiws/rest/ordenPago/consSaldoCuenta ',
         consultaSaldoCuenta,
         {
           httpsAgent: agent,
