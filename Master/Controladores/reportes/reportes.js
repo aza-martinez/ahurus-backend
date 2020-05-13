@@ -291,13 +291,9 @@ var controller = {
       rejectUnauthorized: false,
     });
     await axios
-      .post(
-        'https://10.5.1.1:7002/speiws/rest/ordenPago/consSaldoCuenta ',
-        consultaSaldoCuenta,
-        {
-          httpsAgent: agent,
-        }
-      )
+      .post(endpoint_stp_balance, consultaSaldoCuenta, {
+        httpsAgent: agent,
+      })
       .then((response) => {
         if (response) {
           return res.status(200).send(response.data.resultado);
