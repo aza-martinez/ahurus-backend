@@ -1,5 +1,5 @@
 'use strict'
-const pdfMakePrinter = require('pdfmake/src/printer');
+
 const fs = require('fs');
 var validator = require('validator');
 var Plaza = require('../../Modelos/plazas/plazas');
