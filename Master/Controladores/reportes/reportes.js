@@ -299,14 +299,11 @@ var controller = {
         }
       )
       .then((response) => {
-        console.log(response);
         if (response) {
-          console.log(response.data.resultado);
           return res.status(200).send(response.data.resultado);
         }
 
         if (!response) {
-          // console.log(response);
           return res.status(200).send(response.data.resultado);
         }
       })
