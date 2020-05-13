@@ -23,16 +23,6 @@ if (node_env == 'production') {
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
 }
 
-<<<<<<< HEAD
-const Mailer = require('./../../helpers/Mailer');
-const MongooseConnect = require('./../../MongooseConnect');
-const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require('constants');
-=======
-const Mailer = require("../../helpers/Mailer");
-const MongooseConnect = require("./../../MongooseConnect");
-const { SSL_OP_CRYPTOPRO_TLSEXT_BUG } = require("constants");
->>>>>>> a894e81f402799267b9fc6b0068153c4314e3d73
-
 const controller = {
   save: async (req, res) => {
     var params = req.body;
