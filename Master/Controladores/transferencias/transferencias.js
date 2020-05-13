@@ -3,7 +3,7 @@ const https = require('https');
 const Transferencia = require('../../Modelos/transferencias/transferencias');
 const CentroCosto = require('./../../Modelos/centros/centros');
 const MongooseConnect = require('./../../MongooseConnect');
-
+const Mailer = require('./../../helpers/Mailer');
 const moment = require('moment');
 const momentz = require('moment-timezone');
 const Counter = require('../../Modelos/counters/counters');
