@@ -281,10 +281,6 @@ var controller = {
       'base64'
     );
     console.log(signature);
-    var consultaSaldoCuenta = {
-      cuentaOrdenante: cuentaOrdenante,
-      firma: signature,
-    };
 
     //const agent = (https.globalAgent.options.rejectUnauthorized = false);
     const agent = new https.Agent({
@@ -293,7 +289,10 @@ var controller = {
     await axios
       .post(
         'https://10.5.1.1:7002/speiws/rest/ordenPago/consSaldoCuenta ',
-        consultaSaldoCuenta,
+        {
+          cuentaOrdenante: cuentaOrdenante,
+          firma: signature,
+        },
         {
           httpsAgent: agent,
         }
