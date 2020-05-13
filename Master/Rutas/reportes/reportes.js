@@ -14,7 +14,7 @@ router.post('/report/t/pendientes/:id?', [], reportController.ftPendientes);
 router.post('/report/t/ejecutadas/:id?', [], reportController.ftEjecutadas);
 router.post('/report/t/exitosas/:id?', [], reportController.ftExitosas);
 router.post('/report/t/rechazadas/:id?', [], reportController.ftDevolucion);
-router.post('/report/t/track/:id?', [], reportController.getTrack);
+router.post('/report/track/:id?', [], reportController.getTrack);
 router.post('/report/balance/:id?', [], reportController.getBalance);
 
 router.post('/report/d/pendientes/:id?', [], reportController.fdPendientes);

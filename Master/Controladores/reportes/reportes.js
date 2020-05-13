@@ -33,242 +33,234 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = 'sefince'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-
+    let filter = params.filter;
     await mongo.connect(SERVER_BD);
 
     console.log(fechaInicial);
     console.log(fechaFinal);
-    let queryExec = '';
-    if (fechaInicial != undefined && fechaFinal != undefined) {
-      queryExec = Transferencia.find({
-        $or: [
-          { fechaOperacion: { $gte: fechaInicial } },
-          { fechaOperacion: { $lt: fechaFinal } },
-        ],
-        estatus_stp: 'Ejecutada',
-        medio: 'Transferencia',
-      });
-    } else {
-      queryExec = Transferencia.find({
-        estatus_stp: 'Ejecutada',
-        medio: 'Transferencia',
-      });
+    console.log(filter);
 
-      queryExec.exec(async (err, actividad) => {
+    if (
+      filter === 'ALL' &&
+      fechaInicial != undefined &&
+      fechaFinal != undefined
+    ) {
+      Transferencia.find({
+        estatus_stp: 'Ejecutada',
+        medio: 'Transferencia',
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+      }).exec(async (err, actividad) => {
         const close = await mongo.close();
-
         if (err || err == 'null') return res.status(500).json({});
-
         if (!actividad || actividad == '') return res.status(400).json({});
-
         if (actividad) return res.status(200).json(actividad);
       });
-    }
+    } else if (fechaInicial != undefined && fechaFinal != undefined) {
+      Transferencia.find({
+        estatus_stp: 'Ejecutada',
+        medio: 'Transferencia',
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+        empresa: filter,
+      }).exec(async (err, actividad) => {
+        const close = await mongo.close();
+        if (err || err == 'null') return res.status(500).json({});
+        if (!actividad || actividad == '') return res.status(400).json({});
+        if (actividad) return res.status(200).json(actividad);
+      });
+    } else
+      Transferencia.find({
+        estatus_stp: 'Ejecutada',
+        medio: 'Transferencia',
+      }).exec(async (err, actividad) => {
+        const close = await mongo.close();
+        if (err || err == 'null') return res.status(500).json({});
+        if (!actividad || actividad == '') return res.status(400).json({});
+        if (actividad) return res.status(200).json(actividad);
+      });
   },
 
   ftPendientes: async (req, res) => {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = 'sefince'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-
+    let filter = params.filter;
     await mongo.connect(SERVER_BD);
 
     console.log(fechaInicial);
     console.log(fechaFinal);
-    let queryExec = '';
-    if (fechaInicial != undefined && fechaFinal != undefined) {
-      queryExec = Transferencia.find({
-        $or: [
-          { fechaOperacion: { $gte: fechaInicial } },
-          { fechaOperacion: { $lt: fechaFinal } },
-        ],
-        estatus_stp: 'Pendiente',
-        medio: 'Transferencia',
-      });
-    } else {
-      queryExec = Transferencia.find({
-        estatus_stp: 'Pendiente',
-        medio: 'Transferencia',
-      });
+    console.log(filter);
 
-      queryExec.exec(async (err, actividad) => {
+    if (
+      filter === 'ALL' &&
+      fechaInicial != undefined &&
+      fechaFinal != undefined
+    ) {
+      Transferencia.find({
+        estatus_stp: 'Pendiente',
+        medio: 'Transferencia',
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+      }).exec(async (err, actividad) => {
         const close = await mongo.close();
-
         if (err || err == 'null') return res.status(500).json({});
-
         if (!actividad || actividad == '') return res.status(400).json({});
-
         if (actividad) return res.status(200).json(actividad);
       });
-    }
+    } else if (fechaInicial != undefined && fechaFinal != undefined) {
+      Transferencia.find({
+        estatus_stp: 'Pendiente',
+        medio: 'Transferencia',
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+        empresa: filter,
+      }).exec(async (err, actividad) => {
+        const close = await mongo.close();
+        if (err || err == 'null') return res.status(500).json({});
+        if (!actividad || actividad == '') return res.status(400).json({});
+        if (actividad) return res.status(200).json(actividad);
+      });
+    } else
+      Transferencia.find({
+        estatus_stp: 'Pendiente',
+        medio: 'Transferencia',
+      }).exec(async (err, actividad) => {
+        const close = await mongo.close();
+        if (err || err == 'null') return res.status(500).json({});
+        if (!actividad || actividad == '') return res.status(400).json({});
+        if (actividad) return res.status(200).json(actividad);
+      });
   },
 
   ftExitosas: async (req, res) => {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = 'sefince'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-
+    let filter = params.filter;
     await mongo.connect(SERVER_BD);
 
     console.log(fechaInicial);
     console.log(fechaFinal);
-    let queryExec = '';
-    if (fechaInicial != undefined && fechaFinal != undefined) {
-      queryExec = Transferencia.find({
-        $or: [
-          { fechaOperacion: { $gte: fechaInicial } },
-          { fechaOperacion: { $lt: fechaFinal } },
-        ],
-        estatus_stp: 'Exito',
-        medio: 'Transferencia',
-      });
-    } else {
-      queryExec = Transferencia.find({
-        estatus_stp: 'Exito',
-        medio: 'Transferencia',
-      });
+    console.log(filter);
 
-      queryExec.exec(async (err, actividad) => {
+    if (
+      filter === 'ALL' &&
+      fechaInicial != undefined &&
+      fechaFinal != undefined
+    ) {
+      Transferencia.find({
+        estatus_stp: 'Exito',
+        medio: 'Transferencia',
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+      }).exec(async (err, actividad) => {
         const close = await mongo.close();
-
         if (err || err == 'null') return res.status(500).json({});
-
         if (!actividad || actividad == '') return res.status(400).json({});
-
         if (actividad) return res.status(200).json(actividad);
       });
-    }
+    } else if (fechaInicial != undefined && fechaFinal != undefined) {
+      Transferencia.find({
+        estatus_stp: 'Exito',
+        medio: 'Transferencia',
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+        empresa: filter,
+      }).exec(async (err, actividad) => {
+        const close = await mongo.close();
+        if (err || err == 'null') return res.status(500).json({});
+        if (!actividad || actividad == '') return res.status(400).json({});
+        if (actividad) return res.status(200).json(actividad);
+      });
+    } else
+      Transferencia.find({
+        estatus_stp: 'Exito',
+        medio: 'Transferencia',
+      }).exec(async (err, actividad) => {
+        const close = await mongo.close();
+        if (err || err == 'null') return res.status(500).json({});
+        if (!actividad || actividad == '') return res.status(400).json({});
+        if (actividad) return res.status(200).json(actividad);
+      });
   },
 
   ftDevolucion: async (req, res) => {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = 'sefince'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-
+    let filter = params.filter;
     await mongo.connect(SERVER_BD);
 
     console.log(fechaInicial);
     console.log(fechaFinal);
-    let queryExec = '';
-    if (fechaInicial != undefined && fechaFinal != undefined) {
-      queryExec = Transferencia.find({
-        $or: [
-          { fechaOperacion: { $gte: fechaInicial } },
-          { fechaOperacion: { $lt: fechaFinal } },
-        ],
-        estatus_stp: 'Error',
-        medio: 'Transferencia',
-      });
-    } else {
-      queryExec = Transferencia.find({
-        estatus_stp: 'Error',
-        medio: 'Transferencia',
-      });
+    console.log(filter);
 
-      queryExec.exec(async (err, actividad) => {
+    if (
+      filter === 'ALL' &&
+      fechaInicial != undefined &&
+      fechaFinal != undefined
+    ) {
+      Transferencia.find({
+        estatus_stp: 'Error',
+        medio: 'Transferencia',
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+      }).exec(async (err, actividad) => {
         const close = await mongo.close();
-
         if (err || err == 'null') return res.status(500).json({});
-
         if (!actividad || actividad == '') return res.status(400).json({});
-
         if (actividad) return res.status(200).json(actividad);
       });
-    }
+    } else if (fechaInicial != undefined && fechaFinal != undefined) {
+      Transferencia.find({
+        estatus_stp: 'Error',
+        medio: 'Transferencia',
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+        empresa: filter,
+      }).exec(async (err, actividad) => {
+        const close = await mongo.close();
+        if (err || err == 'null') return res.status(500).json({});
+        if (!actividad || actividad == '') return res.status(400).json({});
+        if (actividad) return res.status(200).json(actividad);
+      });
+    } else
+      Transferencia.find({
+        estatus_stp: 'Error',
+        medio: 'Transferencia',
+      }).exec(async (err, actividad) => {
+        const close = await mongo.close();
+        if (err || err == 'null') return res.status(500).json({});
+        if (!actividad || actividad == '') return res.status(400).json({});
+        if (actividad) return res.status(200).json(actividad);
+      });
   },
 
   getTrack: async (req, res) => {
     var params = req.body;
-    const SERVER_BD = 'SEFINCE'; //req.user['http://localhost:3000/user_metadata'].empresa;
-    const fechaOperacion = params.fechaOperacion.replace(/["']/g, ''); // ejemplo: '20190326'
-    const claveRastreo = params.claveRastreo;
-    const empresa = 'SEFINCE';
-    const institucionOperante = params.institucionOperante.replace(/["']/g, '');
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const mongo = new MongooseConnect();
+    let filter = params.filter;
+    await mongo.connect(SERVER_BD);
+    console.log(filter);
 
-    let cadenaOriginal = `||${''}|`;
-    cadenaOriginal += `${empresa}|`;
-    cadenaOriginal += `${fechaOperacion}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${claveRastreo}|`;
-    cadenaOriginal += `${institucionOperante}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}|`;
-    cadenaOriginal += `${''}||`;
-    const private_key = fs.readFileSync(certificado, 'utf-8');
-    console.log(cadenaOriginal);
-    const signer = crypto.createSign('sha256');
-    signer.update(cadenaOriginal);
-    signer.end();
-    const signature = signer.sign(
-      {
-        key: private_key,
-        passphrase: passphrase,
-      },
-      'base64'
-    );
-    let track = {
-      claveRastreo: claveRastreo,
-      fechaOperacion: fechaOperacion,
-      institucionOperante: institucionOperante,
-      empresa: empresa,
-      firma: signature,
-    };
-    console.log(track);
-    const agent = new https.Agent({
-      rejectUnauthorized: false,
+    Transferencia.find({
+      claveRastreo: filter,
+    }).exec(async (err, actividad) => {
+      const close = await mongo.close();
+      if (err || err == 'null') return res.status(500).json({});
+      if (!actividad || actividad == '') return res.status(400).json({});
+      if (actividad) return res.status(200).json(actividad);
     });
-    await axios
-      .post(endpoint_stp_track, track, {
-        httpsAgent: agent,
-      })
-      .then((response) => {
-        if (response) {
-          console.log(response.data.resultado.descripcionError);
-          return res.status(200).send(response.data.resultado.descripcionError);
-        }
-
-        if (!response) {
-          // console.log(response);
-          return res.status(200).send(response.data.resultado.descripcionError);
-        }
-      })
-      .catch(async (error) => {
-        console.log(error);
-        return res.status(400).send(error);
-      });
   },
 
   getBalance: async (req, res) => {
@@ -360,148 +352,228 @@ var controller = {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = 'sefince'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-
+    let filter = params.filter;
     await mongo.connect(SERVER_BD);
 
     console.log(fechaInicial);
     console.log(fechaFinal);
-    let queryExec = '';
-    if (fechaInicial != undefined && fechaFinal != undefined) {
-      queryExec = Dispersion.find({
-        $or: [
-          { fechaOperacion: { $gte: fechaInicial } },
-          { fechaOperacion: { $lt: fechaFinal } },
-        ],
+    console.log(filter);
+
+    if (
+      filter === 'ALL' &&
+      fechaInicial != undefined &&
+      fechaFinal != undefined
+    ) {
+      Dispersion.find({
         estatus_stp: 'Ejecutada',
-      });
-    } else {
-      queryExec = Dispersion.find({
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
+    } else if (fechaInicial != undefined && fechaFinal != undefined) {
+      Dispersion.find({
         estatus_stp: 'Ejecutada',
-      });
-
-      queryExec.populate('idTransferencia').exec(async (err, actividad) => {
-        const close = await mongo.close();
-
-        if (err || err == 'null') return res.status(500).json({});
-
-        if (!actividad || actividad == '') return res.status(400).json({});
-
-        if (actividad) return res.status(200).json(actividad);
-      });
-    }
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+        empresa: filter,
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
+    } else
+      Dispersion.find({
+        estatus_stp: 'Ejecutada',
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
   },
 
   fdPendientes: async (req, res) => {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = 'sefince'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-
+    let filter = params.filter;
     await mongo.connect(SERVER_BD);
 
     console.log(fechaInicial);
     console.log(fechaFinal);
-    let queryExec = '';
-    if (fechaInicial != undefined && fechaFinal != undefined) {
-      queryExec = Dispersion.find({
-        $or: [
-          { fechaOperacion: { $gte: fechaInicial } },
-          { fechaOperacion: { $lt: fechaFinal } },
-        ],
+    console.log(filter);
+
+    if (
+      filter === 'ALL' &&
+      fechaInicial != undefined &&
+      fechaFinal != undefined
+    ) {
+      Dispersion.find({
         estatus_stp: 'Pendiente',
-      });
-    } else {
-      queryExec = Dispersion.find({
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
+    } else if (fechaInicial != undefined && fechaFinal != undefined) {
+      Dispersion.find({
         estatus_stp: 'Pendiente',
-      });
-
-      queryExec.populate('idTransferencia').exec(async (err, actividad) => {
-        const close = await mongo.close();
-
-        if (err || err == 'null') return res.status(500).json({});
-
-        if (!actividad || actividad == '') return res.status(400).json({});
-
-        if (actividad) return res.status(200).json(actividad);
-      });
-    }
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+        empresa: filter,
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
+    } else
+      Dispersion.find({
+        estatus_stp: 'Pendiente',
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
   },
 
   fdExitosas: async (req, res) => {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = 'sefince'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-
+    let filter = params.filter;
     await mongo.connect(SERVER_BD);
 
     console.log(fechaInicial);
     console.log(fechaFinal);
-    let queryExec = '';
-    if (fechaInicial != undefined && fechaFinal != undefined) {
-      queryExec = Dispersion.find({
-        $or: [
-          { fechaOperacion: { $gte: fechaInicial } },
-          { fechaOperacion: { $lt: fechaFinal } },
-        ],
+    console.log(filter);
+
+    if (
+      filter === 'ALL' &&
+      fechaInicial != undefined &&
+      fechaFinal != undefined
+    ) {
+      Dispersion.find({
         estatus_stp: 'Exito',
-      });
-    } else {
-      queryExec = Dispersion.find({
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
+    } else if (fechaInicial != undefined && fechaFinal != undefined) {
+      Dispersion.find({
         estatus_stp: 'Exito',
-      });
-
-      queryExec.populate('idTransferencia').exec(async (err, actividad) => {
-        const close = await mongo.close();
-
-        if (err || err == 'null') return res.status(500).json({});
-
-        if (!actividad || actividad == '') return res.status(400).json({});
-
-        if (actividad) return res.status(200).json(actividad);
-      });
-    }
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+        empresa: filter,
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
+    } else
+      Dispersion.find({
+        estatus_stp: 'Exito',
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
   },
 
   fdDevolucion: async (req, res) => {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
     const fechaFinal = params.fechaFinal;
-    const SERVER_BD = 'sefince'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-
+    let filter = params.filter;
     await mongo.connect(SERVER_BD);
 
     console.log(fechaInicial);
     console.log(fechaFinal);
-    let queryExec = '';
-    if (fechaInicial != undefined && fechaFinal != undefined) {
-      queryExec = Dispersion.find({
-        $or: [
-          { fechaOperacion: { $gte: fechaInicial } },
-          { fechaOperacion: { $lt: fechaFinal } },
-        ],
+    console.log(filter);
+
+    if (
+      filter === 'ALL' &&
+      fechaInicial != undefined &&
+      fechaFinal != undefined
+    ) {
+      Dispersion.find({
         estatus_stp: 'Error',
-      });
-    } else {
-      queryExec = Dispersion.find({
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
+    } else if (fechaInicial != undefined && fechaFinal != undefined) {
+      Dispersion.find({
         estatus_stp: 'Error',
-      });
-
-      queryExec.populate('idTransferencia').exec(async (err, actividad) => {
-        const close = await mongo.close();
-
-        if (err || err == 'null') return res.status(500).json({});
-
-        if (!actividad || actividad == '') return res.status(400).json({});
-
-        if (actividad) return res.status(200).json(actividad);
-      });
-    }
+        fechaOperacion: { $gte: fechaInicial },
+        fechaOperacion: { $lte: fechaFinal },
+        empresa: filter,
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
+    } else
+      Dispersion.find({
+        estatus_stp: 'Error',
+      })
+        .populate('idTransferencia')
+        .exec(async (err, actividad) => {
+          const close = await mongo.close();
+          if (err || err == 'null') return res.status(500).json({});
+          if (!actividad || actividad == '') return res.status(400).json({});
+          if (actividad) return res.status(200).json(actividad);
+        });
   },
 };
 

@@ -23,7 +23,6 @@ if (node_env == 'production') {
   var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
 }
-
 const KEY_STORAGE =
   'ytq2QZ6b5mqLZxj8BD5Js2ZEHCMpZSVSCYjGXniHE8/YO1jPakmL+RMMwG/nLXxh1lrKcES74na5NCR3hE+K6g==';
 const STORAGE_ACCOUNT = 'smahurus';
@@ -238,7 +237,7 @@ var controller = {
                   transferencia.idSTP = registro['idSTP'];
                   transferencia.descripcionError = registro['descripcionError'];
                   transferencia.medio = 'Dispersion';
-                  transferencias.entorno = node_env;
+                  transferencia.entorno = node_env;
 
                   //DATOS DE LA DISPERSION
                   dispersion.usuario = user;
@@ -248,6 +247,7 @@ var controller = {
                   dispersion.estatus_stp = 'Pendiente';
                   dispersion.fechaOperacion = fechaOperacion;
                   dispersion.entorno = node_env;
+                  dispersion.empresa = 'SEFINCE'; // req.user['http://localhost:3000/user_metadata'].empresa;
 
                   // 1. Obtención de la cadena original.
                   var cadenaOriginal = `||${transferencia.institucionContraparte}|`;

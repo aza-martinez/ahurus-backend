@@ -410,6 +410,7 @@ const controller = {
     // NUEVO OBTENER EMPRESA
     const now = new Date();
     const fechaMX = moment(now).tz('America/Mexico_City').format('YYYYMMDD');
+    console.log(req.user['http://localhost:3000/user_metadata']);
     const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
