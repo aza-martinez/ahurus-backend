@@ -241,6 +241,7 @@ var controller = {
 
   getBalance: async (req, res) => {
     var params = req.body;
+<<<<<<< HEAD
     const SERVER_BD = "SEFINCE"; //req.user['http://localhost:3000/user_metadata'].empresa;
     const cuentaOrdenante = 646180182300000009; // ejemplo: '20190326'
     let cadenaOriginal = `||${""}|`;
@@ -278,6 +279,12 @@ var controller = {
     cadenaOriginal += `${""}|`;
     cadenaOriginal += `${""}||`;
     const private_key = fs.readFileSync(certificado, "utf-8");
+=======
+    const SERVER_BD = 'SEFINCE'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const cuentaOrdenante = params.cuentaOrdenante; // ejemplo: '20190326'
+    let cadenaOriginal = cuentaOrdenante;
+    const private_key = fs.readFileSync(certificado, 'utf-8');
+>>>>>>> e84ae4401d523d2f49bb8e7ac4fc892ad3b2f12c
     console.log(cadenaOriginal);
     const signer = crypto.createSign("sha256");
     signer.update(cadenaOriginal);
@@ -289,6 +296,7 @@ var controller = {
       },
       "base64"
     );
+    console.log(signature);
     var consultaSaldoCuenta = {
       cuentaOrdenante: cuentaOrdenante,
       firma: signature,
@@ -299,6 +307,7 @@ var controller = {
       rejectUnauthorized: false,
     });
     await axios
+<<<<<<< HEAD
       .post(
         "https://10.5.1.1:7002/speiws/rest/ordenPago/consSaldoCuenta ",
         consultaSaldoCuenta,
@@ -306,16 +315,18 @@ var controller = {
           httpsAgent: agent,
         }
       )
+=======
+      .post(endpoint_stp_balance, consultaSaldoCuenta, {
+        httpsAgent: agent,
+      })
+>>>>>>> e84ae4401d523d2f49bb8e7ac4fc892ad3b2f12c
       .then((response) => {
-        console.log(response);
         if (response) {
-          console.log(response);
-          return res.status(200).send(response);
+          return res.status(200).send(response.data.resultado);
         }
 
         if (!response) {
-          // console.log(response);
-          return res.status(200).send(response);
+          return res.status(200).send(response.data.resultado);
         }
       })
       .catch(async (error) => {
