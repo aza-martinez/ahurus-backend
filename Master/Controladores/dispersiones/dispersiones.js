@@ -18,18 +18,25 @@ if (node_env == 'production') {
   var certificado = envJSON[node_env].CERTS_URL_P;
   var passphrase = envJSON[node_env].PASSPHRASE_CERT_P;
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
+  var key = envJSON[node_env].AZURE_KEY_STORAGE_P;
+  var account = envJSON[node_env].AZURE_SACCOUNT_P;
+  var container = envJSON[node_env].AZURE_SCONTAINER_DISPERSION_P;
 } else {
   var certificado = envJSON[node_env].CERTS_URL_D;
   var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
+  var key = envJSON[node_env].AZURE_KEY_STORAGE_D;
+  var account = envJSON[node_env].AZURE_SACCOUNT_D;
+  var container = envJSON[node_env].AZURE_SCONTAINER_DISPERSION_D;
 }
-const KEY_STORAGE =
-  'ytq2QZ6b5mqLZxj8BD5Js2ZEHCMpZSVSCYjGXniHE8/YO1jPakmL+RMMwG/nLXxh1lrKcES74na5NCR3hE+K6g==';
-const STORAGE_ACCOUNT = 'smahurus';
-const STORAGE_CONTAINER = 'dispersiones';
+const KEY_STORAGE = key;
+const STORAGE_ACCOUNT = account;
+const STORAGE_CONTAINER = container;
 const MongooseConnect = require('./../../MongooseConnect');
 
 var controller = {
+  downloadFile: async (req, res) => {},
+
   saveFile: async (req, res) => {
     var file_name = 'Documento no subido..';
     const user = req.user['http://localhost:3000/user_metadata'].user;
@@ -380,7 +387,9 @@ var controller = {
     const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
-
+    console.log(KEY_STORAGE);
+    console.log(STORAGE_ACCOUNT);
+    console.log(STORAGE_CONTAINER);
     await Dispersion.find({
       estatus: true,
     }).exec(async (err, registros) => {
