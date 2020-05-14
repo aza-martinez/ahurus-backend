@@ -10,8 +10,8 @@ var router = express.Router();
 const userProfile = require('./../../Middleware/getUserProfile');
 
 // Rutas útiles
-router.post('/report/transfer', [], reportController.getReportTransfer);
-router.post('/report/balance/:id?', [], reportController.getBalance);
-router.post('/report/dispersion', [], reportController.getReportDisper);
+router.post('/report/transfer/', [], reportController.getReportTransfer);
+router.post('/report/balance/', [], reportController.getBalance);
+router.post('/report/dispersion/', [], reportController.getReportDisper);
 
 module.exports = router;
