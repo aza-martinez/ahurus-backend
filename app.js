@@ -10,8 +10,6 @@ var app = express();
 var envJSON = require('./env.variables.json');
 var node_env = process.env.NODE_ENV || 'development';
 var puerto = process.env.PORT || 3002;
-var os = require('os');
-var ifaces = os.networkInterfaces();
 /* https
   .createServer(
     {
@@ -21,18 +19,9 @@ var ifaces = os.networkInterfaces();
 app
   // )
   .listen(puerto, function() {
-    console.log('Servidor Ahurus Corriendo En: ' + puerto);
+    console.log('Servidor Ahurus Corriendo En El Puerto: ' + puerto);
     console.log('ENTORNO: ' + node_env);
   });
-for (var dev in ifaces) {
-  var alias = 0;
-  ifaces[dev].forEach(function(details) {
-    if (details.family == 'IPv4') {
-      console.log(dev + (alias ? ':' + alias : ''), details.address);
-      ++alias;
-    }
-  });
-}
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
 const propietarios_routes = require('./Master/Rutas/propietarios/propietarios');
