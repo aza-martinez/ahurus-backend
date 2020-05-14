@@ -55,6 +55,8 @@
         "read-excel-file": "^4.0.3",
         "save": "^2.4.0",
         "sha256": "^0.2.0",
+        "should": "^13.2.3",
+        "superagent": "^5.2.2",
         "validator": "^11.1.0",
         "xls-to-json-lc": "^0.3.4",
         "xlsx": "^0.15.1",
