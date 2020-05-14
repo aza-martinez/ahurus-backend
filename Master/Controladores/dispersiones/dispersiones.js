@@ -20,14 +20,14 @@ if (node_env == 'production') {
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
   var key = envJSON[node_env].AZURE_KEY_STORAGE_D;
   var account = envJSON[node_env].AZURE_SACCOUNT_D;
-  var container = envJSON[node_env].AZURE_SCONTAINER_D;
+  var container = envJSON[node_env].AZURE_SCONTAINER_DISPERSION_D;
 } else {
   var certificado = envJSON[node_env].CERTS_URL_D;
   var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
-  var key = envJSON[node_env].AZURE_KEY_STORAGE_P;
-  var account = envJSON[node_env].AZURE_SACCOUNT_P;
-  var container = envJSON[node_env].AZURE_SCONTAINER_P;
+  var key = envJSON[node_env].AZURE_KEY_STORAGE_D;
+  var account = envJSON[node_env].AZURE_SACCOUNT_D;
+  var container = envJSON[node_env].AZURE_SCONTAINER_DISPERSION_P;
 }
 const KEY_STORAGE = key;
 const STORAGE_ACCOUNT = account;
