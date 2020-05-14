@@ -147,7 +147,7 @@ var controller = {
         return res.status(400).send(error);
       });
   },
-  /* 
+
   getReportDisper: async (req, res) => {
     var params = req.body;
     const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
@@ -204,7 +204,7 @@ var controller = {
           if (!actividad || actividad == '') return res.status(400).json({});
           if (actividad) return res.status(200).json(actividad);
         });
-  }, */
+  },
 };
 
 module.exports = controller;
