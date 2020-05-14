@@ -30,7 +30,7 @@ if (node_env == "production") {
 }
 
 var controller = {
-  reporteTransferencias: async (req, res) => {
+  getReportTransfer: async (req, res) => {
     // Conexión a la BD
     //const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();

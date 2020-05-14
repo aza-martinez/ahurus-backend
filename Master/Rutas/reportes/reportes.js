@@ -11,7 +11,6 @@ const userProfile = require('./../../Middleware/getUserProfile');
 
 // Rutas útiles
 router.post('/report/transfer', [], reportController.getReportTransfer);
-router.post('/report/track/:id?', [], reportController.getTrack);
 router.post('/report/balance/:id?', [], reportController.getBalance);
 router.post('/report/dispersion', [], reportController.getReportDisper);
 
