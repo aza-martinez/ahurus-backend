@@ -35,6 +35,8 @@ const STORAGE_CONTAINER = container;
 const MongooseConnect = require('./../../MongooseConnect');
 
 var controller = {
+  downloadFile: async (req, res) => {},
+
   saveFile: async (req, res) => {
     var file_name = 'Documento no subido..';
     const user = req.user['http://localhost:3000/user_metadata'].user;
