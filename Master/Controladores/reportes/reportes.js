@@ -38,14 +38,19 @@ var controller = {
 
     try {
       const params = req.body;
-      const { fechaInicial, fechaFinal, estatus, empresa } = params;
+      const { fechaInicial, fechaFinal, estatus, empresa, claveRastreo} = params;
   
-      let query = { estatus_stp: estatus, medio: "Transferencia" };
+      let query = { medio: "Transferencia" };
       
-      if(estatus && estatus !== 'ALL') query.estatus_stp = estatus;
-      if(empresa) query.empresa = empresa;
-      if(fechaInicial) query.fechaOperacion = { $gte: fechaInicial};
-      if(fechaFinal) query.fechaOperacion = { $lte: fechaFinal};
+      if(!claveRastreo) {
+        if(estatus && estatus !== 'ALL') query.estatus_stp = estatus;
+        if(estatus) query.estatus_stp = estatus;
+        if(empresa) query.empresa = empresa;
+        if(fechaInicial) query.fechaOperacion = { $gte: fechaInicial};
+        if(fechaFinal) query.fechaOperacion = { $lte: fechaFinal};
+      } else {
+        query.claveRastreo = claveRastreo;
+      }
 
       const transferencias = await Transferencia.find(query);
       
