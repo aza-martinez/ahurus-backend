@@ -38,26 +38,28 @@ var controller = {
 
     try {
       const params = req.body;
-      const { fechaInicial, fechaFinal, estatus, empresa, claveRastreo} = params;
+      const { fechaInicial, fechaFinal,  filtro, empresa, claveRastreo} = params;
   
       let query = { medio: "Transferencia" };
       
       if(!claveRastreo) {
-        if(estatus && estatus !== 'ALL') query.estatus_stp = estatus;
-        if(estatus) query.estatus_stp = estatus;
+        if(filtro && filtro !== 'ALL') query.estatus_stp = filtro;
         if(empresa) query.empresa = empresa;
         if(fechaInicial) query.fechaOperacion = { $gte: fechaInicial};
-        if(fechaFinal) query.fechaOperacion = { $lte: fechaFinal};
+        if(fechaFinal) query.fechaOperacion = { ...query.fechaOperacion, $lte: fechaFinal};
       } else {
         query.claveRastreo = claveRastreo;
       }
 
+      console.log(query);
       const transferencias = await Transferencia.find(query);
+   
+      await mongo.close();   
       
       if(!transferencias) return res.status(400);
 
-      await mongo.close();
       return res.send(transferencias);
+
     } catch (error) {
       await mongo.close();
       console.log(error);
