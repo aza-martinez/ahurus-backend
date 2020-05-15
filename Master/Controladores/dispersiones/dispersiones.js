@@ -106,13 +106,13 @@ var controller = {
               type: 'buffer',
             });
 
-            const referencia = workbook.Sheets['Hoja1']['!ref'];
+            const referencia = workbook.Sheets['Layout']['!ref'];
             const primeraFila = referencia.split(':')[0].substr(1);
             const ultimaFila = referencia.split(':')[1].substr(1);
 
-            delete workbook.Sheets['Hoja1']['!ref'];
-            delete workbook.Sheets['Hoja1']['!margins'];
-            const FILAS = workbook.Sheets['Hoja1'];
+            delete workbook.Sheets['Layout']['!ref'];
+            delete workbook.Sheets['Layout']['!margins'];
+            const FILAS = workbook.Sheets['Layout'];
 
             // const jsonToArray
 
@@ -134,30 +134,27 @@ var controller = {
                   registro['institucionContraparte'] = FILAS[fila]['w'];
                   break;
                 case 'B':
-                  registro['claveRastreo'] = FILAS[fila]['w'];
-                  break;
-                case 'C':
                   registro['nombreBeneficiario'] = FILAS[fila]['w'];
                   break;
-                case 'D':
+                case 'C':
                   registro['tipoPago'] = FILAS[fila]['w'];
                   break;
-                case 'E':
+                case 'D':
                   registro['tipoCuentaBeneficiario'] = FILAS[fila]['w'];
                   break;
-                case 'F':
+                case 'E':
                   registro['monto'] = FILAS[fila]['w'];
                   break;
-                case 'G':
+                case 'F':
                   registro['cuentaBeneficiario'] = FILAS[fila]['w'];
                   break;
-                case 'H':
+                case 'G':
                   registro['conceptoPago'] = FILAS[fila]['w'];
                   break;
-                case 'I':
+                case 'H':
                   registro['referenciaNumerica'] = FILAS[fila]['w'];
                   break;
-                case 'J':
+                case 'I':
                   registro['emailBeneficiario'] = FILAS[fila]['w'];
                   const centro_costo = JSON.parse(params.centroCosto);
 
@@ -192,7 +189,9 @@ var controller = {
 
                   var transferencia = new Transferencia();
                   // DATOS DE LA TRANSFERENCIA
-                  transferencia.claveRastreo = registro['claveRastreo'];
+
+                  let last_invoice = counter.invoice + 1;
+                  transferencia.claveRastreo = last_invoice;
                   transferencia.conceptoPago = registro['conceptoPago'].trim();
                   const conceptoPago2 = registro['conceptoPago2'];
                   transferencia.cuentaBeneficiario =
