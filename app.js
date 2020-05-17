@@ -5,17 +5,30 @@ var bodyParser = require('body-parser');
 var jwt = require('express-jwt');
 var jwks = require('jwks-rsa');
 var fs = require('fs');
-var https = require('https');
 var app = express();
-var envJSON = require("./env.variables.json");
-var node_env = process.env.NODE_ENV || "development";
-var puerto = process.env.PORT || 3002;
+var mongoose = require('mongoose');
+var https = require('https');
+var envJSON = require('./env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+
+mongoose.set('useFindAndModify', false);
+mongoose.Promise = global.Promise;
+
+if (node_env == 'production') {
+  var puerto = envJSON[node_env].PORT_P;
+  var key = envJSON[node_env].KEY_SSL_P;
+  var cert = envJSON[node_env].CERT_SSL_P;
+} else {
+  var puerto = envJSON[node_env].PORT_D;
+  var key = envJSON[node_env].KEY_SSL_D;
+  var cert = envJSON[node_env].CERT_SSL_D;
+}
 
 https
   .createServer(
     {
-      key: fs.readFileSync('./certs/SSL-PRODUCTION/STAR_ahurus_com_key.txt'),
-      cert: fs.readFileSync('./certs/SSL-PRODUCTION/star.ahurus.com.crt'),
+      key: fs.readFileSync(key),
+      cert: fs.readFileSync(cert),
     },
     app
   )
