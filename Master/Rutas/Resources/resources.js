@@ -1,7 +1,7 @@
 'use strict';
 
 var express = require('express');
-var resourcesController = require('../../Controladores/resources/resources');
+var resourcesController = require('../../Controladores/resources/resources.js');
 var router = express.Router();
 
 // Rutas útiles

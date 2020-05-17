@@ -1,13 +1,12 @@
 'use strict';
 var express = require('express');
 var bodyParser = require('body-parser');
-var jwt = require('express-jwt');
-var jwks = require('jwks-rsa');
+
 var fs = require('fs');
 var app = express();
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
-const resources_routes = require('./Master/Rutas/resources/resources');
+//const resources_routes = require('./Master/Rutas/resources/resources');
 const propietarios_routes = require('./Master/Rutas/propietarios/propietarios');
 const reportes_routes = require('./Master/Rutas/reportes/reportes');
 const plazas_routes = require('./Master/Rutas/plazas/plazas');
@@ -45,7 +44,7 @@ app.use((req, res, next) => {
 
 app.use('/api', [
   reportes_routes,
-  resources_routes,
+  // resources_routes,
   paises_nacimiento_routes,
   actividades_economicas_routes,
   entidades_federativas_routes,
