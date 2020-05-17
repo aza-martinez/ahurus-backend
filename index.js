@@ -28,8 +28,6 @@ if (node_env == 'production') {
     });
 } else {
   var puerto = envJSON[node_env].PORT_D;
-  var key = envJSON[node_env].KEY_SSL_D;
-  var cert = envJSON[node_env].CERT_SSL_D;
   app.listen(puerto, () => {
     console.log('Servidor corriendo en http://localhost: ' + puerto);
     console.log('ENTORNO: ' + node_env);
