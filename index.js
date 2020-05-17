@@ -3,6 +3,7 @@
 var mongoose = require('mongoose');
 var app = require('./app');
 var envJSON = require('./env.variables.json');
+var fs = require('fs');
 var https = require('https');
 var node_env = process.env.NODE_ENV || 'development';
 //NODE_ENV=production npm start

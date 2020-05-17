@@ -2,7 +2,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
-var fs = require('fs');
 var app = express();
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
