@@ -18,24 +18,27 @@ if (node_env == 'production') {
   var puerto = envJSON[node_env].PORT_P;
   var key = envJSON[node_env].KEY_SSL_P;
   var cert = envJSON[node_env].CERT_SSL_P;
+  https
+    .createServer(
+      {
+        key: fs.readFileSync(key),
+        cert: fs.readFileSync(cert),
+      },
+      app
+    )
+    .listen(puerto, function() {
+      console.log('Servidor Ahurus Corriendo En: ' + puerto);
+      console.log('ENTORNO: ' + node_env);
+    });
 } else {
   var puerto = envJSON[node_env].PORT_D;
   var key = envJSON[node_env].KEY_SSL_D;
   var cert = envJSON[node_env].CERT_SSL_D;
-}
-
-https
-  .createServer(
-    {
-      key: fs.readFileSync(key),
-      cert: fs.readFileSync(cert),
-    },
-    app
-  )
-  .listen(puerto, function() {
+  app.listen(puerto, function() {
     console.log('Servidor Ahurus Corriendo En: ' + puerto);
     console.log('ENTORNO: ' + node_env);
   });
+}
 
 const usuario_routes = require('./Master/Rutas/usuarios/usuarios');
 const resources_routes = require('./Master/Rutas/resources/resources');
