@@ -8,7 +8,7 @@ var Transferencia = require('../../Modelos/transferencias/transferencias');
 var azure = require('azure-storage');
 var XLSX = require('xlsx');
 const moment = require('moment');
-const Counter = require('../../Modelos/counters/counters');
+var Counter = require('../../Modelos/counters/counters');
 var crypto = require('crypto');
 const axios = require('axios');
 var envJSON = require('../../../env.variables.json');
@@ -33,6 +33,7 @@ const KEY_STORAGE = key;
 const STORAGE_ACCOUNT = account;
 const STORAGE_CONTAINER = container;
 const MongooseConnect = require('./../../MongooseConnect');
+const { nextTick } = require('process');
 
 var controller = {
 	downloadFile: async (req, res) => {},
@@ -58,6 +59,18 @@ var controller = {
 				},
 			}
 		);
+		var folioTrans = await Counter.findByIdAndUpdate(
+			{
+				_id: 'transferencias',
+			},
+			{
+				$inc: {
+					invoice: 1,
+				},
+			}
+		);
+
+		var ultimaTrans = folioTrans.invoice + 1;
 		console.log(folio.invoice);
 		var file_path = req.files.file_path.path;
 		var file_name = folio.invoice + '_' + req.files.file_path.originalFilename;
@@ -102,16 +115,17 @@ var controller = {
 					const FILAS = workbook.Sheets['LayoutDispersion'];
 
 					// const jsonToArrayvar
-
 					let jsonToArray = [];
 					let registro = {};
 
 					var fecha = new Date();
 					var fechaOperacion = moment(fechaMX).format('YYYYMMDD');
 					var fechaMX = moment(fecha).tz('America/Mexico_City');
-					Object.keys(FILAS).map(async (fila, index) => {
+
+					const prueba = await Object.keys(FILAS).map(async (fila, index) => {
 						if (fila.substr(1) === '1') {
 							delete FILAS[fila];
+
 							return;
 						}
 
@@ -144,6 +158,7 @@ var controller = {
 								registro['emailBeneficiario'] = FILAS[fila]['w'];
 								const centro_costo = JSON.parse(params.centroCosto);
 
+								ultimaTrans = ultimaTrans + 1;
 								//Codigo Para Guardar La Dispersion
 								registro['institucionOperante'] = '90646';
 								registro['empresa'] = centro_costo.nombreCentro;
@@ -173,19 +188,9 @@ var controller = {
 								registro['idSTP'] = '';
 								registro['descripcionError'] = '';
 
-								var transferencia = new Transferencia();
 								// DATOS DE LA TRANSFERENCIA
-								var folioTrans = await Counter.findByIdAndUpdate(
-									{
-										_id: 'transferencias',
-									},
-									{
-										$inc: {
-											invoice: 1,
-										},
-									}
-								);
-								var ultimaTrans = folioTrans.invoice + 1;
+
+								var transferencia = new Transferencia();
 								transferencia.claveRastreo = centro_costo.nombreCentro + ultimaTrans;
 								console.log(transferencia.claveRastreo);
 								transferencia.conceptoPago = registro['conceptoPago'].trim();
@@ -238,7 +243,7 @@ var controller = {
 								dispersion.estatus_stp = 'Pendiente';
 								dispersion.fechaOperacion = fechaOperacion;
 								dispersion.entorno = node_env;
-								dispersion.empresa = 'SEFINCE'; // req.user['http://localhost:3000/user_metadata'].empresa;
+								dispersion.empresa = 'SEFINCE'; /* req.user['http://localhost:3000/user_metadata'].empresa; */
 
 								// 1. Obtención de la cadena original.
 								var cadenaOriginal = `||${transferencia.institucionContraparte}|`;
@@ -295,6 +300,8 @@ var controller = {
 								await transferencia.save((err, transStored) => {
 									if (err || !transStored) {
 									}
+
+									console.log(transStored);
 								});
 
 								await dispersion.save((err, dispersionStored) => {
