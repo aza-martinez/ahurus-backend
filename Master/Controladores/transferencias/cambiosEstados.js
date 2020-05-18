@@ -9,8 +9,6 @@ var controller = {
   update: (req, res) => {
     var estadoID = req.params.id;
     var params = req.body;
-    console.log(req);
-    console.log(res);
     try {
     } catch (err) {}
     var estado = new Estado();
@@ -38,7 +36,6 @@ var controller = {
         if (!estadoUpdated) {
           return res.status(404).send({});
         }
-        console.log(estadoUpdated);
         return res.status(200).send({
           estadoUpdated,
         });
