@@ -11,7 +11,6 @@ mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise;
 
 //HTTPS
-
 if (node_env === "production") {
   const  puerto = envJSON[node_env].PORT_P;
   const key = envJSON[node_env].KEY_SSL_P;
