@@ -113,14 +113,10 @@ var controller = {
   },
 
   getReportDisper: async (req, res) => {
-    var params = req.body;
-    const fechaInicial = params.fechaInicial; // ejemplo: '2019/03/26'
-    const fechaFinal = params.fechaFinal;
-    const tipo = params.tipo;
-    const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const {fechaInicial, fechaFinal, estatus } = req.body;
+    //const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-    let filter = params.filter;
-    await mongo.connect(SERVER_BD);
+    await mongo.connect('sefince');
 
     console.log(fechaInicial);
     console.log(fechaFinal);

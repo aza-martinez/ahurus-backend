@@ -10,7 +10,7 @@ var puerto = process.env.PORT || 3002;
 mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise;
 
-/*app.listen(puerto, () => {
+app.listen(puerto, () => {
   console.log('Servidor corriendo en http://localhost: ' + puerto);
   console.log('ENTORNO: ' + node_env);
-})*/
+})
