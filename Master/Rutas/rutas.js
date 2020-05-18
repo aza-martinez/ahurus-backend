@@ -22,8 +22,8 @@ const EntitiesController = require('../Controladores/EntidadesFederativas/Entida
 const ErrorController = require('../Controladores/errores/errores');
 const AccountsController = require('../Controladores/cuentas/cuentas');
 const OwnersController = require('../Controladores/propietarios/index');
-const OwnerValidate = require('./../Controladores/cuentas/validarPropietarioExistente');
-const AccountValidate = require('./../Middleware/validate/validateCuenta');
+const validarPropietario = require('./../Controladores/cuentas/validarPropietarioExistente');
+const validateCuenta = require('./../Middleware/validate/validateCuenta');
 const DispersionController = require('../Controladores/dispersiones/dispersiones');
 const PlazasController = require('../Controladores/plazas/plazas');
 const CountriesController = require('./../Controladores/PaisesNacimiento');
@@ -83,7 +83,7 @@ router.get('/cuentas/propietarios/listarA/:last?', auth0, AccountsController.get
 router.get('/cuentas/propietarios/buscar/:search', [auth0], AccountsController.getPropietario);
 router.get('/cuentas/propietarios/listar/:search', [auth0], AccountsController.getCuentasPropietarios);
 router.get('/cuentas/listarCuentas/:last?', [auth0], AccountsController.getCuentas);
-router.post('/cuentas/guardar', [auth0, AccountValidate], AccountsController.save);
+router.post('/cuentas/guardar', [auth0, validateCuenta], AccountsController.save);
 router.post('/cuentas/importar', [auth0, multipartMiddleware], OwnersController.saveFile);
 router.put('/cuenta/desactivar/:id', [auth0], AccountsController.hide);
 router.put('/cuenta/modificar/:id', [auth0], AccountsController.update);
@@ -120,7 +120,7 @@ router.get('/plazas/listar/:last?', [auth0], PlazasController.getPlazas);
 router.get('/plaza/buscar/:id', [auth0], PlazasController.getPlaza);
 router.get('/plazas/filtrar/:search', [auth0], PlazasController.search);
 //Rutas De Los Propietarios.
-router.post('/propietario/guardar', [auth0, OwnerValidate], (...args) => OwnersController.crearPropietario(...args));
+router.post('/propietario/guardar', [auth0, validarPropietario], (...args) => OwnersController.crearPropietario(...args));
 router.get('/propietarios/personasFisicas/listarI', [auth0], (...args) => OwnersController.getPropietariosPFI(...args));
 router.get('/propietarios/personasFisicas/listarA', [auth0], (...args) => OwnersController.getPropietariosPFA(...args));
 router.get('/propietarios/personasMorales/listarI/:last?', [auth0], (...args) => OwnersController.getPropietariosPMI(...args));
