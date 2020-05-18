@@ -1,4 +1,4 @@
-const validator = require("validator");
+const validator = require('validator');
 
 const validateCuenta = (req, res, next) => {
   try {
@@ -18,7 +18,7 @@ const validateCuenta = (req, res, next) => {
 
     next();
   } catch (error) {
-    return res.status(400).send("Faltan Datos Cuenta...");
+    return res.status(400).send('Faltan Datos Cuenta...');
   }
 };
 

@@ -1,21 +1,21 @@
-"use strict";
+'use strict';
 
-const Transferencia = require("../../Modelos/transferencias/transferencias");
-const Dispersion = require("../../Modelos/dispersiones/dispersiones");
-const MongooseConnect = require("./../../MongooseConnect");
-const moment = require("moment");
-const momentz = require("moment-timezone");
-const Counter = require("../../Modelos/counters/counters");
-const fs = require("fs");
-var path = require("path");
-const crypto = require("crypto");
-const axios = require("axios");
-const https = require("https");
-var envJSON = require("../../../env.variables.json");
-var node_env = process.env.NODE_ENV || "development";
+const Transferencia = require('../../Modelos/transferencias/transferencias');
+const Dispersion = require('../../Modelos/dispersiones/dispersiones');
+const MongooseConnect = require('./../../MongooseConnect');
+const moment = require('moment');
+const momentz = require('moment-timezone');
+const Counter = require('../../Modelos/counters/counters');
+const fs = require('fs');
+var path = require('path');
+const crypto = require('crypto');
+const axios = require('axios');
+const https = require('https');
+var envJSON = require('../../../env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
 const DateGenerator = require('./../../helpers/DateGenerator');
 
-if (node_env == "production") {
+if (node_env == 'production') {
   var certificado = envJSON[node_env].CERTS_URL_P;
   var passphrase = envJSON[node_env].PASSPHRASE_CERT_P;
   var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
@@ -34,35 +34,39 @@ var controller = {
     // Conexión a la BD
     //const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
-    await mongo.connect("sefince");
+    await mongo.connect('sefince');
 
     try {
       const params = req.body;
-      const { fechaInicial, fechaFinal,  filtro, empresa, claveRastreo} = params;
-  
-      let query = { medio: "Transferencia" };
-      
-      if(!claveRastreo) {
-        if(filtro && filtro !== 'ALL') query.estatus_stp = filtro;
-        if(empresa) query.empresa = empresa;
-        if(fechaInicial) query.fechaOperacion = { $gte: fechaInicial};
-        if(fechaFinal) query.fechaOperacion = { ...query.fechaOperacion, $lte: fechaFinal};
+      const {
+        fechaInicial,
+        fechaFinal,
+        filtro,
+        empresa,
+        claveRastreo,
+      } = params;
+
+      let query = { medio: 'Transferencia' };
+
+      if (!claveRastreo) {
+        if (filtro && filtro !== 'ALL') query.estatus_stp = filtro;
+        if (empresa) query.empresa = empresa;
+        if (fechaInicial) query.fechaOperacion = { $gte: fechaInicial };
+        if (fechaFinal)
+          query.fechaOperacion = { ...query.fechaOperacion, $lte: fechaFinal };
       } else {
         query.claveRastreo = claveRastreo;
       }
 
-      console.log(query);
       const transferencias = await Transferencia.find(query);
-   
-      await mongo.close();   
-      
-      if(!transferencias) return res.status(400);
+
+      await mongo.close();
+
+      if (!transferencias) return res.status(400);
 
       return res.send(transferencias);
-
     } catch (error) {
       await mongo.close();
-      console.log(error);
       return res.status(500).send('Error interno');
     }
   },
@@ -72,8 +76,7 @@ var controller = {
     const cuentaOrdenante = params.cuentaOrdenante; // ejemplo: '20190326'
     let cadenaOriginal = cuentaOrdenante;
     const private_key = fs.readFileSync(certificado, 'utf-8');
-    console.log(cadenaOriginal);
-    const signer = crypto.createSign("sha256");
+    const signer = crypto.createSign('sha256');
     signer.update(cadenaOriginal);
     signer.end();
     const signature = signer.sign(
@@ -81,9 +84,8 @@ var controller = {
         key: private_key,
         passphrase: passphrase,
       },
-      "base64"
+      'base64'
     );
-    console.log(signature);
     var consultaSaldoCuenta = {
       cuentaOrdenante: cuentaOrdenante,
       firma: signature,
@@ -107,63 +109,39 @@ var controller = {
         }
       })
       .catch(async (error) => {
-        console.log(error);
         return res.status(400).send(error);
       });
   },
 
   getReportDisper: async (req, res) => {
-    const {fechaInicial, fechaFinal, estatus } = req.body;
     //const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect('sefince');
 
-    console.log(fechaInicial);
-    console.log(fechaFinal);
-    console.log(filter);
+    try {
+      const {fechaInicial, fechaFinal, estatus } = req.body;
+      const query = {};
 
-    if (
-      filter === "ALL" &&
-      fechaInicial != undefined &&
-      fechaFinal != undefined
-    ) {
-      Dispersion.find({
-        estatus_stp: tipo,
-        fechaOperacion: { $gte: fechaInicial },
-        fechaOperacion: { $lte: fechaFinal },
-      })
-        .populate("idTransferencia")
-        .exec(async (err, actividad) => {
-          const close = await mongo.close();
-          if (err || err == "null") return res.status(500).json({});
-          if (!actividad || actividad == "") return res.status(400).json({});
-          if (actividad) return res.status(200).json(actividad);
-        });
-    } else if (fechaInicial != undefined && fechaFinal != undefined) {
-      Dispersion.find({
-        estatus_stp: tipo,
-        fechaOperacion: { $gte: fechaInicial },
-        fechaOperacion: { $lte: fechaFinal },
-        empresa: filter,
-      })
-        .populate("idTransferencia")
-        .exec(async (err, actividad) => {
-          const close = await mongo.close();
-          if (err || err == "null") return res.status(500).json({});
-          if (!actividad || actividad == "") return res.status(400).json({});
-          if (actividad) return res.status(200).json(actividad);
-        });
-    } else
-      Dispersion.find({
-        estatus_stp: tipo,
-      })
-        .populate("idTransferencia")
-        .exec(async (err, actividad) => {
-          const close = await mongo.close();
-          if (err || err == "null") return res.status(500).json({});
-          if (!actividad || actividad == "") return res.status(400).json({});
-          if (actividad) return res.status(200).json(actividad);
-        });
+      //estatus debe ser obligatorio
+      if(!estatus) return res.status(404).send('No se enviaron parametros necesarios');
+
+      query.estatus_stp = estatus;
+
+      if (fechaInicial) query.fechaOperacion = { $gte: fechaInicial };
+      if (fechaFinal)
+        query.fechaOperacion = { ...query.fechaOperacion, $lte: fechaFinal };
+    
+      const dispersiones = await Dispersion.find(query).populate('idTransferencia');
+      await mongo.close();
+
+      if(!dispersiones) return res.status(404).send('No se ha podido realizar la consulta');
+
+      return res.send(dispersiones);
+    } catch (error) {
+      console.log(error);
+      await mongo.close();
+      return res.status(500).send('Error Interno');
+    }
   },
 };
 

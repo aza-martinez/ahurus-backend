@@ -1,23 +1,23 @@
-"use strict";
+'use strict';
 
-const https = require("https");
-var request = require("request");
-const PropietarioModel = require("../../Modelos/propietarios/propietarios");
-const fs = require("fs");
-const Cuenta = require("../../Modelos/cuentas/cuentas");
-var azure = require("azure-storage");
-var XLSX = require("xlsx");
-const moment = require("moment");
+const https = require('https');
+var request = require('request');
+const PropietarioModel = require('../../Modelos/propietarios/propietarios');
+const fs = require('fs');
+const Cuenta = require('../../Modelos/cuentas/cuentas');
+var azure = require('azure-storage');
+var XLSX = require('xlsx');
+const moment = require('moment');
 const Counter = require('../../Modelos/counters/counters');
-var crypto = require("crypto");
-const axios = require("axios");
+var crypto = require('crypto');
+const axios = require('axios');
 const URL_STP_REGISTRO_CUENTA =
-  "https://demo.stpmex.com:7024/speidemows/rest/cuentaModule/fisica";
+  'https://demo.stpmex.com:7024/speidemows/rest/cuentaModule/fisica';
 const MongooseConnect = require('./../../MongooseConnect');
 const KEY_STORAGE =
-  "ytq2QZ6b5mqLZxj8BD5Js2ZEHCMpZSVSCYjGXniHE8/YO1jPakmL+RMMwG/nLXxh1lrKcES74na5NCR3hE+K6g==";
-const STORAGE_ACCOUNT = "smahurus";
-const STORAGE_CONTAINER = "propietarios";
+  'ytq2QZ6b5mqLZxj8BD5Js2ZEHCMpZSVSCYjGXniHE8/YO1jPakmL+RMMwG/nLXxh1lrKcES74na5NCR3hE+K6g==';
+const STORAGE_ACCOUNT = 'smahurus';
+const STORAGE_CONTAINER = 'propietarios';
 
 class PropietarioController {
   constructor() {
@@ -34,7 +34,7 @@ class PropietarioController {
 
       // OBTENEMOS FECHA
       var fecha = new Date();
-      var fechaMX = moment(fecha).tz("America/Mexico_City");
+      var fechaMX = moment(fecha).tz('America/Mexico_City');
 
       // CREAMOS INSTANCIA DE PROPIETARIO Y SETEAMOS VALORES
       const propietario = new this.model();
@@ -64,22 +64,23 @@ class PropietarioController {
       propietario.timestamp = fechaMX._d;
       propietario.tipo_propietario = params.tipo_propietario;
 
-      await this.model.exists({
-          rfc: params.rfc
+      await this.model.exists(
+        {
+          rfc: params.rfc,
         },
         async (err, existePropietario) => {
           if (err) return res.status(500).send({});
 
           if (existePropietario)
-            return res.status(400).send("Propietario ya existente");
+            return res.status(400).send('Propietario ya existente');
 
           await propietario.save(async (err, propietarioStored) => {
             const close = await mongo.close();
             if (err || !propietarioStored)
-              return res.status(400).send("No se pudo guardar el propietario");
+              return res.status(400).send('No se pudo guardar el propietario');
 
             return res.status(200).send({
-              ...propietarioStored._doc
+              ...propietarioStored._doc,
             });
           });
         }
@@ -94,28 +95,20 @@ class PropietarioController {
     const firma = await this.generarFirma(propietario, cuenta);
 
     const agent = new https.Agent({
-      rejectUnauthorized: false
+      rejectUnauthorized: false,
     });
     const query = {
       ...propietario,
       firma,
-      cuenta: cuenta.clabe
+      cuenta: cuenta.clabe,
     };
 
     const response = await axios
       .put(URL_STP_REGISTRO_CUENTA, query, {
-        httpsAgent: agent
+        httpsAgent: agent,
       })
-      .then(({
-        data
-      }) => {
-        console.log("==== data registrar propietario");
-        console.log(data);
-      })
-      .catch(e => {
-        console.log("=== ERROR CATCH AXIOS ====");
-        console.log(e);
-      });
+      .then(({ data }) => {})
+      .catch((e) => {});
     return response;
   }
 
@@ -125,18 +118,19 @@ class PropietarioController {
     cadenaOriginal += `${propietario.rfcCurp}||`;
 
     const private_key = await fs.readFileSync(
-      "certs/RPF/prueba-key.pem",
-      "utf-8"
+      'certs/RPF/prueba-key.pem',
+      'utf-8'
     );
-    const signer = await crypto.createSign("sha256");
+    const signer = await crypto.createSign('sha256');
     await signer.update(cadenaOriginal);
     await signer.end();
 
-    const signature = await signer.sign({
+    const signature = await signer.sign(
+      {
         key: private_key,
-        passphrase: "12345678"
+        passphrase: '12345678',
       },
-      "base64"
+      'base64'
     );
 
     return signature;
@@ -156,11 +150,13 @@ class PropietarioController {
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    this.model.findOneAndUpdate({
-        _id: propietarioId
+    this.model.findOneAndUpdate(
+      {
+        _id: propietarioId,
       },
-      params, {
-        new: true
+      params,
+      {
+        new: true,
       },
       async (err, propietarioUpdated) => {
         const close = await mongo.close();
@@ -168,7 +164,7 @@ class PropietarioController {
         if (err) return res.status(500).send({});
 
         return res.status(200).send({
-          propietarioUpdated
+          propietarioUpdated,
         });
       }
     );
@@ -181,15 +177,14 @@ class PropietarioController {
 
     const query = this.model
       .find({
-        tipo_propietario: "personaFisica",
-        estatus: true
+        tipo_propietario: 'personaFisica',
+        estatus: true,
       })
-      .populate("paisNacimiento")
-      .populate("entidadFederativa")
-      .populate("actividadEconomica");
+      .populate('paisNacimiento')
+      .populate('entidadFederativa')
+      .populate('actividadEconomica');
 
-    query.sort("-_id").exec(async (err, propietarios) => {
-      console.log(propietarios);
+    query.sort('-_id').exec(async (err, propietarios) => {
       const close = await mongo.close();
 
       if (err) return res.status(500).send({});
@@ -213,23 +208,21 @@ class PropietarioController {
       if (err || !propietarioId) return res.status(404).send({});
 
       return res.status(200).send({
-        ...propietario._doc
+        ...propietario._doc,
       });
     });
   }
 
   async getPropietarios(req, res) {
-
     const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     const query = this.model.find({
-      estatus: true
+      estatus: true,
     });
 
-    const propietarios = query.sort("_id").exec(async (err, propietarios) => {
-      console.log('PROPIETARIOS', propietarios);
+    const propietarios = query.sort('_id').exec(async (err, propietarios) => {
       const close = await mongo.close();
 
       if (err) return res.status(500).send({});
@@ -246,11 +239,11 @@ class PropietarioController {
     await mongo.connect(SERVER_BD);
 
     const query = this.model.find({
-      tipo_propietario: "personaMoral",
-      estatus: false
+      tipo_propietario: 'personaMoral',
+      estatus: false,
     });
 
-    query.sort("-_id").exec(async (err, propietarios) => {
+    query.sort('-_id').exec(async (err, propietarios) => {
       const close = await mongo.close();
 
       if (err) return res.status(500).send({});
@@ -261,17 +254,16 @@ class PropietarioController {
     });
   }
   async getPropietariosPMA(req, res) {
-
     const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
     const query = this.model.find({
-      tipo_propietario: "personaMoral",
-      estatus: true
+      tipo_propietario: 'personaMoral',
+      estatus: true,
     });
 
-    query.sort("-_id").exec(async (err, propietarios) => {
+    query.sort('-_id').exec(async (err, propietarios) => {
       const close = await mongo.close();
 
       if (err) return res.status(500).send({});
@@ -288,11 +280,11 @@ class PropietarioController {
     await mongo.connect(SERVER_BD);
 
     const query = this.model.find({
-      tipo_propietario: "personaFisica",
-      estatus: false
+      tipo_propietario: 'personaFisica',
+      estatus: false,
     });
 
-    query.sort("-_id").exec(async (err, propietarios) => {
+    query.sort('-_id').exec(async (err, propietarios) => {
       const close = await mongo.close();
 
       if (err) return res.status(500).send({});
@@ -304,27 +296,29 @@ class PropietarioController {
   }
 
   async saveFile(req, res) {
-    var file_name = "Documento no subido..";
+    var file_name = 'Documento no subido..';
     const user = req.user['http://localhost:3000/user_metadata'].user;
     var params = req.body;
     if (!req.files) {
-      console.log(req.files);
       return res.status(404).send({});
     }
     const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
 
-    const folio = await Counter.findByIdAndUpdate({
-      _id: 'propietarios'
-    }, {
-      $inc: {
-        invoice: 1
+    const folio = await Counter.findByIdAndUpdate(
+      {
+        _id: 'propietarios',
+      },
+      {
+        $inc: {
+          invoice: 1,
+        },
       }
-    })
+    );
     var file_path = req.files.file.path;
     var file_name = folio.invoice + '_' + req.files.file.originalFilename;
-    var extension_split = file_name.split(".");
+    var extension_split = file_name.split('.');
     var file_ext = extension_split[1];
     const blobService = azure.createBlobService(STORAGE_ACCOUNT, KEY_STORAGE);
     let fileStorage = null;
@@ -335,8 +329,8 @@ class PropietarioController {
       AccessPolicy: {
         Permissions: azure.BlobUtilities.SharedAccessPermissions.READ,
         start: startDate,
-        Expiry: azure.date.minutesFromNow(20)
-      }
+        Expiry: azure.date.minutesFromNow(20),
+      },
     };
     await blobService.createBlockBlobFromLocalFile(
       STORAGE_CONTAINER,
@@ -359,178 +353,183 @@ class PropietarioController {
           true
         );
 
-        request(fileURLStorage, {
-          encoding: null
-        }, async (error, response, body) => {
-          var workbook = XLSX.read(body, {
-            type: "buffer"
-          });
+        request(
+          fileURLStorage,
+          {
+            encoding: null,
+          },
+          async (error, response, body) => {
+            var workbook = XLSX.read(body, {
+              type: 'buffer',
+            });
 
-          const referencia = workbook.Sheets["Hoja1"]["!ref"];
-          const primeraFila = referencia.split(":")[0].substr(1);
-          const ultimaFila = referencia.split(":")[1].substr(1);
+            const referencia = workbook.Sheets['Hoja1']['!ref'];
+            const primeraFila = referencia.split(':')[0].substr(1);
+            const ultimaFila = referencia.split(':')[1].substr(1);
 
-          delete workbook.Sheets["Hoja1"]["!ref"];
-          delete workbook.Sheets["Hoja1"]["!margins"];
-          const FILAS = workbook.Sheets["Hoja1"];
+            delete workbook.Sheets['Hoja1']['!ref'];
+            delete workbook.Sheets['Hoja1']['!margins'];
+            const FILAS = workbook.Sheets['Hoja1'];
 
-          // const jsonToArray
+            // const jsonToArray
 
-          let jsonToArray = [];
-          let registro = {};
+            let jsonToArray = [];
+            let registro = {};
 
-          var fecha = new Date();
-          var fechaOperacion = moment(fechaMX).format("YYYYMMDD");
-          var fechaMX = moment(fecha).tz("America/Mexico_City");
+            var fecha = new Date();
+            var fechaOperacion = moment(fechaMX).format('YYYYMMDD');
+            var fechaMX = moment(fecha).tz('America/Mexico_City');
 
-          Object.keys(FILAS).map(async (fila, index) => {
-            if (fila.substr(1) === "1") {
-              delete FILAS[fila];
-              return;
-            }
+            Object.keys(FILAS).map(async (fila, index) => {
+              if (fila.substr(1) === '1') {
+                delete FILAS[fila];
+                return;
+              }
 
-            switch (fila.substr(0, 1)) {
-              case "A":
-                registro["razon_social"] = FILAS[fila]["w"];
-                break;
-              case "B":
-                registro["rfc"] = FILAS[fila]["w"];
-                break;
-              case "C":
-                registro["nombre"] = FILAS[fila]["w"];
-                break;
-              case "D":
-                registro["apellidoPaterno"] = FILAS[fila]["w"];
-                break;
-              case "E":
-                registro["apellidoMaterno"] = FILAS[fila]["w"];
-                break;
-              case "F":
-                registro["id_terceros"] = FILAS[fila]["w"];
-                break;
-              case "G":
-                registro["correo1"] = FILAS[fila]["w"];
-                break;
-              case "H":
-                registro["genero"] = FILAS[fila]["w"];
-                break;
-              case "I":
-                registro["nombre_contacto"] = FILAS[fila]["w"];
-                break;
-              case "J":
-                registro["telefono"] = FILAS[fila]["w"];
-                break;
-              case "K":
-                registro["tipo_propietario"] = FILAS[fila]["w"];
-                break;
-              case "L":
-                registro["paisNacimiento"] = FILAS[fila]["w"];
-                break;
-              case "M":
-                registro["entidadFederativa"] = FILAS[fila]["w"];
-                break;
-              case "N":
-                registro["municipio"] = FILAS[fila]["w"];
-                break;
-              case "O":
-                registro["codigoPostal"] = FILAS[fila]["w"];
-                break;
-              case "P":
-                registro["colonia"] = FILAS[fila]["w"];
-                break;
-              case "Q":
-                registro["calle"] = FILAS[fila]["w"];
-                break;
-              case "R":
-                registro["numInterior"] = FILAS[fila]["w"];
-                break;
-              case "S":
-                registro["numExterior"] = FILAS[fila]["w"];
-                break;
-              case "T":
-                registro["tipoCuenta"] = FILAS[fila]["w"];
-                break;
-              case "V":
-                registro["descripcion"] = FILAS[fila]["w"];
-                break;
-              case "W":
-                registro["tarjeta_clabe"] = FILAS[fila]["w"];
-                break;
-              case "X":
-                registro["banco"] = FILAS[fila]["w"];
-                break;
-              case "Y":
-                registro["tipo_registro"] = FILAS[fila]["w"];
+              switch (fila.substr(0, 1)) {
+                case 'A':
+                  registro['razon_social'] = FILAS[fila]['w'];
+                  break;
+                case 'B':
+                  registro['rfc'] = FILAS[fila]['w'];
+                  break;
+                case 'C':
+                  registro['nombre'] = FILAS[fila]['w'];
+                  break;
+                case 'D':
+                  registro['apellidoPaterno'] = FILAS[fila]['w'];
+                  break;
+                case 'E':
+                  registro['apellidoMaterno'] = FILAS[fila]['w'];
+                  break;
+                case 'F':
+                  registro['id_terceros'] = FILAS[fila]['w'];
+                  break;
+                case 'G':
+                  registro['correo1'] = FILAS[fila]['w'];
+                  break;
+                case 'H':
+                  registro['genero'] = FILAS[fila]['w'];
+                  break;
+                case 'I':
+                  registro['nombre_contacto'] = FILAS[fila]['w'];
+                  break;
+                case 'J':
+                  registro['telefono'] = FILAS[fila]['w'];
+                  break;
+                case 'K':
+                  registro['tipo_propietario'] = FILAS[fila]['w'];
+                  break;
+                case 'L':
+                  registro['paisNacimiento'] = FILAS[fila]['w'];
+                  break;
+                case 'M':
+                  registro['entidadFederativa'] = FILAS[fila]['w'];
+                  break;
+                case 'N':
+                  registro['municipio'] = FILAS[fila]['w'];
+                  break;
+                case 'O':
+                  registro['codigoPostal'] = FILAS[fila]['w'];
+                  break;
+                case 'P':
+                  registro['colonia'] = FILAS[fila]['w'];
+                  break;
+                case 'Q':
+                  registro['calle'] = FILAS[fila]['w'];
+                  break;
+                case 'R':
+                  registro['numInterior'] = FILAS[fila]['w'];
+                  break;
+                case 'S':
+                  registro['numExterior'] = FILAS[fila]['w'];
+                  break;
+                case 'T':
+                  registro['tipoCuenta'] = FILAS[fila]['w'];
+                  break;
+                case 'V':
+                  registro['descripcion'] = FILAS[fila]['w'];
+                  break;
+                case 'W':
+                  registro['tarjeta_clabe'] = FILAS[fila]['w'];
+                  break;
+                case 'X':
+                  registro['banco'] = FILAS[fila]['w'];
+                  break;
+                case 'Y':
+                  registro['tipo_registro'] = FILAS[fila]['w'];
 
-                var propietario = new PropietarioModel();
-                propietario.id_terceros = registro["id_terceros"];
-                propietario.nombre = registro["nombre"].trim();
-                propietario.apellidoPaterno = registro["apellidoPaterno"].trim();
-                propietario.apellidoMaterno = registro["apellidoMaterno"].trim();
-                propietario.timestamp = fechaMX._d;
-                propietario.estatus = true;
-                propietario.nombreCompleto = `${propietario.nombre}${propietario.apellidoPaterno}${propietario.apellidoMaterno}`;
-                propietario.rfc = registro["rfc"].trim();
-                propietario.razon_social = registro["razon_social"].trim();
-                propietario.correo1 = registro["correo1"].trim();
-                propietario.genero = registro["genero"].trim();
-                propietario.nombre_contacto = registro["nombre_contacto"].trim();
-                propietario.telefono = registro["telefono"].trim();
-                propietario.tipo_propietario = registro["tipo_propietario"].trim();
-                propietario.paisNacimiento = registro["paisNacimiento"].trim();
-                propietario.entidadFederativa = registro["entidadFederativa"].trim();
-                propietario.municipio = registro["municipio"].trim();
-                propietario.codigoPostal = registro["codigoPostal"];
-                propietario.colonia = registro["colonia"].trim();
-                propietario.calle = registro["calle"].trim();
-                propietario.numInterior = registro["numInterior"];
-                propietario.numExterior = registro["numExterior"];
+                  var propietario = new PropietarioModel();
+                  propietario.id_terceros = registro['id_terceros'];
+                  propietario.nombre = registro['nombre'].trim();
+                  propietario.apellidoPaterno = registro[
+                    'apellidoPaterno'
+                  ].trim();
+                  propietario.apellidoMaterno = registro[
+                    'apellidoMaterno'
+                  ].trim();
+                  propietario.timestamp = fechaMX._d;
+                  propietario.estatus = true;
+                  propietario.nombreCompleto = `${propietario.nombre}${propietario.apellidoPaterno}${propietario.apellidoMaterno}`;
+                  propietario.rfc = registro['rfc'].trim();
+                  propietario.razon_social = registro['razon_social'].trim();
+                  propietario.correo1 = registro['correo1'].trim();
+                  propietario.genero = registro['genero'].trim();
+                  propietario.nombre_contacto = registro[
+                    'nombre_contacto'
+                  ].trim();
+                  propietario.telefono = registro['telefono'].trim();
+                  propietario.tipo_propietario = registro[
+                    'tipo_propietario'
+                  ].trim();
+                  propietario.paisNacimiento = registro[
+                    'paisNacimiento'
+                  ].trim();
+                  propietario.entidadFederativa = registro[
+                    'entidadFederativa'
+                  ].trim();
+                  propietario.municipio = registro['municipio'].trim();
+                  propietario.codigoPostal = registro['codigoPostal'];
+                  propietario.colonia = registro['colonia'].trim();
+                  propietario.calle = registro['calle'].trim();
+                  propietario.numInterior = registro['numInterior'];
+                  propietario.numExterior = registro['numExterior'];
 
-                var cuenta = new Cuenta();
-                //DATOS DE LA CUENTA
-                cuenta.tipo_cuenta = registro["tipoCuenta"]; //id
-                cuenta.descripcion = registro["descripcion"];
-                cuenta.timestamp = fechaMX._d;
-                cuenta.estatus = true;
-                cuenta.clabe = registro["tarjeta_clabe"];
-                cuenta.tipo_registro = registro["tipo_registro"];
-                cuenta.institucion = registro["banco"]; //id
+                  var cuenta = new Cuenta();
+                  //DATOS DE LA CUENTA
+                  cuenta.tipo_cuenta = registro['tipoCuenta']; //id
+                  cuenta.descripcion = registro['descripcion'];
+                  cuenta.timestamp = fechaMX._d;
+                  cuenta.estatus = true;
+                  cuenta.clabe = registro['tarjeta_clabe'];
+                  cuenta.tipo_registro = registro['tipo_registro'];
+                  cuenta.institucion = registro['banco']; //id
 
-                //propietario.cuenta = cuenta._id;
-                //cuenta.propietario.push(propietario._id);
-                await propietario.save((err, propietarioStored) => {
-                  if (err || !propietarioStored) {
-                    console.log(err);
-                  }
-                  // console.log(propietarioStored);
-                });
+                  //propietario.cuenta = cuenta._id;
+                  //cuenta.propietario.push(propietario._id);
+                  await propietario.save((err, propietarioStored) => {
+                    if (err || !propietarioStored) {
+                    }
+                  });
 
-                await cuenta.save((err, cuentaStored) => {
-                  if (err || !cuentaStored) {
-                    console.log(err);
-                  }
-                  //console.log(cuentaStored);
-                });
-                break;
-              default:
-                break;
-
-            }
-          });
-          return res.status(200).send({});
-        });
+                  await cuenta.save((err, cuentaStored) => {
+                    if (err || !cuentaStored) {
+                    }
+                  });
+                  break;
+                default:
+                  break;
+              }
+            });
+            return res.status(200).send({});
+          }
+        );
 
         return;
       }
-
     );
     const close = await mongo.close();
   }
-
-
-
-
-
 }
 
 module.exports = new PropietarioController();

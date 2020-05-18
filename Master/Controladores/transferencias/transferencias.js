@@ -128,7 +128,6 @@ const controller = {
         cadenaOriginal += `${prioridad}|`;
         cadenaOriginal += `${transferencias.iva}||`;
         const private_key = fs.readFileSync(certificado, 'utf-8');
-        console.log(cadenaOriginal);
         const signer = crypto.createSign('sha256');
         signer.update(cadenaOriginal);
         signer.end();
@@ -166,7 +165,6 @@ const controller = {
         ...transferenciaFind._doc,
       };
 
-      console.log(transferencia);
       delete transferencia.estatus_stp;
       delete transferencia.timestamp;
       delete transferencia.idSTP;
@@ -176,17 +174,9 @@ const controller = {
       delete transferencia.estatus;
       delete transferencia._id;
 
-      console.log(transferencia);
-      /*     /return;
-                global.dataT = {
-
-                    ...transferenciaFind._doc
-                }; */
       const agent = new https.Agent({
         rejectUnauthorized: false,
       });
-      /* console.log(endpoint_stp);
-            console.log(transferencia); */
       await axios
         .put(endpoint_stp, transferencia, {
           httpsAgent: agent,
@@ -209,7 +199,6 @@ const controller = {
                   .send('ERROR: ' + response.data.resultado.descripcionError);
               }
             );
-            // console.log(response);
           }
 
           if (!response.data.resultado.descripcionError) {
@@ -224,7 +213,6 @@ const controller = {
               },
               async (err, transferenciaUpdated) => {
                 const close = await mongo.close();
-                console.log(response);
                 return res
                   .status(200)
                   .send('EJECUTADA CON EL ID: ' + response.data.resultado.id);
@@ -233,7 +221,6 @@ const controller = {
           }
         })
         .catch(async (error) => {
-          console.log(error);
           const close = await mongo.close();
           return res.status(400).send(error);
         });
@@ -410,7 +397,6 @@ const controller = {
     // NUEVO OBTENER EMPRESA
     const now = new Date();
     const fechaMX = moment(now).tz('America/Mexico_City').format('YYYYMMDD');
-    console.log(req.user['http://localhost:3000/user_metadata']);
     const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
     const mongo = new MongooseConnect();
     await mongo.connect(SERVER_BD);
@@ -426,7 +412,6 @@ const controller = {
       .sort([['date', 'descending']])
       .exec(async (err, Transferencias) => {
         const close = await mongo.close();
-
         if (err) return res.status(500).send({});
 
         if (!Transferencias && Transferencias.length <= 0)
@@ -454,7 +439,6 @@ const controller = {
   response: async (req, res) => {
     // DESTRUCTURING CAMBIO DE ESTADO
     const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
-    console.log('CAMBIO DE ESTADO: ', id);
     const mongo = new MongooseConnect();
     await mongo.connect(empresa.toLowerCase());
 
@@ -501,7 +485,6 @@ const controller = {
       });
     } catch (error) {
       await mongo.close();
-      console.log(error);
       return res.status(500).send('Error Interno');
     }
   },
@@ -561,7 +544,6 @@ const controller = {
       },
       'base64'
     );
-    console.log(signature2);
     return res.send(signature2);
   },
 };
