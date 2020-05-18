@@ -10,26 +10,26 @@ const auth0 = require('../Middleware/auth0');
 const userProfile = require('./../Middleware/getUserProfile');
 //Variables De Los Controladores
 const UserController = require('../Controladores/usuarios/usuarios');
-var TransferController = require('../Controladores/transferencias/transferencias');
-var GeneratorController = require('../Controladores/transferencias/generadorFirma');
-var TransferStatusController = require('../Controladores/transferencias/cambiosEstados');
-var PaymentTypesController = require('../Controladores/tipos_pagos/tipos');
-var AccountsTypeController = require('../Controladores/tipos_cuentas/tipos_cuentas');
+const TransferController = require('../Controladores/transferencias/transferencias');
+const GeneratorController = require('../Controladores/transferencias/generadorFirma');
+const TransferStatusController = require('../Controladores/transferencias/cambiosEstados');
+const PaymentTypesController = require('../Controladores/tipos_pagos/tipos');
+const AccountsTypeController = require('../Controladores/tipos_cuentas/tipos_cuentas');
 const EconomicActivitiesController = require('./../Controladores/ActividadesEconomicas');
 const CentrosController = require('../Controladores/centros/centros');
-var ReturnsController = require('../Controladores/devoluciones/devoluciones');
+const ReturnsController = require('../Controladores/devoluciones/devoluciones');
 const EntitiesController = require('../Controladores/EntidadesFederativas/EntidadesFederativas');
-var ErrorController = require('../Controladores/errores/errores');
+const ErrorController = require('../Controladores/errores/errores');
 const AccountsController = require('../Controladores/cuentas/cuentas');
 const OwnersController = require('../Controladores/propietarios/index');
 const OwnerValidate = require('./../Controladores/cuentas/validarPropietarioExistente');
 const AccountValidate = require('./../Middleware/validate/validateCuenta');
-var DispersionController = require('../Controladores/dispersiones/dispersiones');
-var PlazasController = require('../Controladores/plazas/plazas');
+const DispersionController = require('../Controladores/dispersiones/dispersiones');
+const PlazasController = require('../Controladores/plazas/plazas');
 const CountriesController = require('./../Controladores/PaisesNacimiento');
-var InstitutionsController = require('../Controladores/instituciones/instituciones');
-var ReportsController = require('../Controladores/reportes/reportes');
-var ResourcesController = require('../Controladores/resources/resources.js');
+const InstitutionsController = require('../Controladores/instituciones/instituciones');
+const ReportsController = require('../Controladores/reportes/reportes');
+const ResourcesController = require('../Controladores/resources/resources.js');
 
 // Rutas  De Los Usuarios.
 router.post('/usuario/guardar', [auth0], UserController.save);
