@@ -27,7 +27,7 @@ if (node_env === 'production') {
       console.log("Servidor Ahurus Corriendo En: " + puerto);
       console.log("ENTORNO: " + node_env);
     }); */
-	const puerto = envJSON[node_env].PORT_D;
+
 	app.listen(puerto, () => {
 		console.log('Servidor corriendo en http://localhost: ' + puerto);
 		console.log('ENTORNO: ' + node_env);
