@@ -57,7 +57,7 @@ var controller = {
 			}
 		);
 
-		console.log(folio.invoice);
+		console.log('ULTIMO FOLIO DISPERSION: ' + folio.invoice);
 		var file_path = req.files.file_path.path;
 		var file_name = folio.invoice + '_' + req.files.file_path.originalFilename;
 		var extension_split = file_name.split('.');
@@ -92,13 +92,13 @@ var controller = {
 					var workbook = XLSX.read(body, {
 						type: 'buffer',
 					});
-					const referencia = workbook.Sheets['Hoja1']['!ref'];
+					const referencia = workbook.Sheets['Dispersion']['!ref'];
 					const primeraFila = referencia.split(':')[0].substr(1);
 					const ultimaFila = referencia.split(':')[1].substr(1);
 
-					delete workbook.Sheets['Hoja1']['!ref'];
-					delete workbook.Sheets['Hoja1']['!margins'];
-					const FILAS = workbook.Sheets['Hoja1'];
+					delete workbook.Sheets['Dispersion']['!ref'];
+					delete workbook.Sheets['Dispersion']['!margins'];
+					const FILAS = workbook.Sheets['Dispersion'];
 
 					// const jsonToArrayvar
 					let jsonToArray = [];
@@ -155,8 +155,21 @@ var controller = {
 					dispersion.empresa = 'SEFINCE'; /* req.user['http://localhost:3000/user_metadata'].empresa; */
 					// INICIO FOREACH
 					for await (let dato of data) {
+						const folioTrans = await Counter.findByIdAndUpdate(
+							{
+								_id: 'transferencias',
+							},
+							{
+								$inc: {
+									invoice: 1,
+								},
+							}
+						);
+						console.log('ULTIMO FOLIO TRANSFERENCIA: ' + folioTrans.invoice);
+						let claveRastreo = empresa + folioTrans.invoice;
 						const transferencia = new Transferencia();
 						dato.empresa = empresa;
+						dato.claveRastreo = claveRastreo;
 						dato.institucionOperante = institucionOperante;
 						dato.conceptoPago2 = conceptoPago2;
 						dato.cuentaBeneficiario2 = cuentaBeneficiario2;
@@ -276,7 +289,6 @@ var controller = {
 						dato.firma = signature;
 						transferencia.idDispersion = dispersion._id;
 						transferencia.firma = dato.firma;
-						console.log('uno');
 						const newTransfer = await transferencia.save();
 						dispersion.idTransferencia.push(newTransfer._id);
 						console.log(newTransfer);
