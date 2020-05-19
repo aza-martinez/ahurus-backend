@@ -12,8 +12,8 @@ mongoose.Promise = global.Promise;
 
 //HTTPS
 if (node_env === 'production') {
-	/* const  puerto = envJSON[node_env].PORT_P;
-  const key = envJSON[node_env].KEY_SSL_P;
+	const puerto = envJSON[node_env].PORT_P;
+	/* const key = envJSON[node_env].KEY_SSL_P;
   const cert = envJSON[node_env].CERT_SSL_P;
   https
     .createServer(
