@@ -13,25 +13,20 @@ mongoose.Promise = global.Promise;
 //HTTPS
 if (node_env === 'production') {
 	const puerto = envJSON[node_env].PORT_P;
-	/* const key = envJSON[node_env].KEY_SSL_P;
-  const cert = envJSON[node_env].CERT_SSL_P;
-  https
-    .createServer(
-      {
-        key: fs.readFileSync(key),
-        cert: fs.readFileSync(cert),
-      },
-      app
-    )
-    .listen(puerto, function () {
-      console.log("Servidor Ahurus Corriendo En: " + puerto);
-      console.log("ENTORNO: " + node_env);
-    }); */
-
-	app.listen(puerto, () => {
-		console.log('Servidor corriendo en http://localhost: ' + puerto);
-		console.log('ENTORNO: ' + node_env);
-	});
+	const key = envJSON[node_env].KEY_SSL_P;
+	const cert = envJSON[node_env].CERT_SSL_P;
+	https
+		.createServer(
+			{
+				key: fs.readFileSync(key),
+				cert: fs.readFileSync(cert),
+			},
+			app
+		)
+		.listen(puerto, function() {
+			console.log('Servidor Ahurus Corriendo En: ' + puerto);
+			console.log('ENTORNO: ' + node_env);
+		});
 } else {
 	const puerto = envJSON[node_env].PORT_D;
 	app.listen(puerto, () => {
