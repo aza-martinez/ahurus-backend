@@ -43,7 +43,6 @@ var controller = {
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		var dispersion = new Dispersion();
 		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
@@ -84,7 +83,7 @@ var controller = {
 			const token = await blobService.generateSharedAccessSignature(STORAGE_CONTAINER, result.name, sharedAccessPolicy);
 			const fileURLStorage = await blobService.getUrl(STORAGE_CONTAINER, result.name, token, true);
 
-			request(
+			await request(
 				fileURLStorage,
 				{
 					encoding: null,
@@ -112,165 +111,127 @@ var controller = {
 					var workbook = XLSX.readFile(file_path);
 					var sheet_name_list = workbook.SheetNames;
 					const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[sheetIndex - 1]]);
+					//Agregamos la data faltante a los objetos.
 
-					data.forEach(function(dato) {
-						let EMPRESA = 'sefince';
-						let TOPOLOGIA = 'T';
-						dato.EMPRESA = EMPRESA;
-						dato.TOPOLOGIA = TOPOLOGIA;
-					});
+					let centro_costo = JSON.parse(params.centroCosto);
+					let empresa = centro_costo.nombreCentro;
+					let institucionOperante = 90646;
+					let conceptoPago2 = '';
+					let cuentaBeneficiario2 = '';
+					let cuentaOrdenante = centro_costo.cuenta_stp;
+					fechaOperacion = fechaOperacion;
+					let folioOrigen = '';
+					let nombreBeneficiario2 = '';
+					let nombreOrdenante = centro_costo.razon_social; //NECESARIO
+					let rfcCurpBeneficiario = 'ND'; //NECESARIO
+					let rfcCurpBeneficiario2 = '';
+					let rfcCurpOrdenante = centro_costo.rfcCentro;
+					let tipoCuentaBeneficiario2 = '';
+					let tipoCuentaOrdenante = 3;
+					let claveUsuario = '';
+					let claveUsuario2 = '';
+					let clavePago = '';
+					let refCobranza = '';
+					let tipoOperacion = '';
+					let topologia = 'T';
+					let usuario = '';
+					let medioEntrega = 3;
+					let prioridad = '';
+					let iva = '0.0';
+					let resultado = '';
+					let idSTP = '';
+					let descripcionError = '';
 
-					console.log(data); //Mapeamos la data.
-					/* var reformattedArray = data.map(function(obj) {
-						var json = {};
-						json = obj.NOMBRE_BENEFICIARIO;
-						return console.log(nuevaData);
-					}); */
+					//DATOS DE LA DISPERSION
 
-					const pruebas = await Object.keys(FILAS).map(async (fila, index) => {
-						//console.log(FILAS[fila]);
-						return;
-						if (fila.substr(1) === '1') {
-							delete FILAS[fila];
-							return;
-						}
-						switch (fila.substr()) {
-							case 'A':
-								registro['institucionContraparte'] = FILAS[fila]['v'];
-								break;
-							case 'B':
-								registro['nombreBeneficiario'] = FILAS[fila]['v'];
-								break;
-							case 'C':
-								registro['tipoPago'] = FILAS[fila]['v'];
-								break;
-							case 'D':
-								registro['tipoCuentaBeneficiario'] = FILAS[fila]['v'];
-								break;
-							case 'E':
-								registro['monto'] = FILAS[fila]['v'];
-								break;
-							case 'F':
-								registro['cuentaBeneficiario'] = FILAS[fila]['v'];
-								break;
-							case 'G':
-								registro['conceptoPago'] = FILAS[fila]['v'];
-								break;
-							case 'H':
-								registro['referenciaNumerica'] = FILAS[fila]['v'];
-								break;
-							case 'I':
-								registro['emailBeneficiario'] = FILAS[fila]['v'];
-								return;
-								break;
-							default:
-								break;
-						}
-						const centro_costo = JSON.parse(params.centroCosto);
-						//Codigo Para Guardar La Dispersion
-						registro['institucionOperante'] = '90646';
-						registro['empresa'] = centro_costo.nombreCentro;
-						registro['conceptoPago2'] = '';
-						registro['cuentaBeneficiario2'] = '';
-						registro['cuentaOrdenante'] = centro_costo.cuenta_stp;
-						registro['fechaOperacion'] = fechaOperacion;
-						registro['folioOrigen'] = '';
-						registro['nombreBeneficiario2'] = '';
-						registro['nombreOrdenante'] = centro_costo.razon_social; //NECESARIO
-						registro['rfcCurpBeneficiario'] = 'ND'; //NECESARIO
-						registro['rfcCurpBeneficiario2'] = '';
-						registro['rfcCurpOrdenante'] = centro_costo.rfcCentro;
-						registro['tipoCuentaBeneficiario2'] = '';
-						registro['tipoCuentaOrdenante'] = '3';
-						registro['claveUsuario'] = '';
-						registro['claveUsuario2'] = '';
-						registro['clavePago'] = '';
-						registro['refCobranza'] = '';
-						registro['tipoOperacion'] = '';
-						registro['topologia'] = 'T';
-						registro['usuario'] = '';
-						registro['medioEntrega'] = '3';
-						registro['prioridad'] = '';
-						registro['iva'] = '0.00';
-						registro['resultado'] = '';
-						registro['idSTP'] = '';
-						registro['descripcionError'] = '';
-						// DATOS DE LA TRANSFERENCIA
-						const beneficiario = registro['nombreBeneficiario'];
-						const folioTrans = await Counter.findByIdAndUpdate(
-							{
-								_id: 'transferencias',
-							},
-							{
-								$inc: {
-									invoice: 1,
-								},
-							}
-						);
-
-						console.log(folioTrans.invoice);
-						console.log(beneficiario);
-						var transferencia = new Transferencia();
-						registro['claveRastreo'] = centro_costo.nombreCentro + folioTrans.invoice;
-						transferencia.claveRastreo = registro['claveRastreo'];
-						transferencia.conceptoPago = registro['conceptoPago'];
-						const conceptoPago2 = registro['conceptoPago2'];
-						transferencia.cuentaBeneficiario = registro['cuentaBeneficiario'];
-						const cuentaBeneficiario2 = registro['cuentaBeneficiario2'];
-						transferencia.cuentaOrdenante = registro['cuentaOrdenante'];
-						transferencia.emailBeneficiario = registro['emailBeneficiario'];
-						transferencia.empresa = registro['empresa'];
-						transferencia.fechaOperacion = registro['fechaOperacion'];
-						const folioOrigen = registro['folioOrigen'];
-						transferencia.institucionContraparte = registro['institucionContraparte'];
-						transferencia.institucionOperante = registro['institucionOperante'];
-						transferencia.monto = registro['monto'];
-						console.log(beneficiario);
-						transferencia.nombreBeneficiario = beneficiario;
-						const nombreBeneficiario2 = registro['nombreBeneficiario2'];
-						transferencia.nombreOrdenante = registro['nombreOrdenante'];
-						transferencia.rfcCurpBeneficiario = registro['rfcCurpBeneficiario'];
-						const rfcCurpBeneficiario2 = registro['rfcCurpBeneficiario2'];
-						transferencia.rfcCurpOrdenante = registro['rfcCurpOrdenante'];
-						transferencia.tipoCuentaBeneficiario = registro['tipoCuentaBeneficiario'];
-						const tipoCuentaBeneficiario2 = registro['tipoCuentaBeneficiario2'];
-						transferencia.tipoCuentaOrdenante = registro['tipoCuentaOrdenante'];
-						transferencia.tipoPago = registro['tipoPago'];
+					const dispersion = new Dispersion();
+					dispersion.usuario = user;
+					dispersion.ruta = fileURLStorage;
+					dispersion.fechaSubida = fechaMX._d;
+					dispersion.estatus = true;
+					dispersion.estatus_stp = 'Pendiente';
+					dispersion.fechaOperacion = fechaOperacion;
+					dispersion.entorno = node_env;
+					dispersion.empresa = 'SEFINCE'; /* req.user['http://localhost:3000/user_metadata'].empresa; */
+					// INICIO FOREACH
+					for await (let dato of data) {
+						const transferencia = new Transferencia();
+						dato.empresa = empresa;
+						dato.institucionOperante = institucionOperante;
+						dato.conceptoPago2 = conceptoPago2;
+						dato.cuentaBeneficiario2 = cuentaBeneficiario2;
+						dato.cuentaOrdenante = cuentaOrdenante;
+						dato.fechaOperacion = fechaOperacion;
+						dato.folioOrigen = folioOrigen;
+						dato.nombreBeneficiario2 = nombreBeneficiario2;
+						dato.nombreOrdenante = nombreOrdenante;
+						dato.rfcCurpBeneficiario = rfcCurpBeneficiario;
+						dato.rfcCurpBeneficiario2 = rfcCurpBeneficiario2;
+						dato.rfcCurpOrdenante = rfcCurpOrdenante;
+						dato.tipoCuentaBeneficiario2 = tipoCuentaBeneficiario2;
+						dato.tipoCuentaOrdenante = tipoCuentaOrdenante;
+						dato.claveUsuario = claveUsuario;
+						dato.claveUsuario2 = claveUsuario2;
+						dato.clavePago = clavePago;
+						dato.refCobranza = refCobranza;
+						dato.tipoOperacion = tipoOperacion;
+						dato.topologia = topologia;
+						dato.usuario = usuario;
+						dato.medioEntrega = medioEntrega;
+						dato.prioridad = prioridad;
+						dato.iva = iva;
+						dato.resultado = resultado;
+						dato.idSTP = idSTP;
+						dato.descripcionError = descripcionError;
+						//Creamos el objeto transferencia cada que recorremos el ciclo y le pasamos los datos
+						transferencia.claveRastreo = dato.claveRastreo;
+						transferencia.conceptoPago = dato.conceptoPago;
+						transferencia.conceptoPago2 = dato.conceptoPago2;
+						transferencia.cuentaBeneficiario = dato.cuentaBeneficiario;
+						transferencia.cuentaBeneficiario2 = dato.cuentaBeneficiario2;
+						transferencia.cuentaOrdenante = dato.cuentaOrdenante;
+						transferencia.emailBeneficiario = dato.emailBeneficiario;
+						transferencia.empresa = dato.empresa;
+						transferencia.fechaOperacion = dato.fechaOperacion;
+						transferencia.folioOrigen = dato.folioOrigen;
+						transferencia.institucionContraparte = dato.institucionContraparte;
+						transferencia.institucionOperante = dato.institucionOperante;
+						transferencia.monto = dato.monto;
+						transferencia.nombreBeneficiario = dato.nombreBeneficiario;
+						transferencia.nombreBeneficiario2 = dato.nombreBeneficiario2;
+						transferencia.nombreOrdenante = dato.nombreOrdenante;
+						transferencia.rfcCurpBeneficiario = dato.rfcCurpBeneficiario;
+						transferencia.rfcCurpBeneficiario2 = dato.rfcCurpBeneficiario2;
+						transferencia.rfcCurpOrdenante = dato.rfcCurpOrdenante;
+						transferencia.tipoCuentaBeneficiario = dato.tipoCuentaBeneficiario;
+						transferencia.tipoCuentaBeneficiario2 = dato.tipoCuentaBeneficiario2;
+						transferencia.tipoCuentaOrdenante = dato.tipoCuentaOrdenante;
+						transferencia.tipoPago = dato.tipoPago;
 						transferencia.estatus = true;
-						const claveUsuario = registro['claveUsuario'];
-						const claveUsuario2 = registro['claveUsuario2'];
-						const clavePago = registro['clavePago'];
-						const refCobranza = registro['refCobranza'];
-						transferencia.referenciaNumerica = registro['referenciaNumerica'];
-						const tipoOperacion = registro['tipoOperacion'];
-						transferencia.topologia = registro['topologia'];
-						const usuario = registro['usuario'];
-						transferencia.medioEntrega = registro['medioEntrega'];
-						const prioridad = registro['prioridad'];
-						transferencia.iva = registro['iva'];
+						transferencia.claveUsuario = dato.claveUsuario;
+						transferencia.claveUsuario2 = dato.claveUsuario2;
+						transferencia.clavePago = dato.clavePago;
+						transferencia.refCobranza = dato.refCobranza;
+						transferencia.referenciaNumerica = dato.referenciaNumerica;
+						transferencia.tipoOperacion = dato.tipoOperacion;
+						transferencia.topologia = dato.topologia;
+						transferencia.usuario = dato.usuario;
+						transferencia.medioEntrega = dato.medioEntrega;
+						transferencia.prioridad = dato.prioridad;
+						transferencia.iva = dato.iva;
 						transferencia.estatus_stp = 'Pendiente';
 						transferencia.timestamp = fechaMX._d;
-						transferencia.resultado = registro['resultado'];
-						transferencia.idSTP = registro['idSTP'];
-						transferencia.descripcionError = registro['descripcionError'];
+						transferencia.resultado = dato.resultado;
+						transferencia.idSTP = dato.idSTP;
+						transferencia.descripcionError = dato.descripcionError;
 						transferencia.medio = 'Dispersion';
 						transferencia.entorno = node_env;
 
-						//DATOS DE LA DISPERSION
-						dispersion.usuario = user;
-						dispersion.ruta = fileURLStorage;
-						dispersion.fechaSubida = fechaMX._d;
-						dispersion.estatus = true;
-						dispersion.estatus_stp = 'Pendiente';
-						dispersion.fechaOperacion = fechaOperacion;
-						dispersion.entorno = node_env;
-						dispersion.empresa = 'SEFINCE'; /* req.user['http://localhost:3000/user_metadata'].empresa; */
-
-						// 1. Obtención de la cadena original.
+						//Generamos la firma
 						var cadenaOriginal = `||${transferencia.institucionContraparte}|`;
 						cadenaOriginal += `${transferencia.empresa}|`;
 						cadenaOriginal += `${transferencia.fechaOperacion}|`;
-						cadenaOriginal += `${folioOrigen}|`;
+						cadenaOriginal += `${transferencia.folioOrigen}|`;
 						cadenaOriginal += `${transferencia.claveRastreo}|`;
 						cadenaOriginal += `${transferencia.institucionOperante}|`;
 						cadenaOriginal += `${transferencia.monto}|`;
@@ -284,26 +245,24 @@ var controller = {
 						cadenaOriginal += `${transferencia.cuentaBeneficiario}|`;
 						cadenaOriginal += `${transferencia.rfcCurpBeneficiario}|`;
 						cadenaOriginal += `${transferencia.emailBeneficiario}|`;
-						cadenaOriginal += `${tipoCuentaBeneficiario2}|`;
-						cadenaOriginal += `${nombreBeneficiario2}|`;
-						cadenaOriginal += `${cuentaBeneficiario2}|`;
-						cadenaOriginal += `${rfcCurpBeneficiario2}|`;
+						cadenaOriginal += `${transferencia.tipoCuentaBeneficiario2}|`;
+						cadenaOriginal += `${transferencia.nombreBeneficiario2}|`;
+						cadenaOriginal += `${transferencia.cuentaBeneficiario2}|`;
+						cadenaOriginal += `${transferencia.rfcCurpBeneficiario2}|`;
 						cadenaOriginal += `${transferencia.conceptoPago}|`;
-						cadenaOriginal += `${conceptoPago2}|`;
-						cadenaOriginal += `${claveUsuario}|`;
-						cadenaOriginal += `${claveUsuario2}|`;
-						cadenaOriginal += `${clavePago}|`;
-						cadenaOriginal += `${refCobranza}|`;
+						cadenaOriginal += `${transferencia.conceptoPago2}|`;
+						cadenaOriginal += `${transferencia.claveUsuario}|`;
+						cadenaOriginal += `${transferencia.claveUsuario2}|`;
+						cadenaOriginal += `${transferencia.clavePago}|`;
+						cadenaOriginal += `${transferencia.refCobranza}|`;
 						cadenaOriginal += `${transferencia.referenciaNumerica}|`;
-						cadenaOriginal += `${tipoOperacion}|`;
+						cadenaOriginal += `${transferencia.tipoOperacion}|`;
 						cadenaOriginal += `${transferencia.topologia}|`;
-						cadenaOriginal += `${usuario}|`;
+						cadenaOriginal += `${transferencia.usuario}|`;
 						cadenaOriginal += `${transferencia.medioEntrega}|`;
-						cadenaOriginal += `${prioridad}|`;
+						cadenaOriginal += `${transferencia.prioridad}|`;
 						cadenaOriginal += `${transferencia.iva}||`;
-
 						const private_key = fs.readFileSync(certificado, 'utf-8');
-
 						const signer = crypto.createSign('sha256');
 						signer.update(cadenaOriginal);
 						signer.end();
@@ -314,31 +273,26 @@ var controller = {
 							},
 							'base64'
 						);
+						dato.firma = signature;
 						transferencia.idDispersion = dispersion._id;
-						transferencia.firma = signature;
-						registro['firma'] = signature;
-						dispersion.idTransferencia.push(transferencia._id);
-						await transferencia.save((err, transStored) => {
-							if (err || !transStored) {
-							}
-							console.log(transStored);
-						});
+						transferencia.firma = dato.firma;
+						console.log('uno');
+						const newTransfer = await transferencia.save();
+						dispersion.idTransferencia.push(newTransfer._id);
+						console.log(newTransfer);
+					} //FIN  DEL FOREACH
 
-						await dispersion.save((err, dispersionStored) => {
-							if (err || !dispersionStored) {
-							}
-						});
-						// registro = {};
-					});
-
-					return res.status(200).send({});
+					const newDisp = await dispersion.save();
+					console.log(newDisp);
+					const close = await mongo.close();
+					return res.status(200).send(data);
 				}
 			);
-
 			return;
 		});
-		const close = await mongo.close();
+		//const close = await mongo.close();
 	},
+
 	getTransferenciasC: async (req, res) => {
 		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
