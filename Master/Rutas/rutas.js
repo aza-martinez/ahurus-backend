@@ -129,9 +129,9 @@ router.get('/propietarios/listar/:last?', auth0, (...args) => OwnersController.g
 router.get('/propietario/buscar/:id', [auth0], (...args) => OwnersController.getPropietario(...args));
 router.put('/propietario/desactivar/:id', [auth0], (...args) => OwnersController.update(...args));
 //Rutas De Los Reportes.
-router.post('/report/transfer/', [], ReportsController.getReportTransfer);
-router.post('/report/balance/', [], ReportsController.getBalance);
-router.post('/report/dispersion/', [], ReportsController.getReportDisper);
+router.post('/report/transfer/', [auth0], ReportsController.getReportTransfer);
+router.post('/report/balance/', [auth0], ReportsController.getBalance);
+router.post('/report/dispersion/', [auth0], ReportsController.getReportDisper);
 //Rutas De Los Recursos.
 router.get('/bancos/listar/', ResourcesController.getBancos);
 router.get('/tiposPago/listar/', ResourcesController.getTipos);
