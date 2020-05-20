@@ -6,6 +6,8 @@ const PropietarioModel = require('../../Modelos/propietarios/propietarios');
 var Institucion = require('../../Modelos/instituciones/instituciones');
 const fs = require('fs');
 const Cuenta = require('../../Modelos/cuentas/cuentas');
+const Pais = require('./../../Modelos/PaisesNacimiento');
+const Estados = require('../../Modelos/EntidadesFederativas/EntidadesFederativas');
 var Tipo = require('../../Modelos/tipos_cuentas/tipos_cuentas');
 var azure = require('azure-storage');
 var XLSX = require('xlsx');
@@ -419,12 +421,12 @@ class PropietarioController {
 						const newAccount = await tipoCuenta.save();
 						console.log(newAccount);
 					} //FIN  DEL FOREACH
+					const close = await mongo.close();
 					return res.status(200).send();
 				}
 			);
 			return;
 		});
-		//	const close = await mongo.close();
 	}
 	async importOwners(req, res) {
 		var file_name = 'Documento no subido..';
@@ -438,7 +440,7 @@ class PropietarioController {
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(
 			{
-				_id: 'dispersiones',
+				_id: 'propietarios',
 			},
 			{
 				$inc: {
@@ -447,9 +449,9 @@ class PropietarioController {
 			}
 		);
 
-		console.log('ULTIMO FOLIO DISPERSION: ' + folio.invoice);
-		var file_path = req.files.file_path.path;
-		var file_name = folio.invoice + '_' + req.files.file_path.originalFilename;
+		console.log('ULTIMO FOLIO PROPIETARIOS: ' + folio.invoice);
+		var file_path = req.files.file.path;
+		var file_name = folio.invoice + '_' + req.files.file.originalFilename;
 		var extension_split = file_name.split('.');
 		var file_ext = extension_split[1];
 		let registro = {};
@@ -482,13 +484,13 @@ class PropietarioController {
 					var workbook = XLSX.read(body, {
 						type: 'buffer',
 					});
-					const referencia = workbook.Sheets['Dispersion']['!ref'];
+					const referencia = workbook.Sheets['Propietarios']['!ref'];
 					const primeraFila = referencia.split(':')[0].substr(1);
 					const ultimaFila = referencia.split(':')[1].substr(1);
 
-					delete workbook.Sheets['Dispersion']['!ref'];
-					delete workbook.Sheets['Dispersion']['!margins'];
-					const FILAS = workbook.Sheets['Dispersion'];
+					delete workbook.Sheets['Propietarios']['!ref'];
+					delete workbook.Sheets['Propietarios']['!margins'];
+					const FILAS = workbook.Sheets['Propietarios'];
 
 					// const jsonToArrayvar
 					let jsonToArray = [];
@@ -502,197 +504,81 @@ class PropietarioController {
 					var sheet_name_list = workbook.SheetNames;
 					const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[sheetIndex - 1]]);
 					//Agregamos la data faltante a los objetos.
+					//let centro_costo = JSON.parse(params.centroCosto);
 
-					let centro_costo = JSON.parse(params.centroCosto);
-					let empresa = centro_costo.nombreCentro;
-					let institucionOperante = 90646;
-					let conceptoPago2 = '';
-					let cuentaBeneficiario2 = '';
-					let cuentaOrdenante = centro_costo.cuenta_stp;
-					fechaOperacion = fechaOperacion;
-					let folioOrigen = '';
-					let nombreBeneficiario2 = '';
-					let nombreOrdenante = centro_costo.razon_social; //NECESARIO
-					let rfcCurpBeneficiario = 'ND'; //NECESARIO
-					let rfcCurpBeneficiario2 = '';
-					let rfcCurpOrdenante = centro_costo.rfcCentro;
-					let tipoCuentaBeneficiario2 = '';
-					let tipoCuentaOrdenante = 3;
-					let claveUsuario = '';
-					let claveUsuario2 = '';
-					let clavePago = '';
-					let refCobranza = '';
-					let tipoOperacion = '';
-					let topologia = 'T';
-					let usuario = '';
-					let medioEntrega = 3;
-					let prioridad = '';
-					let iva = '0.0';
-					let resultado = '';
-					let idSTP = '';
-					let descripcionError = '';
-
-					//DATOS DE LA DISPERSION
-
-					const dispersion = new Dispersion();
-					dispersion.usuario = user;
-					dispersion.ruta = fileURLStorage;
-					dispersion.fechaSubida = fechaMX._d;
-					dispersion.estatus = true;
-					dispersion.estatus_stp = 'Pendiente';
-					dispersion.fechaOperacion = fechaOperacion;
-					dispersion.entorno = node_env;
-					dispersion.empresa = 'SEFINCE'; /* req.user['http://localhost:3000/user_metadata'].empresa; */
 					// INICIO FOREACH
+
+					let nombre = '';
+					let paterno = '';
+					let materno = '';
+					let alias = '';
+					let rfc = '';
+					let correo1 = '';
+					let correo2 = '';
+					let telefono = '';
+					let genero = '';
+					let pais = ''; //ID
+					let entidad = ''; //ID
+					let municipio = '';
+					let colonia = '';
+					let calle = '';
+					let numInt = '';
+					let numExt = '';
+					let cp = '';
+
 					for await (let dato of data) {
-						const folioTrans = await Counter.findByIdAndUpdate(
-							{
-								_id: 'transferencias',
-							},
-							{
-								$inc: {
-									invoice: 1,
-								},
-							}
-						);
-						console.log('ULTIMO FOLIO TRANSFERENCIA: ' + folioTrans.invoice);
-						let claveRastreo = empresa + folioTrans.invoice;
-						const transferencia = new Transferencia();
-						dato.empresa = empresa;
-						dato.claveRastreo = claveRastreo;
-						dato.institucionOperante = institucionOperante;
-						dato.conceptoPago2 = conceptoPago2;
-						dato.cuentaBeneficiario2 = cuentaBeneficiario2;
-						dato.cuentaOrdenante = cuentaOrdenante;
-						dato.fechaOperacion = fechaOperacion;
-						dato.folioOrigen = folioOrigen;
-						dato.nombreBeneficiario2 = nombreBeneficiario2;
-						dato.nombreOrdenante = nombreOrdenante;
-						dato.rfcCurpBeneficiario = rfcCurpBeneficiario;
-						dato.rfcCurpBeneficiario2 = rfcCurpBeneficiario2;
-						dato.rfcCurpOrdenante = rfcCurpOrdenante;
-						dato.tipoCuentaBeneficiario2 = tipoCuentaBeneficiario2;
-						dato.tipoCuentaOrdenante = tipoCuentaOrdenante;
-						dato.claveUsuario = claveUsuario;
-						dato.claveUsuario2 = claveUsuario2;
-						dato.clavePago = clavePago;
-						dato.refCobranza = refCobranza;
-						dato.tipoOperacion = tipoOperacion;
-						dato.topologia = topologia;
-						dato.usuario = usuario;
-						dato.medioEntrega = medioEntrega;
-						dato.prioridad = prioridad;
-						dato.iva = iva;
-						dato.resultado = resultado;
-						dato.idSTP = idSTP;
-						dato.descripcionError = descripcionError;
+						const owner = new PropietarioModel();
+
 						//Creamos el objeto transferencia cada que recorremos el ciclo y le pasamos los datos
-						transferencia.claveRastreo = dato.claveRastreo;
-						transferencia.conceptoPago = dato.conceptoPago;
-						transferencia.conceptoPago2 = dato.conceptoPago2;
-						transferencia.cuentaBeneficiario = dato.cuentaBeneficiario;
-						transferencia.cuentaBeneficiario2 = dato.cuentaBeneficiario2;
-						transferencia.cuentaOrdenante = dato.cuentaOrdenante;
-						transferencia.emailBeneficiario = dato.emailBeneficiario;
-						transferencia.empresa = dato.empresa;
-						transferencia.fechaOperacion = dato.fechaOperacion;
-						transferencia.folioOrigen = dato.folioOrigen;
-						transferencia.institucionContraparte = dato.institucionContraparte;
-						transferencia.institucionOperante = dato.institucionOperante;
-						transferencia.monto = dato.monto;
-						transferencia.nombreBeneficiario = dato.nombreBeneficiario;
-						transferencia.nombreBeneficiario2 = dato.nombreBeneficiario2;
-						transferencia.nombreOrdenante = dato.nombreOrdenante;
-						transferencia.rfcCurpBeneficiario = dato.rfcCurpBeneficiario;
-						transferencia.rfcCurpBeneficiario2 = dato.rfcCurpBeneficiario2;
-						transferencia.rfcCurpOrdenante = dato.rfcCurpOrdenante;
-						transferencia.tipoCuentaBeneficiario = dato.tipoCuentaBeneficiario;
-						transferencia.tipoCuentaBeneficiario2 = dato.tipoCuentaBeneficiario2;
-						transferencia.tipoCuentaOrdenante = dato.tipoCuentaOrdenante;
-						transferencia.tipoPago = dato.tipoPago;
-						transferencia.estatus = true;
-						transferencia.claveUsuario = dato.claveUsuario;
-						transferencia.claveUsuario2 = dato.claveUsuario2;
-						transferencia.clavePago = dato.clavePago;
-						transferencia.refCobranza = dato.refCobranza;
-						transferencia.referenciaNumerica = dato.referenciaNumerica;
-						transferencia.tipoOperacion = dato.tipoOperacion;
-						transferencia.topologia = dato.topologia;
-						transferencia.usuario = dato.usuario;
-						transferencia.medioEntrega = dato.medioEntrega;
-						transferencia.prioridad = dato.prioridad;
-						transferencia.iva = dato.iva;
-						transferencia.estatus_stp = 'Pendiente';
-						transferencia.timestamp = fechaMX._d;
-						transferencia.resultado = dato.resultado;
-						transferencia.idSTP = dato.idSTP;
-						transferencia.descripcionError = dato.descripcionError;
-						transferencia.medio = 'Dispersion';
-						transferencia.entorno = node_env;
+						nombre = dato.nombre;
+						paterno = dato.paterno;
+						materno = dato.materno;
+						alias = dato.alias;
+						rfc = dato.rfc;
+						correo1 = dato.correo1;
+						correo2 = dato.correo2;
+						telefono = dato.telefono;
+						genero = dato.genero;
+						pais = dato.pais;
+						entidad = dato.entidad;
+						municipio = dato.municipio;
+						colonia = dato.colonia;
+						calle = dato.calle;
+						numInt = dato.numInt;
+						numExt = dato.numExt;
+						cp = dato.cp;
 
-						//Generamos la firma
-						var cadenaOriginal = `||${transferencia.institucionContraparte}|`;
-						cadenaOriginal += `${transferencia.empresa}|`;
-						cadenaOriginal += `${transferencia.fechaOperacion}|`;
-						cadenaOriginal += `${transferencia.folioOrigen}|`;
-						cadenaOriginal += `${transferencia.claveRastreo}|`;
-						cadenaOriginal += `${transferencia.institucionOperante}|`;
-						cadenaOriginal += `${transferencia.monto}|`;
-						cadenaOriginal += `${transferencia.tipoPago}|`;
-						cadenaOriginal += `${transferencia.tipoCuentaOrdenante}|`;
-						cadenaOriginal += `${transferencia.nombreOrdenante}|`;
-						cadenaOriginal += `${transferencia.cuentaOrdenante}|`;
-						cadenaOriginal += `${transferencia.rfcCurpOrdenante}|`;
-						cadenaOriginal += `${transferencia.tipoCuentaBeneficiario}|`;
-						cadenaOriginal += `${transferencia.nombreBeneficiario}|`;
-						cadenaOriginal += `${transferencia.cuentaBeneficiario}|`;
-						cadenaOriginal += `${transferencia.rfcCurpBeneficiario}|`;
-						cadenaOriginal += `${transferencia.emailBeneficiario}|`;
-						cadenaOriginal += `${transferencia.tipoCuentaBeneficiario2}|`;
-						cadenaOriginal += `${transferencia.nombreBeneficiario2}|`;
-						cadenaOriginal += `${transferencia.cuentaBeneficiario2}|`;
-						cadenaOriginal += `${transferencia.rfcCurpBeneficiario2}|`;
-						cadenaOriginal += `${transferencia.conceptoPago}|`;
-						cadenaOriginal += `${transferencia.conceptoPago2}|`;
-						cadenaOriginal += `${transferencia.claveUsuario}|`;
-						cadenaOriginal += `${transferencia.claveUsuario2}|`;
-						cadenaOriginal += `${transferencia.clavePago}|`;
-						cadenaOriginal += `${transferencia.refCobranza}|`;
-						cadenaOriginal += `${transferencia.referenciaNumerica}|`;
-						cadenaOriginal += `${transferencia.tipoOperacion}|`;
-						cadenaOriginal += `${transferencia.topologia}|`;
-						cadenaOriginal += `${transferencia.usuario}|`;
-						cadenaOriginal += `${transferencia.medioEntrega}|`;
-						cadenaOriginal += `${transferencia.prioridad}|`;
-						cadenaOriginal += `${transferencia.iva}||`;
-						const private_key = fs.readFileSync(certificado, 'utf-8');
-						const signer = crypto.createSign('sha256');
-						signer.update(cadenaOriginal);
-						signer.end();
-						const signature = signer.sign(
-							{
-								key: private_key,
-								passphrase: passphrase,
-							},
-							'base64'
-						);
-						dato.firma = signature;
-						transferencia.idDispersion = dispersion._id;
-						transferencia.firma = dato.firma;
-						const newTransfer = await transferencia.save();
-						dispersion.idTransferencia.push(newTransfer._id);
-						console.log(newTransfer);
+						var queryPais = await Pais.find({ pais: pais }).exec();
+						var queryEstado = await Estado.find({ entidad: entidad }).exec();
+
+						owner.nombre = nombre;
+						owner.paterno = paterno;
+						owner.materno = materno;
+						owner.alias = alias;
+						owner.rfc = rfc;
+						owner.correo1 = correo1;
+						owner.correo2 = correo2;
+						owner.telefono = telefono;
+						owner.genero = genero;
+						owner.pais = queryPais[0]._id;
+						owner.entidad = queryEstado[0]._id;
+						owner.municipio = municipio;
+						owner.colonia = colonia;
+						owner.calle = calle;
+						owner.numInt = numInt;
+						owner.numExt = numExt;
+						owner.cp = cp;
+						owner.estatus = true;
+						owner.timestamp = fechaMX._d;
+						const newOwner = await owner.save();
+						console.log(newOwner);
 					} //FIN  DEL FOREACH
-
-					const newDisp = await dispersion.save();
-					console.log(newDisp);
 					const close = await mongo.close();
-					return res.status(200).send(data);
+					return res.status(200).send();
 				}
 			);
 			return;
 		});
-		//const close = await mongo.close();
 	}
 }
 
