@@ -8,16 +8,9 @@ let dbDEV = 'development';
 
 class MongooseConncect {
 	async connect(nameBD) {
-		if (node_env === 'production') {
-			cnx = `mongodb+srv://arendon:20141530@ahurus-lw53s.azure.mongodb.net/ahurus_${nameBD}?retryWrites=true&w=majority`;
-		} else {
-			/* cnx = envJSON[node_env].DBCNX_D;
-			nameBD = dbDEV; */
-			cnx = `mongodb+srv://arendon:20141530@ahurus-lw53s.azure.mongodb.net/ahurus_${nameBD}?retryWrites=true&w=majority`;
-		}
 		await mongoose.disconnect();
 		await mongoose
-			.connect(cnx, {
+			.connect(`mongodb+srv://arendon:20141530@ahurus-lw53s.azure.mongodb.net/ahurus_${nameBD}?retryWrites=true&w=majority`, {
 				useNewUrlParser: true,
 				useFindAndModify: false,
 				useCreateIndex: true,
