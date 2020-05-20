@@ -128,29 +128,22 @@ const controller = {
 		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
-		try {
-			const cuentas = await Propietario.find({
-				tipo_registro: 'personaFisica',
-				estatus: true,
-			})
-				.populate({
-					path: 'propietario',
-					select: 'razon_social',
-				})
-				.populate('tipo_cuenta')
-				.populate('institucion')
-				.sort([['date', 'descending']]);
 
-			if (!cuentas) return res.status(404).send({});
+		await Cuenta.find({
+			tipo_registro: 'personaFisica',
+			estatus: true,
+		})
+			.populate('propietario')
+			.populate('tipo_cuenta')
+			.populate('institucion')
+			.sort([['date', 'descending']])
+			.exec(async (err, registros) => {
+				const close = await mongo.close();
 
-			await mongo.close();
+				if (err) return res.status(500).send({});
 
-			return res.status(200).send(cuentas);
-		} catch (error) {
-			console.log(error);
-			await mongo.close();
-			return res.status(500).send('Error interno');
-		}
+				return res.status(200).send(registros);
+			});
 	},
 	getPropietariosA: async (req, res) => {
 		const idPropietario = req.params.last;
@@ -173,6 +166,7 @@ const controller = {
 
 			return res.status(200).send(cuentas);
 		} catch (error) {
+			console.log(error);
 			await mongo.close();
 			return res.status(500).send('Error interno');
 		}
