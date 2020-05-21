@@ -33,22 +33,8 @@ if (node_env === 'production') {
 			console.log('ENTORNO: ' + node_env);
 		});
 } else {
-	https
-		.createServer(
-			{
-				key: fs.readFileSync(keyDev),
-				cert: fs.readFileSync(certDev),
-			},
-			app
-		)
-		.listen(puerto, function() {
-			console.log('Servidor Ahurus Corriendo En: ' + puertoDev);
-			console.log('ENTORNO: ' + node_env);
-		});
-	/* const puerto = envJSON[node_env].PORT_D;
-	app.listen(puerto, () => {
-		console.log('Servidor corriendo en http://localhost: ' + puerto);
+	app.listen(puertoDev, () => {
+		console.log('Servidor corriendo en http://localhost: ' + puertoDev);
 		console.log('ENTORNO: ' + node_env);
 	});
- */
 }
