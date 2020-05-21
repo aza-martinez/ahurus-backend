@@ -425,6 +425,8 @@ var controller = {
 				const agent = new https.Agent({
 					rejectUnauthorized: false,
 				});
+				console.log(endpoint_stp);
+				console.log(...dataT._doc);
 				await axios
 					.put(endpoint_stp, {
 						...dataT._doc,

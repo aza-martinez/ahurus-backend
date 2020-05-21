@@ -8,7 +8,7 @@ var https = require('https');
 var node_env = process.env.NODE_ENV || 'development';
 var puerto = process.env.PORT || envJSON[node_env].PORT_P;
 var puertoDev = process.env.PORT || envJSON[node_env].PORT_D;
-//NODE_ENV=production npm start
+//NODE_ENV=development npm start
 mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise;
 
