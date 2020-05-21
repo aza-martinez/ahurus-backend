@@ -170,7 +170,7 @@ const controller = {
 			const estatusOk = 'Ejecutada';
 
 			const transferencia = {
-				...transferenciaFind._doc,
+				...transferenciaFind,
 			};
 
 			delete transferencia.estatus_stp;
@@ -190,6 +190,7 @@ const controller = {
 					httpsAgent: agent,
 				})
 				.then(response => {
+					console.log(response.data.resultado);
 					if (response.data.resultado.descripcionError) {
 						Transferencia.findOneAndUpdate(
 							{
@@ -225,6 +226,7 @@ const controller = {
 					}
 				})
 				.catch(async error => {
+					console.log(error);
 					const close = await mongo.close();
 					return res.status(400).send(error);
 				});
