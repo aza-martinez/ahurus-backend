@@ -30,112 +30,119 @@ if (node_env == 'production') {
 }
 
 var controller = {
-	getReportTransfer: async (req, res) => {
-		// Conexión a la BD
-		//const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
-		const mongo = new MongooseConnect();
-		await mongo.connect('sefince');
+  getReportTransfer: async (req, res) => {
+    // Conexión a la BD
+    //const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const mongo = new MongooseConnect();
+    await mongo.connect('sefince');
 
-		try {
-			const params = req.body;
-			const { fechaInicial, fechaFinal, filtro, empresa, claveRastreo } = params;
+    try {
+      const params = req.body;
+      const {
+        fechaInicial,
+        fechaFinal,
+        filtro,
+        empresa,
+        claveRastreo,
+      } = params;
 
-			let query = { medio: 'Transferencia' };
+      let query = { medio: 'Transferencia' };
 
-			if (!claveRastreo) {
-				if (filtro && filtro !== 'ALL') query.estatus_stp = filtro;
-				if (empresa) query.empresa = empresa;
-				if (fechaInicial) query.fechaOperacion = { $gte: fechaInicial };
-				if (fechaFinal) query.fechaOperacion = { ...query.fechaOperacion, $lte: fechaFinal };
-			} else {
-				query.claveRastreo = claveRastreo;
-			}
+      if (!claveRastreo) {
+        if (filtro && filtro !== 'ALL') query.estatus_stp = filtro;
+        if (empresa) query.empresa = empresa;
+        if (fechaInicial) query.fechaOperacion = { $gte: fechaInicial };
+        if (fechaFinal)
+          query.fechaOperacion = { ...query.fechaOperacion, $lte: fechaFinal };
+      } else {
+        query.claveRastreo = claveRastreo;
+      }
 
-			const transferencias = await Transferencia.find(query);
+      const transferencias = await Transferencia.find(query);
 
-			await mongo.close();
+      await mongo.close();
 
-			if (!transferencias) return res.status(400);
+      if (!transferencias) return res.status(400);
 
-			return res.send(transferencias);
-		} catch (error) {
-			await mongo.close();
-			return res.status(500).send('Error interno');
-		}
-	},
-	getBalance: async (req, res) => {
-		var params = req.body;
-		const SERVER_BD = 'SEFINCE'; //req.user['http://localhost:3000/user_metadata'].empresa;
-		const cuentaOrdenante = params.cuentaOrdenante; // ejemplo: '20190326'
-		let cadenaOriginal = cuentaOrdenante;
-		const private_key = fs.readFileSync(certificado, 'utf-8');
-		const signer = crypto.createSign('sha256');
-		signer.update(cadenaOriginal);
-		signer.end();
-		const signature = signer.sign(
-			{
-				key: private_key,
-				passphrase: passphrase,
-			},
-			'base64'
-		);
-		var consultaSaldoCuenta = {
-			cuentaOrdenante: cuentaOrdenante,
-			firma: signature,
-		};
+      return res.send(transferencias);
+    } catch (error) {
+      await mongo.close();
+      return res.status(500).send('Error interno');
+    }
+  },
+  getBalance: async (req, res) => {
+    var params = req.body;
+    const SERVER_BD = 'SEFINCE'; //req.user['http://localhost:3000/user_metadata'].empresa;
+    const cuentaOrdenante = params.cuentaOrdenante; // ejemplo: '20190326'
+    let cadenaOriginal = cuentaOrdenante;
+    const private_key = fs.readFileSync(certificado, 'utf-8');
+    const signer = crypto.createSign('sha256');
+    signer.update(cadenaOriginal);
+    signer.end();
+    const signature = signer.sign(
+      {
+        key: private_key,
+        passphrase: passphrase,
+      },
+      'base64'
+    );
+    var consultaSaldoCuenta = {
+      cuentaOrdenante: cuentaOrdenante,
+      firma: signature,
+    };
 
-		//const agent = (https.globalAgent.options.rejectUnauthorized = false);
-		const agent = new https.Agent({
-			rejectUnauthorized: false,
-		});
-		await axios
-			.post(endpoint_stp_balance, consultaSaldoCuenta, {
-				httpsAgent: agent,
-			})
-			.then(response => {
-				if (response) {
-					return res.status(200).send(response.data.resultado);
-				}
+    //const agent = (https.globalAgent.options.rejectUnauthorized = false);
+    const agent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+    await axios
+      .post(endpoint_stp_balance, consultaSaldoCuenta, {
+        httpsAgent: agent,
+      })
+      .then((response) => {
+        if (response) {
+          return res.status(200).send(response.data.resultado);
+        }
 
-				if (!response) {
-					return res.status(200).send(response.data.resultado);
-				}
-			})
-			.catch(async error => {
-				return res.status(400).send(error);
-			});
-	},
+        if (!response) {
+          return res.status(200).send(response.data.resultado);
+        }
+      })
+      .catch(async (error) => {
+        return res.status(400).send(error);
+      });
+  },
 
-	getReportDisper: async (req, res) => {
-		//const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
-		const mongo = new MongooseConnect();
-		await mongo.connect('sefince');
+  getReportDisper: async (req, res) => {
+    //const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+    const mongo = new MongooseConnect();
+    await mongo.connect('sefince');
 
-		try {
-			const { fechaInicial, fechaFinal, estatus } = req.body;
-			const query = {};
+    try {
+      const {fechaInicial, fechaFinal, filtro } = req.body;
+      const query = {};
 
-			//estatus debe ser obligatorio
-			console.log(estatus);
-			if (!estatus) return res.status(404).send('No se enviaron parametros necesarios');
+      //estatus debe ser obligatorio
+      if(!filtro) return res.status(404).send('No se enviaron parametros necesarios');
 
-			query.estatus_stp = estatus;
+      query.estatus_stp = filtro;
 
-			if (fechaInicial) query.fechaOperacion = { $gte: fechaInicial };
-			if (fechaFinal) query.fechaOperacion = { ...query.fechaOperacion, $lte: fechaFinal };
-			console.log(query);
-			const dispersiones = await Dispersion.find(query).populate('idTransferencia');
-			await mongo.close();
+      if (fechaInicial) query.fechaOperacion = { $gte: fechaInicial };
+      if (fechaFinal)
+        query.fechaOperacion = { ...query.fechaOperacion, $lte: fechaFinal };
+    
+      const dispersiones = await Dispersion.find(query).populate('idTransferencia');
+      await mongo.close();
 
-			if (!dispersiones) return res.status(404).send('No se ha podido realizar la consulta');
+      if(!dispersiones) return res.status(404).send('No se ha podido realizar la consulta');
 
-			return res.send(dispersiones);
-		} catch (error) {
-			console.log(error);
-			await mongo.close();
-			return res.status(500).send('Error Interno');
-		}
-	},
+      return res.send(dispersiones);
+    } catch (error) {
+      console.log(error);
+      await mongo.close();
+      return res.status(500).send('Error Interno');
+    }
+  },
 };
 
 module.exports = controller;
