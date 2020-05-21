@@ -131,6 +131,7 @@ const controller = {
 				const signer = crypto.createSign('sha256');
 				signer.update(cadenaOriginal);
 				signer.end();
+				console.log(cadenaOriginal);
 				const signature = signer.sign(
 					{
 						key: private_key,

@@ -13,6 +13,7 @@ var crypto = require('crypto');
 const axios = require('axios');
 var envJSON = require('../../../env.variables.json');
 var node_env = process.env.NODE_ENV || 'development';
+//process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 if (node_env == 'production') {
 	var certificado = envJSON[node_env].CERTS_URL_P;
@@ -123,7 +124,6 @@ var controller = {
 					let folioOrigen = '';
 					let nombreBeneficiario2 = '';
 					let nombreOrdenante = centro_costo.razon_social; //NECESARIO
-					let rfcCurpBeneficiario = 'ND'; //NECESARIO
 					let rfcCurpBeneficiario2 = '';
 					let rfcCurpOrdenante = centro_costo.rfcCentro;
 					let tipoCuentaBeneficiario2 = '';
@@ -166,6 +166,7 @@ var controller = {
 							}
 						);
 						console.log('ULTIMO FOLIO TRANSFERENCIA: ' + folioTrans.invoice);
+						console.log(dato);
 						let claveRastreo = empresa + folioTrans.invoice;
 						const transferencia = new Transferencia();
 						dato.empresa = empresa;
@@ -178,7 +179,6 @@ var controller = {
 						dato.folioOrigen = folioOrigen;
 						dato.nombreBeneficiario2 = nombreBeneficiario2;
 						dato.nombreOrdenante = nombreOrdenante;
-						dato.rfcCurpBeneficiario = rfcCurpBeneficiario;
 						dato.rfcCurpBeneficiario2 = rfcCurpBeneficiario2;
 						dato.rfcCurpOrdenante = rfcCurpOrdenante;
 						dato.tipoCuentaBeneficiario2 = tipoCuentaBeneficiario2;
@@ -196,6 +196,11 @@ var controller = {
 						dato.resultado = resultado;
 						dato.idSTP = idSTP;
 						dato.descripcionError = descripcionError;
+						if (dato.emailBeneficiario === 0) {
+							dato.emailBeneficiario = '';
+						} else {
+						}
+
 						//Creamos el objeto transferencia cada que recorremos el ciclo y le pasamos los datos
 						transferencia.claveRastreo = dato.claveRastreo;
 						transferencia.conceptoPago = dato.conceptoPago;
@@ -239,7 +244,7 @@ var controller = {
 						transferencia.descripcionError = dato.descripcionError;
 						transferencia.medio = 'Dispersion';
 						transferencia.entorno = node_env;
-
+						console.log(transferencia.rfcCurpBeneficiario);
 						//Generamos la firma
 						var cadenaOriginal = `||${transferencia.institucionContraparte}|`;
 						cadenaOriginal += `${transferencia.empresa}|`;
@@ -277,6 +282,8 @@ var controller = {
 						cadenaOriginal += `${transferencia.iva}||`;
 						const private_key = fs.readFileSync(certificado, 'utf-8');
 						const signer = crypto.createSign('sha256');
+						console.log(cadenaOriginal);
+
 						signer.update(cadenaOriginal);
 						signer.end();
 						const signature = signer.sign(
@@ -286,6 +293,7 @@ var controller = {
 							},
 							'base64'
 						);
+						console.log(signature);
 						dato.firma = signature;
 						transferencia.idDispersion = dispersion._id;
 						transferencia.firma = dato.firma;
@@ -413,7 +421,7 @@ var controller = {
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
-		const trans = Transferencia.find({
+		const trans = await Transferencia.find({
 			estatus: true,
 			idDispersion: idDispersion,
 		}).exec(async (err, transferenciasFind) => {
@@ -422,11 +430,12 @@ var controller = {
 				//Inicio del FOR
 				dataT = transferenciasFind[i];
 				idTransferencia = dataT._id;
+				console.log(idTransferencia);
 				const agent = new https.Agent({
 					rejectUnauthorized: false,
 				});
+
 				console.log(endpoint_stp);
-				console.log(...dataT._doc);
 				await axios
 					.put(endpoint_stp, {
 						...dataT._doc,
@@ -435,6 +444,7 @@ var controller = {
 					.then(respuesta_stp => {
 						// inicio de las respuestas de STP Mandamos a ejecutar la transferencia
 
+						console.log(respuesta_stp.data.resultado);
 						if (respuesta_stp.data.resultado.descripcionError) {
 							Transferencia.findOneAndUpdate(
 								{
