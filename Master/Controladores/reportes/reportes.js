@@ -119,13 +119,13 @@ var controller = {
     await mongo.connect('sefince');
 
     try {
-      const {fechaInicial, fechaFinal, estatus } = req.body;
+      const {fechaInicial, fechaFinal, filtro } = req.body;
       const query = {};
 
       //estatus debe ser obligatorio
-      if(!estatus) return res.status(404).send('No se enviaron parametros necesarios');
+      if(!filtro) return res.status(404).send('No se enviaron parametros necesarios');
 
-      query.estatus_stp = estatus;
+      query.estatus_stp = filtro;
 
       if (fechaInicial) query.fechaOperacion = { $gte: fechaInicial };
       if (fechaFinal)
