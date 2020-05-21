@@ -6,15 +6,20 @@ var envJSON = require('./env.variables.json');
 var fs = require('fs');
 var https = require('https');
 var node_env = process.env.NODE_ENV || 'development';
+
+const puertoDev = envJSON[node_env].PORT_D;
+const keyDev = envJSON[node_env].KEY_SSL_D;
+const certDev = envJSON[node_env].CERT_SSL_D;
+const puerto = envJSON[node_env].PORT_P;
+const key = envJSON[node_env].KEY_SSL_P;
+const cert = envJSON[node_env].CERT_SSL_P;
 //NODE_ENV=production npm start
 mongoose.set('useFindAndModify', false);
 mongoose.Promise = global.Promise;
 
 //HTTPS
+
 if (node_env === 'production') {
-	const puerto = envJSON[node_env].PORT_P;
-	const key = envJSON[node_env].KEY_SSL_P;
-	const cert = envJSON[node_env].CERT_SSL_P;
 	https
 		.createServer(
 			{
@@ -28,9 +33,8 @@ if (node_env === 'production') {
 			console.log('ENTORNO: ' + node_env);
 		});
 } else {
-	const puerto = envJSON[node_env].PORT_D;
-	app.listen(puerto, () => {
-		console.log('Servidor corriendo en http://localhost: ' + puerto);
+	app.listen(puertoDev, () => {
+		console.log('Servidor corriendo en http://localhost: ' + puertoDev);
 		console.log('ENTORNO: ' + node_env);
 	});
 }

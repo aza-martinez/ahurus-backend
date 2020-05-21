@@ -16,17 +16,17 @@ var node_env = process.env.NODE_ENV || 'development';
 const DateGenerator = require('./../../helpers/DateGenerator');
 
 if (node_env == 'production') {
-  var certificado = envJSON[node_env].CERTS_URL_P;
-  var passphrase = envJSON[node_env].PASSPHRASE_CERT_P;
-  var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
-  var endpoint_stp_track = envJSON[node_env].ENDPOINT_STP_TRACK_P;
-  var endpoint_stp_balance = envJSON[node_env].ENDPOINT_STP_BALANCE_P;
+	var certificado = envJSON[node_env].CERTS_URL_P;
+	var passphrase = envJSON[node_env].PASSPHRASE_CERT_P;
+	var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
+	var endpoint_stp_track = envJSON[node_env].ENDPOINT_STP_TRACK_P;
+	var endpoint_stp_balance = envJSON[node_env].ENDPOINT_STP_BALANCE_P;
 } else {
-  var certificado = envJSON[node_env].CERTS_URL_D;
-  var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
-  var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
-  var endpoint_stp_track = envJSON[node_env].ENDPOINT_STP_TRACK_D;
-  var endpoint_stp_balance = envJSON[node_env].ENDPOINT_STP_BALANCE_D;
+	var certificado = envJSON[node_env].CERTS_URL_D;
+	var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
+	var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
+	var endpoint_stp_track = envJSON[node_env].ENDPOINT_STP_TRACK_D;
+	var endpoint_stp_balance = envJSON[node_env].ENDPOINT_STP_BALANCE_D;
 }
 
 var controller = {
