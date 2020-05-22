@@ -436,42 +436,46 @@ var controller = {
 				});
 
 				console.log(endpoint_stp);
-				await axios
-					.put(endpoint_stp, {
-						...dataT._doc,
-						httpsAgent: agent,
-					})
-					.then(respuesta_stp => {
-						// inicio de las respuestas de STP Mandamos a ejecutar la transferencia
+				try {
+					await axios
+						.put(endpoint_stp, {
+							...dataT._doc,
+							httpsAgent: agent,
+						})
+						.then(respuesta_stp => {
+							// inicio de las respuestas de STP Mandamos a ejecutar la transferencia
 
-						console.log(respuesta_stp.data.resultado);
-						if (respuesta_stp.data.resultado.descripcionError) {
-							Transferencia.findOneAndUpdate(
-								{
-									_id: idTransferencia,
-								},
-								{
-									descripcionError: respuesta_stp.data.resultado.descripcionError,
-									idSTP: respuesta_stp.data.resultado.id,
-									estatus_stp: 'Error',
-								},
-								(err, transferenciaUpdated) => {}
-							);
-						}
-						if (!respuesta_stp.data.resultado.descripcionError) {
-							Transferencia.findOneAndUpdate(
-								{
-									_id: idTransferencia,
-								},
-								{
-									descripcionError: respuesta_stp.data.resultado.descripcionError,
-									idSTP: respuesta_stp.data.resultado.id,
-									estatus_stp: 'Ejecutada',
-								},
-								(err, transferenciaUpdated) => {}
-							);
-						}
-					}); // FIN de la API Ejecutar
+							console.log(respuesta_stp.data.resultado);
+							if (respuesta_stp.data.resultado.descripcionError) {
+								Transferencia.findOneAndUpdate(
+									{
+										_id: idTransferencia,
+									},
+									{
+										descripcionError: respuesta_stp.data.resultado.descripcionError,
+										idSTP: respuesta_stp.data.resultado.id,
+										estatus_stp: 'Error',
+									},
+									(err, transferenciaUpdated) => {}
+								);
+							}
+							if (!respuesta_stp.data.resultado.descripcionError) {
+								Transferencia.findOneAndUpdate(
+									{
+										_id: idTransferencia,
+									},
+									{
+										descripcionError: respuesta_stp.data.resultado.descripcionError,
+										idSTP: respuesta_stp.data.resultado.id,
+										estatus_stp: 'Ejecutada',
+									},
+									(err, transferenciaUpdated) => {}
+								);
+							}
+						}); // FIN de la API Ejecutar
+				} catch (err) {
+					console.log(err);
+				}
 			} //FIN DEL FOR
 
 			const close = await mongo.close();
