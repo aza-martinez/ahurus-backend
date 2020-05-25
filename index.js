@@ -17,8 +17,6 @@ mongoose.Promise = global.Promise;
 if (node_env === 'production') {
 	const key = envJSON[node_env].KEY_SSL_P;
 	const cert = envJSON[node_env].CERT_SSL_P;
-	console.log(key);
-	console.log(cert);
 	https
 		.createServer(
 			{
