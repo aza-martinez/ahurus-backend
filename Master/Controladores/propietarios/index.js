@@ -513,18 +513,20 @@ class PropietarioController {
 					let materno = '';
 					let alias = '';
 					let rfc = '';
+					let razon_social = '';
 					let correo1 = '';
 					let correo2 = '';
 					let telefono = '';
-					let genero = '';
-					let pais = ''; //ID
-					let entidad = ''; //ID
-					let municipio = '';
-					let colonia = '';
-					let calle = '';
-					let numInt = '';
-					let numExt = '';
-					let cp = '';
+					let tipo_propietario = '';
+					let genero = ''; //OPCIONAL
+					let pais = ''; //OPCIONAL
+					let entidad = ''; //OPCIONAL
+					let municipio = ''; // OPCIONAL
+					let colonia = ''; // OPCIONAL
+					let calle = ''; // OPCIONAL
+					let numInt = ''; //OPCIONAL
+					let numExt = ''; //OPCIONAL
+					let cp = ''; //OPCIONAL
 
 					for await (let dato of data) {
 						const owner = new PropietarioModel();
@@ -538,9 +540,10 @@ class PropietarioController {
 						correo1 = dato.correo1;
 						correo2 = dato.correo2;
 						telefono = dato.telefono;
+						razon_social = dato.razon_social;
 						genero = dato.genero;
 						pais = dato.pais;
-						entidad = dato.entidad;
+						tipo_propietario = dato.tipo_propietario;
 						municipio = dato.municipio;
 						colonia = dato.colonia;
 						calle = dato.calle;
@@ -548,20 +551,16 @@ class PropietarioController {
 						numExt = dato.numExt;
 						cp = dato.cp;
 
-						var queryPais = await Pais.find({ pais: pais }).exec();
-						var queryEstado = await Estado.find({ entidad: entidad }).exec();
-
 						owner.nombre = nombre;
-						owner.paterno = paterno;
-						owner.materno = materno;
-						owner.alias = alias;
+						owner.apellidoPaterno = paterno;
+						owner.apellidoMaterno = materno;
+						owner.id_terceros = alias;
 						owner.rfc = rfc;
+						owner.razon_social = razon_social;
 						owner.correo1 = correo1;
 						owner.correo2 = correo2;
 						owner.telefono = telefono;
-						owner.genero = genero;
-						owner.pais = queryPais[0]._id;
-						owner.entidad = queryEstado[0]._id;
+						owner.tipo_propietario = tipo_propietario;
 						owner.municipio = municipio;
 						owner.colonia = colonia;
 						owner.calle = calle;
