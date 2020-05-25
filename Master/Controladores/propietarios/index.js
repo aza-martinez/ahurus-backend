@@ -4,6 +4,7 @@ const https = require('https');
 var request = require('request');
 const PropietarioModel = require('../../Modelos/propietarios/propietarios');
 var Institucion = require('../../Modelos/instituciones/instituciones');
+var Usuario = require('../../Modelos/usuarios/usuarios');
 const fs = require('fs');
 const Cuenta = require('../../Modelos/cuentas/cuentas');
 const Pais = require('./../../Modelos/PaisesNacimiento');
@@ -12,6 +13,8 @@ var Tipo = require('../../Modelos/tipos_cuentas/tipos_cuentas');
 var azure = require('azure-storage');
 var XLSX = require('xlsx');
 const moment = require('moment');
+const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const Counter = require('../../Modelos/counters/counters');
 var crypto = require('crypto');
 const axios = require('axios');
@@ -26,6 +29,7 @@ if (node_env == 'production') {
 	var key = envJSON[node_env].AZURE_KEY_STORAGE_P;
 	var account = envJSON[node_env].AZURE_SACCOUNT_P;
 	var container = envJSON[node_env].AZURE_SCONTAINER_ACCOUNTS_P;
+	var containerUser = envJSON[node_env].AZURE_SCONTAINER_USERS_P;
 } else {
 	var certificado = envJSON[node_env].CERTS_URL_D;
 	var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
@@ -33,13 +37,18 @@ if (node_env == 'production') {
 	var key = envJSON[node_env].AZURE_KEY_STORAGE_D;
 	var account = envJSON[node_env].AZURE_SACCOUNT_D;
 	var container = envJSON[node_env].AZURE_SCONTAINER_ACCOUNTS_D;
+	var containerUser = envJSON[node_env].AZURE_SCONTAINER_USERS_D;
 }
 const KEY_STORAGE = key;
 const STORAGE_ACCOUNT = account;
 const STORAGE_CONTAINER = container;
+const STORAGE_CONTAINER_U = containerUser;
 const MongooseConnect = require('./../../MongooseConnect');
 const { nextTick } = require('process');
 
+console.log(STORAGE_ACCOUNT);
+console.log(KEY_STORAGE);
+console.log(STORAGE_CONTAINER_U);
 class PropietarioController {
 	constructor() {
 		this.model = PropietarioModel;
@@ -406,12 +415,11 @@ class PropietarioController {
 						clabe = dato.clabe;
 						tipoC = dato.tipo_cuenta;
 						institucion = dato.institucion;
+						propietario = dato.propietario;
 						tipoReg = dato.tipo_registro;
 						var queryTipoCuenta = await Tipo.find({ clave: tipoC }).exec();
 						var queryInstitucion = await Institucion.find({ clabe: institucion }).exec();
-						console.log(id_terceros);
 						var queryPropietario = await PropietarioModel.find({ id_terceros: id_terceros }).exec();
-						console.log(queryPropietario);
 						tipoCuenta.descripcion = descripcion;
 						tipoCuenta.clabe = clabe;
 						tipoCuenta.tipo_cuenta = queryTipoCuenta[0]._id;
@@ -433,6 +441,7 @@ class PropietarioController {
 	async importOwners(req, res) {
 		var file_name = 'Documento no subido..';
 		const user = req.user['http://localhost:3000/user_metadata'].user;
+		console.log(user);
 		var params = req.body;
 		if (!req.files) {
 			return res.status(404).send({});
@@ -532,7 +541,6 @@ class PropietarioController {
 
 					for await (let dato of data) {
 						const owner = new PropietarioModel();
-
 						//Creamos el objeto transferencia cada que recorremos el ciclo y le pasamos los datos
 						nombre = dato.nombre;
 						paterno = dato.paterno;
@@ -573,6 +581,143 @@ class PropietarioController {
 						owner.timestamp = fechaMX._d;
 						const newOwner = await owner.save();
 						console.log(newOwner);
+					} //FIN  DEL FOREACH
+					const close = await mongo.close();
+					return res.status(200).send();
+				}
+			);
+			return;
+		});
+	}
+	async importUsers(req, res) {
+		var file_name = 'Documento no subido..';
+		const user = 'arendon'; //req.user['http://localhost:3000/user_metadata'].user;
+		var params = req.body;
+		if (!req.files) {
+			return res.status(404).send({});
+		}
+		const SERVER_BD = 'master'; //req.user['http://localhost:3000/user_metadata'].empresa;
+		const mongo = new MongooseConnect();
+		await mongo.connect(SERVER_BD);
+		const folio = await Counter.findByIdAndUpdate(
+			{
+				_id: 'users',
+			},
+			{
+				$inc: {
+					invoice: 1,
+				},
+			}
+		);
+
+		console.log('ULTIMO FOLIO USER: ' + folio.invoice);
+		var file_path = req.files.file.path;
+		var file_name = folio.invoice + '_' + req.files.file.originalFilename;
+		var extension_split = file_name.split('.');
+		var file_ext = extension_split[1];
+		let registro = {};
+		const blobService = azure.createBlobService(STORAGE_ACCOUNT, KEY_STORAGE);
+		let fileStorage = null;
+		const startDate = new Date();
+		const expiryDate = new Date(startDate);
+
+		const sharedAccessPolicy = {
+			AccessPolicy: {
+				Permissions: azure.BlobUtilities.SharedAccessPermissions.READ,
+				start: startDate,
+				Expiry: azure.date.minutesFromNow(20),
+			},
+		};
+		await blobService.createBlockBlobFromLocalFile(STORAGE_CONTAINER_U, file_name, file_path, async (e, result, req) => {
+			if (e) {
+				return;
+			}
+
+			const token = await blobService.generateSharedAccessSignature(STORAGE_CONTAINER_U, result.name, sharedAccessPolicy);
+			const fileURLStorage = await blobService.getUrl(STORAGE_CONTAINER_U, result.name, token, true);
+
+			await request(
+				fileURLStorage,
+				{
+					encoding: null,
+				},
+				async (error, response, body) => {
+					var workbook = XLSX.read(body, {
+						type: 'buffer',
+					});
+					const referencia = workbook.Sheets['Usuarios']['!ref'];
+					const primeraFila = referencia.split(':')[0].substr(1);
+					const ultimaFila = referencia.split(':')[1].substr(1);
+
+					delete workbook.Sheets['Usuarios']['!ref'];
+					delete workbook.Sheets['Usuarios']['!margins'];
+					const FILAS = workbook.Sheets['Usuarios'];
+
+					// const jsonToArrayvar
+					let jsonToArray = [];
+					var fecha = new Date();
+					var fechaOperacion = moment(fechaMX).format('YYYYMMDD');
+					var fechaMX = moment(fecha).tz('America/Mexico_City');
+					//Obtenemos la data del excel.
+					var sheetIndex = 1;
+					var workbook = XLSX.readFile(file_path);
+					var sheet_name_list = workbook.SheetNames;
+					const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[sheetIndex - 1]]);
+
+					// INICIO FOREACH
+
+					let nombre = '';
+					let perfil = '';
+					let correo = '';
+					let telefono = '';
+					let empresa = '';
+					let usuario = '';
+					let password = '';
+					for await (let dato of data) {
+						const user = new Usuario();					
+						nombre = dato.nombre;
+						perfil = dato.perfil;
+						correo = dato.correo;
+						telefono = dato.telefono;
+						empresa = dato.empresa;
+						usuario = dato.usuario;
+						password = dato.password;
+						console.log(password);
+						user.nombre = nombre;
+						user.perfil = perfil;
+						user.correo = correo;
+						user.telefono = telefono;
+						user.empresa = empresa;
+						user.usuario = usuario;
+							const hash = bcryptjs.hashSync(password, 11);
+						user.password = hash;
+						user.estatus = true;
+						user.timestamp = fechaMX._d;
+						if (perfil === 'Administrador') {
+							const userAdmin = await Counter.findByIdAndUpdate(
+								{
+									_id: 'user_admin',
+								},
+								{
+									$inc: {
+										invoice: 1,
+									},
+								}
+							);
+						} else {
+							const userUser = await Counter.findByIdAndUpdate(
+								{
+									_id: 'user_user',
+								},
+								{
+									$inc: {
+										invoice: 1,
+									},
+								}
+							);
+						}
+						const newUser = await user.save();
+						console.log(newUser);
 					} //FIN  DEL FOREACH
 					const close = await mongo.close();
 					return res.status(200).send();
