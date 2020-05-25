@@ -309,6 +309,7 @@ class PropietarioController {
 		});
 	}
 	async importAccounts(req, res) {
+		let id_terceros = req.body.propietario;
 		var file_name = 'Documento no subido..';
 		const user = req.user['http://localhost:3000/user_metadata'].user;
 		var params = req.body;
@@ -405,11 +406,12 @@ class PropietarioController {
 						clabe = dato.clabe;
 						tipoC = dato.tipo_cuenta;
 						institucion = dato.institucion;
-						propietario = dato.propietario;
 						tipoReg = dato.tipo_registro;
 						var queryTipoCuenta = await Tipo.find({ clave: tipoC }).exec();
 						var queryInstitucion = await Institucion.find({ clabe: institucion }).exec();
-						var queryPropietario = await PropietarioModel.find({ id_terceros: propietario }).exec();
+						console.log(id_terceros);
+						var queryPropietario = await PropietarioModel.find({ id_terceros: id_terceros }).exec();
+						console.log(queryPropietario);
 						tipoCuenta.descripcion = descripcion;
 						tipoCuenta.clabe = clabe;
 						tipoCuenta.tipo_cuenta = queryTipoCuenta[0]._id;
