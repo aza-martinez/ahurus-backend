@@ -187,12 +187,12 @@ const controller = {
 				rejectUnauthorized: false,
 			});
 			console.log(endpoint_stp);
-			console.log(transferencia);
 			await axios
 				.put(endpoint_stp, transferencia, {
 					httpsAgent: agent,
 				})
 				.then(response => {
+					console.log(response);
 					console.log(response.data.resultado);
 					if (response.data.resultado.descripcionError) {
 						Transferencia.findOneAndUpdate(
