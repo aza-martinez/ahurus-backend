@@ -9,7 +9,7 @@ const configMailer = {
     viewPath: "./Master/views/Mail",
   },
   transporter: {
-    host: "www.condor3590.startdedicated.com",
+    host: "148.72.144.148",
     pool: true,
     secure: false,
     auth: {
