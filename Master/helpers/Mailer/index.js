@@ -57,7 +57,8 @@ class Mailer {
     transporterOrdenante.use("compile", hbs(configMailer.engine));
     const mailOptions = await this.getMailOptions(email, contextEmail, type);
     // ENVIAMOS EMAIL
-    await transporterOrdenante.sendMail(mailOptions);
+    const transporte = await transporterOrdenante.sendMail(mailOptions);
+    console.log(transporte);
     return;
   }
 
