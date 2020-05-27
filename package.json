@@ -52,7 +52,6 @@
         "openssl-nodejs": "^1.0.5",
         "path": "^0.12.7",
         "puppeteer-core": "^3.0.4",
-        "puppeteer": "^3.1.0",
         "qrcode": "^1.4.4",
         "read-excel-file": "^4.0.3",
         "save": "^2.4.0",
@@ -68,7 +67,5 @@
         "xlsx-to-json-lc": "^0.5.0",
         "yargs": "^14.2.0"
     },
-    "devDependencies": {
-        "puppeteer": "^3.1.0"
-    }
+    "devDependencies": {}
 }
