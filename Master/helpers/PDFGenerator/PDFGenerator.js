@@ -20,7 +20,6 @@ class PDFGenerator {
     await page.setContent(template);
     await page.emulateMedia(CONFIG_PDFGENERATOR.emulateMedia);
     const PDF = await page.pdf(CONFIG_PDFGENERATOR.options);
-    console.log(PDF);
     await browser.close();
 
 		return PDF;
