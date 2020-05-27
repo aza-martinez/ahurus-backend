@@ -10,7 +10,7 @@ module.exports = {
         printBackground: true,
     },
     launcher: {
-        args: ["--no-sandbox"],
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
         headless: true,
     },
     emulateMedia: 'screen',
