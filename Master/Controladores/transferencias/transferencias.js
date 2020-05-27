@@ -154,14 +154,6 @@ const controller = {
 
 	async ejecutar(req, res) {
 		var transID = req.params.id;
-		/* 		const tkn = req.params.tkn;
-		var verified = speakeasy.totp.verify({
-			secret: 'AArU:P?G0UAz0yIX!wZIaFI11<Tg)B{B',
-			encoding: 'ascii',
-			token: tkn,
-		});
-		console.log(verified); */
-		//	if (verified === true) {
 		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
@@ -169,9 +161,9 @@ const controller = {
 		Transferencia.findById(transID, async (err, transferenciaFind) => {
 			const estatusError = 'Error';
 			const estatusOk = 'Ejecutada';
-
+			console.log(transferenciaFind);
 			const transferencia = {
-				...transferenciaFind,
+				...transferenciaFind._doc,
 			};
 
 			delete transferencia.estatus_stp;
@@ -182,18 +174,14 @@ const controller = {
 			delete transferencia.medio;
 			delete transferencia.estatus;
 			delete transferencia._id;
-
 			const agent = new https.Agent({
 				rejectUnauthorized: false,
 			});
-			console.log(endpoint_stp);
 			await axios
 				.put(endpoint_stp, transferencia, {
 					httpsAgent: agent,
 				})
 				.then(response => {
-					console.log(response);
-					console.log(response.data.resultado);
 					if (response.data.resultado.descripcionError) {
 						Transferencia.findOneAndUpdate(
 							{
@@ -234,7 +222,6 @@ const controller = {
 					return res.status(400).send(error);
 				});
 		});
-		//} else return res.status(400).send('TOKEN INVALIDO');
 	},
 	update: async (req, res) => {
 		var tranferenciaID = req.params.id;
