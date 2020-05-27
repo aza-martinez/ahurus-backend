@@ -12,6 +12,7 @@ module.exports = {
 	launcher: {
 		args: ['--no-sandbox', '--disable-setuid-sandbox'],
 		headless: false,
+		ignoreDefaultArgs: ['--disable-extensions'],
 	},
 	emulateMedia: 'screen',
 	pathTemplateExito: 'Master/views/PDF/exito.handlebars',
