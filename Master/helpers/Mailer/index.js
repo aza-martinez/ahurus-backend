@@ -34,15 +34,17 @@ class Mailer {
 		};
 
 		//SENDMAIL
+		console.log('empezando para enviar email');
 		const emailOrdenante = await this.sendMail(null, transferencia);
 		const emailBeneficiario = await this.sendMail(this.transferencia._doc.emailBeneficiario, transferencia, 'Beneficiario');
-
+		console.log(emailBeneficiario);
+		console.log(emailOrdenante);
 		return true;
 	}
 
 	async sendMail(email, contextEmail, type) {
 		// Creamos el transporter para el mail
-		const transporterOrdenante = this.getTransporter();
+		const transporterOrdenante = await this.getTransporter();
 		//creamos configuración del template HTML
 		transporterOrdenante.use('compile', hbs(configMailer.engine));
 		const mailOptions = await this.getMailOptions(email, contextEmail, type);
