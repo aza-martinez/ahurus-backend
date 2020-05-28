@@ -52,15 +52,15 @@ class Mailer {
 		console.log('entrando');
 		const transporte = await transporterOrdenante.sendMail(mailOptions);
 		console.log(transporte);
-		return;
+		return transporte;
 	}
 
 	/**
    * getTansporter crea un Transporte de NodeMailer para poder
    * enviar el correo
    */
-	getTransporter() {
-		return nodemailer.createTransport(configMailer.transporter);
+	async getTransporter() {
+		return await nodemailer.createTransport(configMailer.transporter);
 	}
 
 	/**
