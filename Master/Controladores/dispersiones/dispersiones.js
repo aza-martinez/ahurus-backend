@@ -58,7 +58,6 @@ var controller = {
 			}
 		);
 
-		console.log('ULTIMO FOLIO DISPERSION: ' + folio.invoice);
 		var file_path = req.files.file_path.path;
 		var file_name = folio.invoice + '_' + req.files.file_path.originalFilename;
 		var extension_split = file_name.split('.');
@@ -165,8 +164,6 @@ var controller = {
 								},
 							}
 						);
-						console.log('ULTIMO FOLIO TRANSFERENCIA: ' + folioTrans.invoice);
-						console.log(dato);
 						let claveRastreo = empresa + folioTrans.invoice;
 						const transferencia = new Transferencia();
 						dato.empresa = empresa;
@@ -244,7 +241,6 @@ var controller = {
 						transferencia.descripcionError = dato.descripcionError;
 						transferencia.medio = 'Dispersion';
 						transferencia.entorno = node_env;
-						console.log(transferencia.rfcCurpBeneficiario);
 						//Generamos la firma
 						var cadenaOriginal = `||${transferencia.institucionContraparte}|`;
 						cadenaOriginal += `${transferencia.empresa}|`;
@@ -282,7 +278,6 @@ var controller = {
 						cadenaOriginal += `${transferencia.iva}||`;
 						const private_key = fs.readFileSync(certificado, 'utf-8');
 						const signer = crypto.createSign('sha256');
-						console.log(cadenaOriginal);
 
 						signer.update(cadenaOriginal);
 						signer.end();
@@ -293,17 +288,14 @@ var controller = {
 							},
 							'base64'
 						);
-						console.log(signature);
 						dato.firma = signature;
 						transferencia.idDispersion = dispersion._id;
 						transferencia.firma = dato.firma;
 						const newTransfer = await transferencia.save();
 						dispersion.idTransferencia.push(newTransfer._id);
-						console.log(newTransfer);
 					} //FIN  DEL FOREACH
 
 					const newDisp = await dispersion.save();
-					console.log(newDisp);
 					const close = await mongo.close();
 					return res.status(200).send(data);
 				}
@@ -365,9 +357,6 @@ var controller = {
 		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
-		console.log(KEY_STORAGE);
-		console.log(STORAGE_ACCOUNT);
-		console.log(STORAGE_CONTAINER);
 		await Dispersion.find({
 			estatus: true,
 		}).exec(async (err, registros) => {
@@ -430,12 +419,10 @@ var controller = {
 				//Inicio del FOR
 				dataT = transferenciasFind[i];
 				idTransferencia = dataT._id;
-				console.log(idTransferencia);
 				const agent = new https.Agent({
 					rejectUnauthorized: false,
 				});
 
-				console.log(endpoint_stp);
 				try {
 					await axios
 						.put(endpoint_stp, {
@@ -445,7 +432,6 @@ var controller = {
 						.then(respuesta_stp => {
 							// inicio de las respuestas de STP Mandamos a ejecutar la transferencia
 
-							console.log(respuesta_stp.data.resultado);
 							if (respuesta_stp.data.resultado.descripcionError) {
 								Transferencia.findOneAndUpdate(
 									{
@@ -473,9 +459,7 @@ var controller = {
 								);
 							}
 						}); // FIN de la API Ejecutar
-				} catch (err) {
-					console.log(err);
-				}
+				} catch (err) {}
 			} //FIN DEL FOR
 
 			const close = await mongo.close();

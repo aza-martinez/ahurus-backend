@@ -1,9 +1,7 @@
 'use strict';
 
-const fs = require('fs');
 var validator = require('validator');
 var Plaza = require('../../Modelos/plazas/plazas');
-var sha256 = require('js-sha256');
 
 var controller = {
 	save: (req, res) => {

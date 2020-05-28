@@ -10,8 +10,6 @@ const Counter = require('../../Modelos/counters/counters');
 const fs = require('fs');
 var path = require('path');
 const crypto = require('crypto');
-const speakeasy = require('speakeasy');
-const qrcode = require('qrcode');
 const axios = require('axios');
 var envJSON = require('../../../env.variables.json');
 var node_env = process.env.NODE_ENV || 'development';
@@ -131,7 +129,6 @@ const controller = {
 				const signer = crypto.createSign('sha256');
 				signer.update(cadenaOriginal);
 				signer.end();
-				console.log(cadenaOriginal);
 				const signature = signer.sign(
 					{
 						key: private_key,
@@ -161,7 +158,6 @@ const controller = {
 		Transferencia.findById(transID, async (err, transferenciaFind) => {
 			const estatusError = 'Error';
 			const estatusOk = 'Ejecutada';
-			console.log(transferenciaFind);
 			const transferencia = {
 				...transferenciaFind._doc,
 			};
@@ -217,7 +213,6 @@ const controller = {
 					}
 				})
 				.catch(async error => {
-					console.log(error);
 					const close = await mongo.close();
 					return res.status(400).send(error);
 				});
@@ -477,7 +472,6 @@ const controller = {
 			});
 		} catch (error) {
 			await mongo.close();
-			console.log(error);
 			return res.status(500).send('Error Interno');
 		}
 	},
