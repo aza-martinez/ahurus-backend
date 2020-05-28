@@ -166,7 +166,6 @@ const controller = {
 
 			return res.status(200).send(cuentas);
 		} catch (error) {
-			console.log(error);
 			await mongo.close();
 			return res.status(500).send('Error interno');
 		}
@@ -183,7 +182,6 @@ const controller = {
 			.sort([['date', -1]])
 			.exec((err, registros) => {
 				if (err) {
-					console.log(err);
 					return res.status(500).send({});
 				}
 				if (!registros || registros.length <= 0) {
@@ -285,9 +283,6 @@ const controller = {
 
 		xlsx('tasks.xlsx', function(err, data) {
 			if (err) throw err;
-			//console.log(jsonDataArray(data));
-			console.log(JSON.stringify(convertToJSON(data)));
-			//console.log(data);
 		});
 	},
 };
