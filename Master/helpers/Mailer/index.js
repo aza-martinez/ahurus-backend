@@ -21,9 +21,9 @@ class Mailer {
 		const { fecha, hora } = DateGenerator.getDateAndHour(this.transferencia._doc.timestamp);
 
 		const cuentaBeneficiario = this.getBankAccount(this.transferencia._doc.cuentaBeneficiario);
-
+		console.log(cuentaBeneficiario);
 		const cuentaOrdenante = this.getBankAccount(this.transferencia._doc.cuentaOrdenante);
-
+		console.log(cuentaOrdenante);
 		const transferencia = {
 			...this.transferencia._doc,
 			...this.centroCosto,
@@ -32,6 +32,7 @@ class Mailer {
 			cuentaOrdenante,
 			cuentaBeneficiario,
 		};
+		console.log(transferencia);
 
 		//SENDMAIL
 		console.log('empezando para enviar email');
