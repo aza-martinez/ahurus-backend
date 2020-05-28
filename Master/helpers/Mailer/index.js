@@ -32,15 +32,16 @@ class Mailer {
 			cuentaOrdenante,
 			cuentaBeneficiario,
 		};
-		console.log(transferencia);
+		console.log({ ...transferencia._doc });
 
 		//SENDMAIL
 		console.log('empezando para enviar email');
 		const emailOrdenante = await this.sendMail(null, transferencia);
+
 		const emailBeneficiario = await this.sendMail(this.transferencia._doc.emailBeneficiario, transferencia, 'Beneficiario');
 		console.log(emailBeneficiario);
 		console.log(emailOrdenante);
-		return true;
+		return console.log(true);
 	}
 
 	async sendMail(email, contextEmail, type) {
