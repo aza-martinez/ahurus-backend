@@ -14,6 +14,7 @@ class PDFGenerator {
 		const templateHTML = fs.readFileSync(path.join(process.cwd(), CONFIG_PDFGENERATOR.pathTemplateExito), 'utf-8');
 
 		const template = await handlebars.compile(templateHTML)(this.transferencia);
+		console.log(template);
 		console.log(CONFIG_PDFGENERATOR.launcher);
 		const browser = await puppeteer.launch(CONFIG_PDFGENERATOR.launcher);
 		const page = await browser.newPage();
