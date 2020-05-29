@@ -38,7 +38,7 @@
         "node-fetch": "^2.6.0",
         "node-rsa": "^1.0.6",
         "node-soap": "^1.0.0",
-        "nodemailer": "^6.4.2",
+        "nodemailer": "^6.4.8",
         "nodemailer-express-handlebars": "^4.0.0",
         "nodemon": "^1.19.4",
         "openssl": "^1.1.0",

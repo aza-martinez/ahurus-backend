@@ -35,13 +35,10 @@ class Mailer {
 		console.log({ ...transferencia._doc });
 
 		//SENDMAIL
-		console.log('empezando para enviar email');
 		const emailOrdenante = await this.sendMail(null, { ...transferencia._doc });
-
 		const emailBeneficiario = await this.sendMail(this.transferencia._doc.emailBeneficiario, { ...transferencia._doc }, 'Beneficiario');
-		console.log(emailBeneficiario);
-		console.log(emailOrdenante);
-		return console.log(true);
+
+		return true;
 	}
 
 	async sendMail(email, contextEmail, type) {
@@ -51,10 +48,8 @@ class Mailer {
 		transporterOrdenante.use('compile', hbs(configMailer.engine));
 		const mailOptions = await this.getMailOptions(email, contextEmail, type);
 		// ENVIAMOS EMAIL
-		console.log('entrando');
 		const transporte = await transporterOrdenante.sendMail(mailOptions);
-		console.log(transporte);
-		return transporte;
+		return;
 	}
 
 	/**

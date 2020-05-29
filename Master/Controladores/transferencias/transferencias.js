@@ -472,6 +472,7 @@ const controller = {
 			});
 		} catch (error) {
 			await mongo.close();
+			console.log(error);
 			return res.status(500).send('Error Interno');
 		}
 	},
