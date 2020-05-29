@@ -11,7 +11,7 @@ const configMailer = {
 	},
 	transporter: {
 		host: '148.72.144.148',
-		secure: false,
+		secure: true,
 		port: 465,
 		pool: true,
 		/* 		ca: [fs.readFileSync('./certs/SSL-PRODUCTION/star.ahurus.com.crt')],
