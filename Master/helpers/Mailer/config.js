@@ -20,7 +20,7 @@ const configMailer = {
 		auth: {
 			user: 'comprobantes@ahurus.com',
 			pass: '2IOPBp6Q3715',
-		},
+		}, //OK
 		tls: {
 			rejectUnauthorized: false,
 		},
