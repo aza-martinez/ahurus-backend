@@ -10,7 +10,7 @@ module.exports = {
 		printBackground: true,
 	},
 	launcher: {
-		args: ['--no-sandbox', '--disable-setuid-sandbox' /* , '--disable-dev-shm-usage', '--single-process', '--disable-extensions' */],
+		args: ['--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox', '--disable-setuid-sandbox'],
 		headless: false,
 		ignoreDefaultArgs: ['--disable-extensiontrues'],
 	},
