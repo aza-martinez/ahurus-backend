@@ -36,7 +36,8 @@ class Mailer {
 		//SENDMAIL
 		const emailOrdenante = await this.sendMail(null, transferencia);
 		const emailBeneficiario = await this.sendMail(this.transferencia._doc.emailBeneficiario, transferencia, 'Beneficiario');
-
+		console.log(emailOrdenante);
+		console.log(emailBeneficiario);
 		return true;
 	}
 
@@ -48,7 +49,8 @@ class Mailer {
 		const mailOptions = await this.getMailOptions(email, contextEmail, type);
 		// ENVIAMOS EMAIL
 		const transporte = await transporterOrdenante.sendMail(mailOptions);
-		return;
+		console.log(transporte);
+		return transporte;
 	}
 
 	/**
@@ -108,7 +110,7 @@ class Mailer {
 				},
 			];
 		}
-
+		console.log(mailoptions);
 		return mailOptions;
 	}
 }
