@@ -32,11 +32,10 @@ class Mailer {
 			cuentaOrdenante,
 			cuentaBeneficiario,
 		};
-		console.log({ ...transferencia._doc });
 
 		//SENDMAIL
-		const emailOrdenante = await this.sendMail(null, { ...transferencia._doc });
-		const emailBeneficiario = await this.sendMail(this.transferencia._doc.emailBeneficiario, { ...transferencia._doc }, 'Beneficiario');
+		const emailOrdenante = await this.sendMail(null, transferencia);
+		const emailBeneficiario = await this.sendMail(this.transferencia._doc.emailBeneficiario, transferencia, 'Beneficiario');
 
 		return true;
 	}
