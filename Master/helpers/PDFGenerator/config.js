@@ -10,8 +10,8 @@ module.exports = {
 		printBackground: true,
 	},
 	launcher: {
-		args: ['--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox', '--disable-setuid-sandbox'],
 		headless: false,
+		args: ['--disable-gpu', '--disable-dev-shm-usage', '--no-sandbox', '--disable-setuid-sandbox', '--headless'],
 		ignoreDefaultArgs: ['--disable-extensiontrues'],
 	},
 	emulateMedia: 'screen',
