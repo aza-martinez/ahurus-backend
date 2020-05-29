@@ -110,7 +110,7 @@ class Mailer {
 				},
 			];
 		}
-		console.log(mailoptions);
+		console.log(mailOptions);
 		return mailOptions;
 	}
 }
