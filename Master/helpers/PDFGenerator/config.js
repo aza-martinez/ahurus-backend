@@ -10,9 +10,9 @@ module.exports = {
 		printBackground: true,
 	},
 	launcher: {
-		args: ['--no-sandbox', '--disable-setuid-sandbox' /* , '--disable-dev-shm-usage', '--single-process', '--disable-extensions' */],
+		args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--single-process', '--disable-extensions'],
 		headless: false,
-		//ignoreDefaultArgs: ['--disable-extensiontrues'],
+		ignoreDefaultArgs: ['--disable-extensiontrues'],
 	},
 	emulateMedia: 'screen',
 	pathTemplateExito: 'Master/views/PDF/exito.handlebars',
