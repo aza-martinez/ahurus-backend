@@ -14,7 +14,6 @@ var azure = require('azure-storage');
 var XLSX = require('xlsx');
 const moment = require('moment');
 const bcryptjs = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const Counter = require('../../Modelos/counters/counters');
 var crypto = require('crypto');
 const axios = require('axios');
@@ -46,9 +45,6 @@ const STORAGE_CONTAINER_U = containerUser;
 const MongooseConnect = require('./../../MongooseConnect');
 const { nextTick } = require('process');
 
-console.log(STORAGE_ACCOUNT);
-console.log(KEY_STORAGE);
-console.log(STORAGE_CONTAINER_U);
 class PropietarioController {
 	constructor() {
 		this.model = PropietarioModel;
@@ -674,7 +670,7 @@ class PropietarioController {
 					let usuario = '';
 					let password = '';
 					for await (let dato of data) {
-						const user = new Usuario();					
+						const user = new Usuario();
 						nombre = dato.nombre;
 						perfil = dato.perfil;
 						correo = dato.correo;
@@ -689,7 +685,7 @@ class PropietarioController {
 						user.telefono = telefono;
 						user.empresa = empresa;
 						user.usuario = usuario;
-							const hash = bcryptjs.hashSync(password, 11);
+						const hash = bcryptjs.hashSync(password, 11);
 						user.password = hash;
 						user.estatus = true;
 						user.timestamp = fechaMX._d;

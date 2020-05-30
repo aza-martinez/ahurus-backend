@@ -1,76 +1,67 @@
-const nodemailer = require("nodemailer");
-const PDFGenerator = require("../PDFGenerator/PDFGenerator");
-const path = require("path");
-const DateGenerator = require("../DateGenerator");
-const hbs = require("nodemailer-express-handlebars");
-const configMailer = require("./config");
+const nodemailer = require('nodemailer');
+const PDFGenerator = require('../PDFGenerator/PDFGenerator');
+const path = require('path');
+const DateGenerator = require('../DateGenerator');
+const hbs = require('nodemailer-express-handlebars');
+const configMailer = require('./config');
 
 class Mailer {
-  constructor(transferencia, centroCosto) {
-    this.centroCosto = centroCosto;
-    this.transferencia = transferencia;
+	constructor(transferencia, centroCosto) {
+		this.centroCosto = centroCosto;
+		this.transferencia = transferencia;
 
-    // functions
-    this.send = this.send.bind(this);
-    this.getTransporter = this.getTransporter.bind(this);
-    this.getMailOptions = this.getMailOptions.bind(this);
-  }
+		// functions
+		this.send = this.send.bind(this);
+		this.getTransporter = this.getTransporter.bind(this);
+		this.getMailOptions = this.getMailOptions.bind(this);
+	}
 
-  async send() {
-    // OBTENEMOS DATA GENERAL TRANSFERENCIA
-    const { fecha, hora } = DateGenerator.getDateAndHour(
-      this.transferencia._doc.timestamp
-    );
+	async send() {
+		// OBTENEMOS DATA GENERAL TRANSFERENCIA
+		const { fecha, hora } = DateGenerator.getDateAndHour(this.transferencia._doc.timestamp);
 
-    const cuentaBeneficiario = this.getBankAccount(
-      this.transferencia._doc.cuentaBeneficiario
-    );
+		const cuentaBeneficiario = this.getBankAccount(this.transferencia._doc.cuentaBeneficiario);
+		console.log(cuentaBeneficiario);
+		const cuentaOrdenante = this.getBankAccount(this.transferencia._doc.cuentaOrdenante);
+		console.log(cuentaOrdenante);
+		const transferencia = {
+			...this.transferencia._doc,
+			...this.centroCosto,
+			fecha,
+			hora,
+			cuentaOrdenante,
+			cuentaBeneficiario,
+		};
 
-    const cuentaOrdenante = this.getBankAccount(
-      this.transferencia._doc.cuentaOrdenante
-    );
+		//SENDMAIL
+		const emailOrdenante = await this.sendMail(null, transferencia);
+		const emailBeneficiario = await this.sendMail(this.transferencia._doc.emailBeneficiario, transferencia, 'Beneficiario');
+		console.log(emailOrdenante);
+		console.log(emailBeneficiario);
+		return true;
+	}
 
-    const transferencia = {
-      ...this.transferencia._doc,
-      ...this.centroCosto,
-      fecha,
-      hora,
-      cuentaOrdenante,
-      cuentaBeneficiario,
-    };
+	async sendMail(email, contextEmail, type) {
+		// Creamos el transporter para el mail
+		const transporterOrdenante = await this.getTransporter();
+		//creamos configuración del template HTML
+		transporterOrdenante.use('compile', hbs(configMailer.engine));
+		const mailOptions = await this.getMailOptions(email, contextEmail, type);
+		// ENVIAMOS EMAIL
+		const transporte = await transporterOrdenante.sendMail(mailOptions);
+		console.log(transporte);
+		return transporte;
+	}
 
-    //SENDMAIL
-    const emailOrdenante = await this.sendMail(null,transferencia);
-    const emailBeneficiario = await this.sendMail(
-      this.transferencia._doc.emailBeneficiario,
-      transferencia,
-      'Beneficiario'
-    );
-
-    return true;
-  }
-
-  async sendMail(email, contextEmail, type) {
-    // Creamos el transporter para el mail
-    const transporterOrdenante = this.getTransporter();
-    //creamos configuración del template HTML
-    transporterOrdenante.use("compile", hbs(configMailer.engine));
-    const mailOptions = await this.getMailOptions(email, contextEmail, type);
-    // ENVIAMOS EMAIL
-    const transporte = await transporterOrdenante.sendMail(mailOptions);
-    console.log(transporte);
-    return;
-  }
-
-  /**
+	/**
    * getTansporter crea un Transporte de NodeMailer para poder
    * enviar el correo
    */
-  getTransporter() {
-    return nodemailer.createTransport(configMailer.transporter);
-  }
+	async getTransporter() {
+		return await nodemailer.createTransport(configMailer.transporter);
+	}
 
-  /**
+	/**
    * getBankAccount
    * @param {String} account
    *
@@ -78,13 +69,13 @@ class Mailer {
    * obteniendo los ultimos 4 digitos  y rellena el @param {account}
    * con "*"
    */
-  getBankAccount(account) {
-    const lastCharacters = account.substr(-4);
-    account = lastCharacters.padStart(account.length, "*");
-    return account;
-  }
+	getBankAccount(account) {
+		const lastCharacters = account.substr(-4);
+		account = lastCharacters.padStart(account.length, '*');
+		return account;
+	}
 
-  /**
+	/**
    * GetMailOptions nos retorna la configuración para el Mail
    *
    * @param {Object} context

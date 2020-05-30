@@ -16,18 +16,12 @@ class MongooseConncect {
 				useCreateIndex: true,
 				useUnifiedTopology: true,
 			})
-			.then(function() {
-				console.log(`connect to DB: ${nameBD}`);
-			})
-			.catch(function(error) {
-				console.log('Error to connect', error);
-			});
+			.then(function() {})
+			.catch(function(error) {});
 	}
 
 	async close() {
-		await mongoose.connection.close(() => {
-			console.log('cnx mongoose closed');
-		});
+		await mongoose.connection.close(() => {});
 		return true;
 	}
 }
