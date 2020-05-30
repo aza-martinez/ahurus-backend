@@ -114,13 +114,11 @@ class Mailer {
       // obtenemos PDF
       pdfg = new PDFGenerator(context);
       const PDF = await pdfg.getPDF();
-      mailOptions.attachments = [
-        {
-          filename: `Recibo de pago - ${this.transferencia.idSTP}`,
-          content: PDF,
-          contentType: "application/pdf",
-        },
-      ];
+      mailOptions.attachments = [{
+        filename: `Recibo de pago - ${this.transferencia.idSTP}`,
+        content: PDF,
+        contentType: "application/pdf",
+      }]
     }
 
     return mailOptions;

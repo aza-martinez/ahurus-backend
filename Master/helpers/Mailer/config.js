@@ -11,11 +11,14 @@ const configMailer = {
   transporter: {
     host: "148.72.144.148",
     pool: true,
-    secure: false,
+    secure: true,
     auth: {
       user: "comprobantes@ahurus.com",
-      pass: "~3]OjA*BvitK",
+      pass: "2IOPBp6Q3715",
     },
+    tls: {
+      rejectUnauthorized: false
+    }
   },
   templateExito: 'Exito',
   templateError: 'Error',
