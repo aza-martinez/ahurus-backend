@@ -14,10 +14,7 @@ const configMailer = {
 		secure: true,
 		port: 465,
 		pool: true,
-		ca: [fs.readFileSync('./certs/SSL-PRODUCTION/star.ahurus.com.crt')],
-		checkServerIdentity: function(host, cert) {
-			if (host != cert.subject.CN) return 'Incorrect server identity';
-		},
+
 		auth: {
 			user: 'comprobantes@ahurus.com',
 			pass: '2IOPBp6Q3715',

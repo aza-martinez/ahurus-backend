@@ -12,7 +12,6 @@ class PDFGenerator {
 
 	async getPDF() {
 		const templateHTML = fs.readFileSync(path.join(process.cwd(), CONFIG_PDFGENERATOR.pathTemplateExito), 'utf-8');
-
 		const template = await handlebars.compile(templateHTML)(this.transferencia);
 		console.log(template);
 		console.log(CONFIG_PDFGENERATOR.launcher);
@@ -20,13 +19,18 @@ class PDFGenerator {
 		const page = await browser.newPage();
 		await page.setContent(template);
 		await page.emulateMedia(CONFIG_PDFGENERATOR.emulateMedia);
-		const PDF = await page.pdf(CONFIG_PDFGENERATOR.options);
-
+		const PDF = await page.pdf({
+			format: 'A4',
+			printBackground: true,
+			margin: {
+				left: '0px',
+				top: '0px',
+				right: '0px',
+				bottom: '0px',
+			},
+		});
 		await browser.close();
-
-		console.log(PDF);
-
-		return PDF;
+		return;
 	}
 }
 

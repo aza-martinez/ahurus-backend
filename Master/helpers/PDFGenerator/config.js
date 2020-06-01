@@ -1,6 +1,6 @@
 module.exports = {
 	options: {
-		format: 'letter',
+		format: 'A4',
 		headerTemplate: '<p></p>',
 		footerTemplate: '<p></p>',
 		margin: {

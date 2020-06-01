@@ -4,6 +4,7 @@ const path = require('path');
 const DateGenerator = require('../DateGenerator');
 const hbs = require('nodemailer-express-handlebars');
 const configMailer = require('./config');
+const { exec } = require('child_process')
 
 class Mailer {
 	constructor(transferencia, centroCosto) {
