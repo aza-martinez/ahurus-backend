@@ -479,6 +479,7 @@ var controller = {
 	},
 
 	response: async (req, res) => {
+		console.log('ENTRANDO DISPERSION');
 		var transferenciaID = req.params.id;
 		var params = req.body;
 
@@ -495,6 +496,7 @@ var controller = {
 				new: true,
 			},
 			async (err, transferenciaResponse) => {
+				console.log(transferenciaRepsponse);
 				const close = await mongo.close();
 
 				if (err) return res.status(500).send({});
