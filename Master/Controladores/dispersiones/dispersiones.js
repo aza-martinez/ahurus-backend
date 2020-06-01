@@ -409,12 +409,17 @@ var controller = {
 		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
+		console.log(endpoint_stp);
+		console.log(SERVER_BD);
+		console.log(idDispersion);
 
 		const trans = await Transferencia.find({
 			estatus: true,
 			idDispersion: idDispersion,
 		}).exec(async (err, transferenciasFind) => {
 			// inicio del FIND, operaciones con las transferencias encontradas
+			console.log(err);
+			console.log(transferenciasFind);
 			for (i = 0; i < transferenciasFind.length; i++) {
 				//Inicio del FOR
 				dataT = transferenciasFind[i];
@@ -461,11 +466,9 @@ var controller = {
 						}); // FIN de la API Ejecutar
 				} catch (err) {}
 			} //FIN DEL FOR
-
-			const close = await mongo.close();
 		});
 
-		Dispersion.findOneAndUpdate(
+		const disp = await Dispersion.findOneAndUpdate(
 			{
 				_id: idDispersion,
 			},
@@ -476,6 +479,8 @@ var controller = {
 		);
 
 		return res.status(200).send('Dispersión Terminada De Procesar');
+
+		const close = await mongo.close();
 	},
 
 	response: async (req, res) => {
