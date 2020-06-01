@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var express = require('express');
 var dispersionesController = require('../../Controladores/dispersiones/dispersiones');
@@ -15,7 +15,7 @@ router.get('/dispersiones/listar/:search?', auth0, dispersionesController.getDis
 router.get('/dispersiones/listarDispersiones/:search?', auth0, dispersionesController.getAllDispersion);
 router.get('/dispersiones/buscarDispersion/:search', [auth0], dispersionesController.buscarDispersion);
 router.get('/dispersion/ejecutar/:id', [auth0], dispersionesController.ejecutar);
-router.put('/response/:id', [auth0], dispersionesController.response);
+//router.put('/response/:id', [auth0], dispersionesController.response);
 router.put('/dispersiones/cancelar/:id', [auth0], dispersionesController.hide);
 router.get('/dispersiones/listarCanceladas/:search?', [auth0], dispersionesController.getTransferenciasC);
 module.exports = router;
