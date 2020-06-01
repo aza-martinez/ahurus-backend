@@ -413,29 +413,31 @@ var controller = {
 		console.log(SERVER_BD);
 		console.log(idDispersion);
 
+		const agent = new https.Agent({
+			rejectUnauthorized: false,
+		});
+
 		const trans = await Transferencia.find({
 			estatus: true,
 			idDispersion: idDispersion,
 		}).exec(async (err, transferenciasFind) => {
 			// inicio del FIND, operaciones con las transferencias encontradas
-			console.log(err);
-			console.log(transferenciasFind);
+
 			for (i = 0; i < transferenciasFind.length; i++) {
 				//Inicio del FOR
-				dataT = transferenciasFind[i];
+				const dataT = transferenciasFind[i];
 				idTransferencia = dataT._id;
-				const agent = new https.Agent({
-					rejectUnauthorized: false,
-				});
 
+				console.log(dataT);
 				try {
 					await axios
 						.put(endpoint_stp, {
 							...dataT._doc,
 							httpsAgent: agent,
 						})
-						.then(respuesta_stp => {
+						.then(async respuesta_stp => {
 							// inicio de las respuestas de STP Mandamos a ejecutar la transferencia
+							console.log(respuesta_stp);
 
 							if (respuesta_stp.data.resultado.descripcionError) {
 								Transferencia.findOneAndUpdate(
@@ -464,10 +466,11 @@ var controller = {
 								);
 							}
 						}); // FIN de la API Ejecutar
-				} catch (err) {}
+				} catch (err) {
+					console.log(err);
+				}
 			} //FIN DEL FOR
 		});
-
 		const disp = await Dispersion.findOneAndUpdate(
 			{
 				_id: idDispersion,
@@ -477,7 +480,6 @@ var controller = {
 			},
 			(err, transferenciaUpdated) => {}
 		);
-
 		return res.status(200).send('Dispersión Terminada De Procesar');
 
 		const close = await mongo.close();

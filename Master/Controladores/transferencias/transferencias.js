@@ -154,6 +154,9 @@ const controller = {
 		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
+		const agent = new https.Agent({
+			rejectUnauthorized: false,
+		});
 
 		Transferencia.findById(transID, async (err, transferenciaFind) => {
 			const estatusError = 'Error';
@@ -170,9 +173,7 @@ const controller = {
 			delete transferencia.medio;
 			delete transferencia.estatus;
 			delete transferencia._id;
-			const agent = new https.Agent({
-				rejectUnauthorized: false,
-			});
+
 			await axios
 				.put(endpoint_stp, transferencia, {
 					httpsAgent: agent,
