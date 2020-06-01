@@ -84,36 +84,37 @@ class Mailer {
    * En caso de que el campo Exito = true
    * agrega la configuración para adjuntar archivos
    */
-	async getMailOptions(emailDestino, context, type) {
-		let pdfg;
+  async getMailOptions(emailDestino, context, type) {
+    let pdfg;
 
-		const templateMail = type === 'Beneficiario' ? configMailer.templateBeneficiario : configMailer.templateError;
-		const emailDestinatario = emailDestino || `${this.centroCosto.correo_contacto}`;
+    const templateMail =
+      type === "Beneficiario"
+        ? configMailer.templateBeneficiario
+        : configMailer.templateError;
+    const emailDestinatario = emailDestino || `${this.centroCosto.correo_contacto}`;
 
-		const mailOptions = {
-			from: 'comprobantes@ahurus.com',
-			to: emailDestinatario,
-			subject: `Comprobante transferencia - ${this.transferencia.idSTP}`,
-			template: templateMail,
-			context,
-		};
+    const mailOptions = {
+      from: "comprobantes@ahurus.com",
+      to: emailDestinatario,
+      subject: `Comprobante transferencia - ${this.transferencia.idSTP}`,
+      template: templateMail,
+      context,
+    };
 
-		if (!this.transferencia.descripcionError && type !== 'Beneficiario') {
-			mailOptions.template = configMailer.templateExito;
-			// obtenemos PDF
-			pdfg = new PDFGenerator(context);
-			const PDF = await pdfg.getPDF();
-			mailOptions.attachments = [
-				{
-					filename: `Recibo de pago - ${this.transferencia.idSTP}`,
-					content: PDF,
-					contentType: 'application/pdf',
-				},
-			];
-		}
-		console.log(mailOptions);
-		return mailOptions;
-	}
+    if (!this.transferencia.descripcionError && type !== "Beneficiario") {
+      mailOptions.template = configMailer.templateExito;
+      // obtenemos PDF
+      pdfg = new PDFGenerator(context);
+      const PDF = await pdfg.getPDF();
+      mailOptions.attachments = [{
+        filename: `Recibo de pago - ${this.transferencia.idSTP}`,
+        content: PDF,
+        contentType: "application/pdf",
+      }]
+    }
+
+    return mailOptions;
+  }
 }
 
 module.exports = Mailer;
