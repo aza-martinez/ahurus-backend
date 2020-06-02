@@ -288,6 +288,7 @@ var controller = {
 							},
 							'base64'
 						);
+						console.log(signature);
 						dato.firma = signature;
 						transferencia.idDispersion = dispersion._id;
 						transferencia.firma = dato.firma;
@@ -437,7 +438,6 @@ var controller = {
 			// 6 - ACUTALIZAR ESTATUS DE DISPERSION
 			const dispersion = await Dispersion.findOneAndUpdate({ _id: idDispersion }, { estatus_stp: 'Ejecutada' });
 
-			console.log(status);
 			// 7 - CERRAR CONEXIÓN DE BD
 			await mongo.close();
 			return res.send('Dispersión procesada correctamente');
