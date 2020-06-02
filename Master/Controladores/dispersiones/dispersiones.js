@@ -197,7 +197,7 @@ var controller = {
 							dato.emailBeneficiario = '';
 						} else {
 						}
-
+						console.log(dato);
 						//Creamos el objeto transferencia cada que recorremos el ciclo y le pasamos los datos
 						transferencia.claveRastreo = dato.claveRastreo;
 						transferencia.conceptoPago = dato.conceptoPago;
