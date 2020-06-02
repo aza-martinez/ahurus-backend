@@ -437,7 +437,7 @@ const controller = {
 	response: async (req, res) => {
 		// DESTRUCTURING CAMBIO DE ESTADO
 		console.log('ENTRANDO');
-		const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
+		const { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
 		await mongo.connect(empresa.toLowerCase());
 		console.log(req.body);
@@ -457,7 +457,7 @@ const controller = {
 				{
 					estatus_stp: estado,
 					timestamp: fechaMX._d,
-					descripcionError: causaDevolucion,
+					descripcionError: detalle,
 				},
 				{ new: true }
 			);
