@@ -45,6 +45,7 @@ const controller = {
 				let last_invoice = counter.invoice + 1;
 				//const aleatorio = Math.round(Math.random() * 1000);
 				const transferencias = new Transferencia();
+				//INICIO
 				transferencias.institucionContraparte = params.cuenta.institucion.clabe;
 				transferencias.empresa = params.centro_costo.nombreCentro;
 				transferencias.fechaOperacion = params.fecha_aplicacion;
@@ -127,6 +128,7 @@ const controller = {
 				cadenaOriginal += `${transferencias.iva}||`;
 				const private_key = fs.readFileSync(certificado, 'utf-8');
 				const signer = crypto.createSign('sha256');
+				console.log(cadenaOriginal);
 				signer.update(cadenaOriginal);
 				signer.end();
 				const signature = signer.sign(
@@ -136,6 +138,7 @@ const controller = {
 					},
 					'base64'
 				);
+				console.log(signature);
 				transferencias.firma = signature;
 				transferencias.save(async (err, transferenciaStored) => {
 					const close = await mongo.close();
@@ -173,7 +176,8 @@ const controller = {
 			delete transferencia.medio;
 			delete transferencia.estatus;
 			delete transferencia._id;
-
+			delete transferencia.entorno;
+			console.log(transferencia);
 			await axios
 				.put(endpoint_stp, transferencia, {
 					httpsAgent: agent,
