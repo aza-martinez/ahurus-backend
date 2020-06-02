@@ -440,7 +440,7 @@ const controller = {
 		const { id, empresa, estado, causaDevolucion, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
 		await mongo.connect(empresa.toLowerCase());
-
+		console.log(req.body);
 		try {
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
 			let transferencia = await Transferencia.findOne({
