@@ -19,7 +19,7 @@ class PDFGenerator {
 		await page.emulateMedia(CONFIG_PDFGENERATOR.emulateMedia);
 		const PDF = await page.pdf(CONFIG_PDFGENERATOR.options);
 		await browser.close();
-		return;
+		return PDF;
 	}
 }
 
