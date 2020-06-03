@@ -493,6 +493,7 @@ const controller = {
 		const mongo = new MongooseConnect();
 		await mongo.connect('sefince' /* empresa.toLowerCase() */);
 		try {
+			console.log(id);
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
 			let transferencia = await Transferencia.findById({ _id: id });
 			if (!transferencia) return res.status(404).send('La transferencia de la cual solicita el PDF no existe');
@@ -504,6 +505,7 @@ const controller = {
 				nombreCentro: transferencia.empresa,
 			});
 
+			const close = await mongo.close();
 			//mailOptions.template = configMailer.templateExito;
 			// obtenemos PDF
 			let pdfg = new PDFGenerator(transferencia);
@@ -511,7 +513,7 @@ const controller = {
 			console.log(PDF);
 			return res.status(200).send({ PDF });
 		} catch (error) {
-			await mongo.close();
+			const close = await mongo.close();
 			console.log(error);
 			return res.status(500).send('Error Interno');
 		}
