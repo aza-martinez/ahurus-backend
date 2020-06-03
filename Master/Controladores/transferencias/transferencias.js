@@ -439,7 +439,6 @@ const controller = {
 	},
 	response: async (req, res) => {
 		// DESTRUCTURING CAMBIO DE ESTADO
-		console.log('ENTRANDO');
 		const { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
 		await mongo.connect(empresa.toLowerCase());
