@@ -509,9 +509,10 @@ const controller = {
 			//mailOptions.template = configMailer.templateExito;
 			// obtenemos PDF
 			let pdfg = new PDFGenerator(transferencia);
-			const PDF = await pdfg.getPDF();
+			const PDF = await pdfg.getPDFTrans();
 			console.log(PDF);
-			return res.status(200).send({ PDF });
+			res.set({ 'Content-Type': 'application/pdf', 'Content-Length': PDF.length });
+			return res.status(200).send(PDF);
 		} catch (error) {
 			const close = await mongo.close();
 			console.log(error);
