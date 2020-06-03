@@ -3,12 +3,15 @@ const https = require('https');
 const Transferencia = require('../../Modelos/transferencias/transferencias');
 const CentroCosto = require('./../../Modelos/centros/centros');
 const MongooseConnect = require('./../../MongooseConnect');
+const PDFGenerator = require('../../helpers/PDFGenerator/PDFGenerator');
+const path = require('path');
+const DateGenerator = require('../../helpers/DateGenerator');
+const hbs = require('nodemailer-express-handlebars');
 const Mailer = require('./../../helpers/Mailer');
 const moment = require('moment');
 const momentz = require('moment-timezone');
 const Counter = require('../../Modelos/counters/counters');
 const fs = require('fs');
-var path = require('path');
 const crypto = require('crypto');
 const axios = require('axios');
 var envJSON = require('../../../env.variables.json');
@@ -476,6 +479,38 @@ const controller = {
 			return res.status(200).send({
 				estado: 'Exito',
 			});
+		} catch (error) {
+			await mongo.close();
+			console.log(error);
+			return res.status(500).send('Error Interno');
+		}
+	},
+
+	generatePDF: async (req, res) => {
+		// DESTRUCTURING CAMBIO DE ESTADO
+		console.log('ENTRANDO');
+		const { idSTP, empresa, estado, detalle, folioOrigen } = req.body;
+		let id = req.params.id;
+		const mongo = new MongooseConnect();
+		await mongo.connect('sefince' /* empresa.toLowerCase() */);
+		try {
+			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
+			let transferencia = await Transferencia.findById({ _id: id });
+			if (!transferencia) return res.status(404).send('La transferencia de la cual solicita el PDF no existe');
+
+			if (!transferencia) return res.status(404).send('No se ha podido generar el PDF.');
+
+			// GENERAMOS PDF Y SE ENVÍA EMAIL
+			const centroCosto = await CentroCosto.findOne({
+				nombreCentro: transferencia.empresa,
+			});
+
+			//mailOptions.template = configMailer.templateExito;
+			// obtenemos PDF
+			let pdfg = new PDFGenerator(transferencia);
+			const PDF = await pdfg.getPDF();
+			console.log(PDF);
+			return res.status(200).send({ PDF });
 		} catch (error) {
 			await mongo.close();
 			console.log(error);

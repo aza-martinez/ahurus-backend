@@ -12,25 +12,18 @@ class PDFGenerator {
 
 	async getPDF() {
 		const templateHTML = fs.readFileSync(path.join(process.cwd(), CONFIG_PDFGENERATOR.pathTemplateExito), 'utf-8');
-		const template = await handlebars.compile(templateHTML)(this.transferencia);
+		const template = await handlebars.compile(templateHTML)({ ...this.transferencia._doc });
+		console.log(this.transferencia);
 		console.log(template);
 		console.log(CONFIG_PDFGENERATOR.launcher);
 		const browser = await puppeteer.launch(CONFIG_PDFGENERATOR.launcher);
 		const page = await browser.newPage();
 		await page.setContent(template);
 		await page.emulateMedia(CONFIG_PDFGENERATOR.emulateMedia);
-		const PDF = await page.pdf({
-			format: 'A4',
-			printBackground: true,
-			margin: {
-				left: '0px',
-				top: '0px',
-				right: '0px',
-				bottom: '0px',
-			},
-		});
+		const PDF = await page.pdf(CONFIG_PDFGENERATOR.options);
 		await browser.close();
-		return;
+		console.log(PDF);
+		return PDF;
 	}
 }
 

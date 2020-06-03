@@ -15,6 +15,7 @@ router.put('/transferencia/cancelar/:id', [auth0], TransferenciasController.hide
 router.put('/transferencia/modificar/:id', [auth0], TransferenciasController.update);
 router.get('/transferencias/listarTD/:id', [auth0], TransferenciasController.getTransferenciasDispersion);
 router.put('/cambioDeEstado/', TransferenciasController.response);
+router.get('/pdf/:id', TransferenciasController.generatePDF);
 router.get('/generarFirmaEmpresa/', TransferenciasController.generarFirmaEmpresa);
 
 module.exports = router;
