@@ -518,7 +518,7 @@ const controller = {
 			return res.status(500).send('Error Interno');
 		}
 	},
-
+	//COM
 	getTransferenciasC: (req, res) => {
 		Transferencia.find({
 			estatus_stp: 'Cancelada',
