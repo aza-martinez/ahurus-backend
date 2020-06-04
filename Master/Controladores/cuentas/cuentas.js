@@ -90,6 +90,8 @@ const controller = {
 
 			// GUARDAMOS CUENTA NUEVA
 			const cuenta = await cuentaNueva.save();
+			const prop = await propietario.cuentas.push(cuenta._id);
+			console.log(propietario);
 
 			if (!cuenta) throw new Error('Error al registrar cuenta');
 

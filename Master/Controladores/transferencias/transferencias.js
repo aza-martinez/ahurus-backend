@@ -498,23 +498,14 @@ const controller = {
 			let transferencia = await Transferencia.findById({ _id: id });
 			if (!transferencia) return res.status(404).send('La transferencia de la cual solicita el PDF no existe');
 
-			if (!transferencia) return res.status(404).send('No se ha podido generar el PDF.');
-
-			// GENERAMOS PDF Y SE ENVÍA EMAIL
-			const centroCosto = await CentroCosto.findOne({
-				nombreCentro: transferencia.empresa,
-			});
-
-			const close = await mongo.close();
-			//mailOptions.template = configMailer.templateExito;
-			// obtenemos PDF
+			await mongo.close();
 			let pdfg = new PDFGenerator(transferencia);
 			const PDF = await pdfg.getPDFTrans();
 			console.log(PDF);
 			res.set({ 'Content-Type': 'application/pdf', 'Content-Length': PDF.length });
 			return res.status(200).send(PDF);
 		} catch (error) {
-			const close = await mongo.close();
+			await mongo.close();
 			console.log(error);
 			return res.status(500).send('Error Interno');
 		}
