@@ -51,6 +51,7 @@ const controller = {
 				//INICIO
 				transferencias.institucionContraparte = params.cuenta.institucion.clabe;
 				transferencias.empresa = params.centro_costo.nombreCentro;
+				transferencias.mail = params.mail;
 				transferencias.fechaOperacion = params.fecha_aplicacion;
 				const folioOrigen = '';
 				transferencias.claveRastreo = params.centro_costo.nombreCentro + last_invoice;
@@ -245,6 +246,7 @@ const controller = {
 		transferencias.empresa = params.empresa;
 		transferencias.fechaOperacion = params.fechaOperacion;
 		const folioOrigen = '';
+		transferencias.mail = params.mail;
 		transferencias.institucionContraparte = params.institucionContraparte;
 		transferencias.institucionOperante = '90646';
 		transferencias.monto = parseFloat(params.monto).toFixed(2);
@@ -442,7 +444,6 @@ const controller = {
 		const { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
 		await mongo.connect(empresa.toLowerCase());
-		console.log(req.body);
 		try {
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
 			let transferencia = await Transferencia.findOne({
@@ -470,11 +471,13 @@ const controller = {
 			const centroCosto = await CentroCosto.findOne({
 				nombreCentro: transferencia.empresa,
 			});
-
-			const newMail = new Mailer(transferencia, centroCosto);
-
-			const mail = await newMail.send();
-
+			console.log('transferencia encontrada: ' + transferencia.mail);
+			if (transferencia.mail === true) {
+				const newMail = await new Mailer(transferencia, centroCosto);
+				const mail = await newMail.send();
+			} else {
+				//const mail = await newMail.send();
+			}
 			return res.status(200).send({
 				estado: 'Exito',
 			});
@@ -486,8 +489,6 @@ const controller = {
 	},
 
 	generatePDF: async (req, res) => {
-		// DESTRUCTURING CAMBIO DE ESTADO
-		console.log('ENTRANDO');
 		const { idSTP, empresa, estado, detalle, folioOrigen } = req.body;
 		let id = req.params.id;
 		const mongo = new MongooseConnect();
