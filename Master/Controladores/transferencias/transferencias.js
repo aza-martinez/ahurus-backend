@@ -25,7 +25,6 @@ if (node_env == 'production') {
 	var certificado = envJSON[node_env].CERTS_URL_D;
 	var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
 	var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
-	var empresaResponse = envJSON[node_env].EMPRESA_D;
 }
 
 const controller = {
@@ -52,7 +51,7 @@ const controller = {
 				//INICIO
 				transferencias.institucionContraparte = params.cuenta.institucion.clabe;
 				transferencias.empresa = params.centro_costo.nombreCentro;
-				transferencias.mail = true; //params.mail;
+				transferencias.mail = false; //params.mail;
 				transferencias.fechaOperacion = params.fecha_aplicacion;
 				const folioOrigen = '';
 				transferencias.claveRastreo = params.centro_costo.nombreCentro + last_invoice;
