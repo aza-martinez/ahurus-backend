@@ -180,6 +180,7 @@ const controller = {
 			delete transferencia.medio;
 			delete transferencia.estatus;
 			delete transferencia._id;
+			delete transferencia.mail;
 			delete transferencia.entorno;
 			console.log(transferencia);
 			await axios
@@ -203,7 +204,7 @@ const controller = {
 							}
 						);
 					}
-
+					console.log(response.data);
 					if (!response.data.resultado.descripcionError) {
 						Transferencia.findOneAndUpdate(
 							{
@@ -444,6 +445,7 @@ const controller = {
 		const { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
 		await mongo.connect(empresa.toLowerCase());
+		console.log(req);
 		try {
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
 			let transferencia = await Transferencia.findOne({
