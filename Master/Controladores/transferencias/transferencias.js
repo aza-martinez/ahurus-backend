@@ -25,6 +25,7 @@ if (node_env == 'production') {
 	var certificado = envJSON[node_env].CERTS_URL_D;
 	var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
 	var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
+	var empresaResponse = envJSON[node_env].EMPRESA_D;
 }
 
 const controller = {
@@ -444,14 +445,20 @@ const controller = {
 		// DESTRUCTURING CAMBIO DE ESTADO
 		const { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
-		await mongo.connect(empresa.toLowerCase());
-		console.log(req);
+		console.log(empresaResponse);
+		if (node_env == 'development') {
+			await mongo.connect(empresaResponse.toLowerCase());
+		} else {
+			await mongo.connect(empresa.toLowerCase());
+		}
+
 		try {
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
 			let transferencia = await Transferencia.findOne({
 				idSTP: id,
 				empresa: empresa,
 			});
+			console.log(transferencia);
 			if (!transferencia) return res.status(404).send('La transferencia que intenta actualizar no existe');
 
 			const now = new Date();
