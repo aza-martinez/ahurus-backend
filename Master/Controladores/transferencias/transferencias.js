@@ -190,6 +190,7 @@ const controller = {
 			delete transferencia._id;
 			delete transferencia.mail;
 			delete transferencia.entorno;
+			delete transferencia.usuario;
 			console.log(transferencia);
 			await axios
 				.put(endpoint_stp, transferencia, {
