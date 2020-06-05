@@ -443,13 +443,13 @@ const controller = {
 	},
 	response: async (req, res) => {
 		// DESTRUCTURING CAMBIO DE ESTADO
-		const { id, empresa, estado, detalle, folioOrigen } = req.body;
+		let { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
-		console.log(empresaResponse);
 		if (node_env == 'development') {
-			empresa = empresaResponse.toLowerCase();
+			await mongo.connect('demo');
+		} else {
+			await mongo.connect(empresa.toLowerCase());
 		}
-		await mongo.connect(empresa.toLowerCase());
 		try {
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
 			let transferencia = await Transferencia.findOne({
