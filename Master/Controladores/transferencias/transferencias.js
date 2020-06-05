@@ -30,8 +30,8 @@ if (node_env == 'production') {
 const controller = {
 	save: async (req, res) => {
 		var params = req.body;
-		const user = req.user['http://localhost:3000/user_metadata'].user;
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const user = req.user['https://ahurus.com/user'].user;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		let nombreEmpresa;
@@ -166,7 +166,7 @@ const controller = {
 
 	async ejecutar(req, res) {
 		var transID = req.params.id;
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const agent = new https.Agent({
@@ -240,7 +240,7 @@ const controller = {
 		var tranferenciaID = req.params.id;
 		var params = req.body;
 
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -370,7 +370,7 @@ const controller = {
 		var transID = req.params.id;
 		const estatusCancel = 'Cancelada';
 
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -410,7 +410,7 @@ const controller = {
 		const fechaMX = moment(now)
 			.tz('America/Mexico_City')
 			.format('YYYYMMDD');
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -435,7 +435,7 @@ const controller = {
 
 	getTransferenciasDispersion: async (req, res) => {
 		var id = req.params.id;
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		await Transferencia.find({

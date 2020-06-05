@@ -39,12 +39,12 @@ const { nextTick } = require('process');
 var controller = {
 	saveFile: async (req, res) => {
 		var file_name = 'Documento no subido..';
-		const user = req.user['http://localhost:3000/user_metadata'].user;
+		const user = req.user['https://ahurus.com/user'].user;
 		var params = req.body;
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(
@@ -151,7 +151,7 @@ var controller = {
 					dispersion.estatus_stp = 'Pendiente';
 					dispersion.fechaOperacion = fechaOperacion;
 					dispersion.entorno = node_env;
-					dispersion.empresa = req.user['http://localhost:3000/user_metadata'].empresa;
+					dispersion.empresa = req.user['https://ahurus.com/user'].empresa;
 					// INICIO FOREACH
 					for await (let dato of data) {
 						const folioTrans = await Counter.findByIdAndUpdate(
@@ -294,7 +294,7 @@ var controller = {
 	},
 
 	getTransferenciasC: async (req, res) => {
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -312,7 +312,7 @@ var controller = {
 		var transID = req.params.id;
 		const estatusCancel = 'Cancelada';
 
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -342,7 +342,7 @@ var controller = {
 		);
 	},
 	getAllDispersion: async (req, res) => {
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		await Dispersion.find({
@@ -356,7 +356,7 @@ var controller = {
 		});
 	},
 	buscarDispersion: async (req, res) => {
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		var searchString = req.params.search;
@@ -372,7 +372,7 @@ var controller = {
 		});
 	},
 	getDispersiones: async (req, res) => {
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -394,7 +394,7 @@ var controller = {
 		const { id: idDispersion } = req.params;
 
 		// 2 - CONEXIÓN A BD
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 

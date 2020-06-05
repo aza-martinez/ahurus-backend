@@ -34,7 +34,7 @@ const controller = {
 
   getCCA: async (req, res) => {
     const mongo = new MongooseConnect();
-    const SERVER_BD = req.user["http://localhost:3000/user_metadata"].empresa;
+    const SERVER_BD = req.user["https://ahurus.com/user"].empresa;
     const cnx = await mongo.connect(SERVER_BD);
     try {
       const centro = await CC.find({ estatus: true });
