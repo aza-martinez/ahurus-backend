@@ -184,6 +184,7 @@ var controller = {
 						}
 						//Creamos el objeto transferencia cada que recorremos el ciclo y le pasamos los datos
 						transferencia.institucionContraparte = dato.institucionContraparte;
+						transferencia.mail = dato.mail;
 						transferencia.empresa = dato.empresa;
 						transferencia.fechaOperacion = dato.fechaOperacion;
 						const folioOrigen = '';
