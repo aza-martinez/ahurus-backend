@@ -39,6 +39,7 @@ var TransferenciasSchema = Schema(
 		descripcionError: String,
 		resultado: String,
 		medio: String,
+		usuario: String,
 	},
 	{ versionKey: false }
 );

@@ -151,7 +151,7 @@ var controller = {
 					dispersion.estatus_stp = 'Pendiente';
 					dispersion.fechaOperacion = fechaOperacion;
 					dispersion.entorno = node_env;
-					dispersion.empresa = 'SEFINCE'; /* req.user['http://localhost:3000/user_metadata'].empresa; */
+					dispersion.empresa = req.user['http://localhost:3000/user_metadata'].empresa;
 					// INICIO FOREACH
 					for await (let dato of data) {
 						const folioTrans = await Counter.findByIdAndUpdate(
@@ -185,6 +185,7 @@ var controller = {
 						//Creamos el objeto transferencia cada que recorremos el ciclo y le pasamos los datos
 						transferencia.institucionContraparte = dato.institucionContraparte;
 						transferencia.mail = dato.mail;
+						transferencia.usuario = user;
 						transferencia.empresa = dato.empresa;
 						transferencia.fechaOperacion = dato.fechaOperacion;
 						const folioOrigen = '';

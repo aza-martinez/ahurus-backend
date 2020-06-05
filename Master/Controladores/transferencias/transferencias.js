@@ -30,9 +30,16 @@ if (node_env == 'production') {
 const controller = {
 	save: async (req, res) => {
 		var params = req.body;
+		const user = req.user['http://localhost:3000/user_metadata'].user;
 		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
+		let nombreEmpresa;
+		if (node_env == 'development') {
+			nombreEmpresa = 'DEMOAHURUS';
+		} else {
+			nombreEmpresa = params.centro_costo.nombreCentro;
+		}
 
 		Counter.findByIdAndUpdate(
 			{
@@ -52,9 +59,10 @@ const controller = {
 				transferencias.institucionContraparte = params.cuenta.institucion.clabe;
 				transferencias.empresa = params.centro_costo.nombreCentro;
 				transferencias.mail = false; //params.mail;
+				transferencias.usuario = user;
 				transferencias.fechaOperacion = params.fecha_aplicacion;
 				const folioOrigen = '';
-				transferencias.claveRastreo = params.centro_costo.nombreCentro + last_invoice;
+				transferencias.claveRastreo = nombreEmpresa + last_invoice;
 				transferencias.institucionOperante = 90646;
 				transferencias.monto = parseFloat(params.importe).toFixed(2);
 				transferencias.tipoPago = 1;
