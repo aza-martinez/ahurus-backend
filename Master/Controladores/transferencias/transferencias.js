@@ -450,50 +450,50 @@ const controller = {
 			await mongo.connect(empresaResponse.toLowerCase());
 		} else {
 			await mongo.connect(empresa.toLowerCase());
-		}
 
-		try {
-			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
-			let transferencia = await Transferencia.findOne({
-				idSTP: id,
-				empresa: empresa,
-			});
-			console.log(transferencia);
-			if (!transferencia) return res.status(404).send('La transferencia que intenta actualizar no existe');
+			try {
+				// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
+				let transferencia = await Transferencia.findOne({
+					idSTP: id,
+					empresa: empresa,
+				});
+				console.log(transferencia);
+				if (!transferencia) return res.status(404).send('La transferencia que intenta actualizar no existe');
 
-			const now = new Date();
-			const fechaMX = moment(now).tz('America/Mexico_City');
+				const now = new Date();
+				const fechaMX = moment(now).tz('America/Mexico_City');
 
-			transferencia = await Transferencia.findByIdAndUpdate(
-				{ _id: transferencia.id },
-				{
-					estatus_stp: estado,
-					timestamp: fechaMX._d,
-					descripcionError: detalle,
-				},
-				{ new: true }
-			);
+				transferencia = await Transferencia.findByIdAndUpdate(
+					{ _id: transferencia.id },
+					{
+						estatus_stp: estado,
+						timestamp: fechaMX._d,
+						descripcionError: detalle,
+					},
+					{ new: true }
+				);
 
-			if (!transferencia) return res.status(404).send('No se ha podido realizar la actualización.');
+				if (!transferencia) return res.status(404).send('No se ha podido realizar la actualización.');
 
-			// GENERAMOS PDF Y SE ENVÍA EMAIL
-			const centroCosto = await CentroCosto.findOne({
-				nombreCentro: transferencia.empresa,
-			});
-			console.log(transferencia);
-			if (transferencia.mail === true || transferencia.mail === undefined) {
-				const newMail = await new Mailer(transferencia, centroCosto);
-				const mail = await newMail.send();
-			} else {
-				//const mail = await newMail.send();
+				// GENERAMOS PDF Y SE ENVÍA EMAIL
+				const centroCosto = await CentroCosto.findOne({
+					nombreCentro: transferencia.empresa,
+				});
+				console.log(transferencia);
+				if (transferencia.mail === true || transferencia.mail === undefined) {
+					const newMail = await new Mailer(transferencia, centroCosto);
+					const mail = await newMail.send();
+				} else {
+					//const mail = await newMail.send();
+				}
+				return res.status(200).send({
+					estado: 'Exito',
+				});
+			} catch (error) {
+				await mongo.close();
+				console.log(error);
+				return res.status(500).send('Error Interno');
 			}
-			return res.status(200).send({
-				estado: 'Exito',
-			});
-		} catch (error) {
-			await mongo.close();
-			console.log(error);
-			return res.status(500).send('Error Interno');
 		}
 	},
 
