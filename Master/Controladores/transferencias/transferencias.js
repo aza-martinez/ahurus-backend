@@ -166,6 +166,7 @@ const controller = {
 
 	async ejecutar(req, res) {
 		var transID = req.params.id;
+
 		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
@@ -411,6 +412,7 @@ const controller = {
 		const fechaMX = moment(now)
 			.tz('America/Mexico_City')
 			.format('YYYYMMDD');
+		console.log(req.user);
 		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
