@@ -471,6 +471,7 @@ const controller = {
 			const centroCosto = await CentroCosto.findOne({
 				nombreCentro: transferencia.empresa,
 			});
+			console.log(transferencia);
 			if (transferencia.mail === true || transferencia.mail === undefined) {
 				const newMail = await new Mailer(transferencia, centroCosto);
 				const mail = await newMail.send();
