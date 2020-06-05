@@ -51,7 +51,7 @@ const controller = {
 				//INICIO
 				transferencias.institucionContraparte = params.cuenta.institucion.clabe;
 				transferencias.empresa = params.centro_costo.nombreCentro;
-				transferencias.mail = params.mail;
+				transferencias.mail = true; //params.mail;
 				transferencias.fechaOperacion = params.fecha_aplicacion;
 				const folioOrigen = '';
 				transferencias.claveRastreo = params.centro_costo.nombreCentro + last_invoice;
