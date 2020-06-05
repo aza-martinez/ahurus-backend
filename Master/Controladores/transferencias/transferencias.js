@@ -410,7 +410,7 @@ const controller = {
 		const fechaMX = moment(now)
 			.tz('America/Mexico_City')
 			.format('YYYYMMDD');
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = 'SEFINCE'; //req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
