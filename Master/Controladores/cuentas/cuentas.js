@@ -32,7 +32,7 @@ const controller = {
 	update: async (req, res) => {
 		var cuentaID = req.params.id;
 
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = loginEmpresa.empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -70,7 +70,7 @@ const controller = {
 	},
 
 	save: async (req, res) => {
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = loginEmpresa.empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const params = req.body;
@@ -105,7 +105,7 @@ const controller = {
 	},
 
 	getCuentasPA: async (req, res) => {
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = loginEmpresa.empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -127,7 +127,7 @@ const controller = {
 	},
 
 	getCuentasCA: async (req, res) => {
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = loginEmpresa.empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -149,7 +149,7 @@ const controller = {
 	},
 	getPropietariosA: async (req, res) => {
 		const idPropietario = req.params.last;
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = loginEmpresa.empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		try {
@@ -219,7 +219,7 @@ const controller = {
 			return res.status(200).send({});
 		}
 
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = loginEmpresa.empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 

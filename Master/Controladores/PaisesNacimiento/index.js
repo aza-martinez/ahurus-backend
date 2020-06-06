@@ -5,7 +5,7 @@ const MongooseConnect = require('./../../MongooseConnect');
 
 const controller = {
 	getPaisesNacimiento: async (req, res) => {
-		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
+		const SERVER_BD = loginEmpresa.empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
