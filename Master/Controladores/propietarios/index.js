@@ -54,7 +54,7 @@ class PropietarioController {
 		try {
 			const params = req.body;
 
-			const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+			const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 			const mongo = new MongooseConnect();
 			await mongo.connect(SERVER_BD);
 
@@ -165,7 +165,7 @@ class PropietarioController {
 			return res.status(200).send({});
 		}
 
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -190,7 +190,7 @@ class PropietarioController {
 	}
 
 	async getPropietariosPFA(req, res) {
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -215,7 +215,7 @@ class PropietarioController {
 	}
 
 	async getPropietario(req, res) {
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -233,7 +233,7 @@ class PropietarioController {
 	}
 
 	async getPropietarios(req, res) {
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -253,7 +253,7 @@ class PropietarioController {
 	}
 
 	async getPropietariosPMI(req, res) {
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -273,7 +273,7 @@ class PropietarioController {
 		});
 	}
 	async getPropietariosPMA(req, res) {
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -294,7 +294,7 @@ class PropietarioController {
 	}
 
 	async getPropietariosPFI(req, res) {
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -316,12 +316,12 @@ class PropietarioController {
 	async importAccounts(req, res) {
 		let id_terceros = req.body.propietario;
 		var file_name = 'Documento no subido..';
-		const user = req.user['https://ahurus.com/user'].user;
+		const user = req.user['http://localhost:3000/user_metadata'].user;
 		var params = req.body;
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(
@@ -436,13 +436,13 @@ class PropietarioController {
 	}
 	async importOwners(req, res) {
 		var file_name = 'Documento no subido..';
-		const user = req.user['https://ahurus.com/user'].user;
+		const user = req.user['http://localhost:3000/user_metadata'].user;
 		console.log(user);
 		var params = req.body;
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(
@@ -587,12 +587,12 @@ class PropietarioController {
 	}
 	async importUsers(req, res) {
 		var file_name = 'Documento no subido..';
-		const user = 'arendon'; //req.user['https://ahurus.com/user'].user;
+		const user = 'arendon'; //req.user['http://localhost:3000/user_metadata'].user;
 		var params = req.body;
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		const SERVER_BD = 'master'; //req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = 'master'; //req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(

@@ -31,7 +31,7 @@ if (node_env == 'production') {
 var controller = {
 	getReportTransfer: async (req, res) => {
 		// Conexión a la BD
-		//const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		//const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect('sefince');
 
@@ -64,7 +64,7 @@ var controller = {
 	},
 	getBalance: async (req, res) => {
 		var params = req.body;
-		const SERVER_BD = 'SEFINCE'; //req.user['https://ahurus.com/user'].empresa;
+		const SERVER_BD = 'SEFINCE'; //req.user['http://localhost:3000/user_metadata'].empresa;
 		const cuentaOrdenante = params.cuentaOrdenante; // ejemplo: '20190326'
 		let cadenaOriginal = cuentaOrdenante;
 		const private_key = fs.readFileSync(certificado, 'utf-8');
@@ -106,7 +106,7 @@ var controller = {
 	},
 
 	getReportDisper: async (req, res) => {
-		//const SERVER_BD = req.user['https://ahurus.com/user'].empresa;
+		//const SERVER_BD = req.user['http://localhost:3000/user_metadata'].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect('sefince');
 
