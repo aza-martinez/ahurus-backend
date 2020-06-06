@@ -416,6 +416,7 @@ const controller = {
 		const fechaMX = moment(now)
 			.tz('America/Mexico_City')
 			.format('YYYYMMDD');
+		console.log(loginEmpresa);
 		const SERVER_BD = loginEmpresa.empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
