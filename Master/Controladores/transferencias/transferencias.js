@@ -518,7 +518,7 @@ const controller = {
 		}
 	},
 
-	generatePDF: async (req, res) => {
+	generatePDF: async (req, res, next) => {
 		const { idSTP, empresa, estado, detalle, folioOrigen } = req.body;
 		let id = req.params.id;
 		const mongo = new MongooseConnect();
@@ -541,6 +541,7 @@ const controller = {
 			return res.status(200).send(PDF);
 		} catch (error) {
 			await mongo.close();
+			next();
 			console.log(error);
 			return res.status(500).send('Error Interno');
 		}
