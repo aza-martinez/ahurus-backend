@@ -523,13 +523,12 @@ const controller = {
 		let id = req.params.id;
 		const mongo = new MongooseConnect();
 		const SERVER_BD = req.user[`${data}`].empresa;
-		await mongo.connect(SERVER_BD.toLowerCase());
+		await mongo.connect(SERVER_BD);
 		try {
 			console.log(id);
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
 			let transferencia = await Transferencia.findById({ _id: id });
 			if (!transferencia) return res.status(404).send('La transferencia de la cual solicita el PDF no existe');
-
 			await mongo.close();
 			let pdfg = new PDFGenerator(transferencia);
 			const PDF = await pdfg.getPDFTrans();

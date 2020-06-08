@@ -15,4 +15,5 @@ module.exports = {
 	},
 	emulateMedia: 'screen',
 	pathTemplateExito: 'Master/views/PDF/exito.handlebars',
+	pathTemplateError: 'Master/views/PDF/error.handlebars',
 };

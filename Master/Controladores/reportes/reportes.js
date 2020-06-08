@@ -43,7 +43,7 @@ var controller = {
 			const params = req.body;
 			const { fechaInicial, fechaFinal, filtro, empresa, claveRastreo } = params;
 
-			let query = { medio: 'Transferencia' };
+			let query = { medio: 'Transferencia', estatus: true };
 
 			if (!claveRastreo) {
 				if (filtro && filtro !== 'ALL') query.estatus_stp = filtro;

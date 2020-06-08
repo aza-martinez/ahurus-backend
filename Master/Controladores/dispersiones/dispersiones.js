@@ -153,7 +153,9 @@ var controller = {
 					dispersion.estatus_stp = 'Pendiente';
 					dispersion.fechaOperacion = fechaOperacion;
 					dispersion.entorno = node_env;
-					dispersion.empresa = loginEmpresa;
+					console.log(req);
+					console.log(SERVER_BD);
+					dispersion.empresa = 'SEFINCE'; /* req.user['http://localhost:3000/user_metadata'].empresa; */
 					// INICIO FOREACH
 					for await (let dato of data) {
 						const folioTrans = await Counter.findByIdAndUpdate(

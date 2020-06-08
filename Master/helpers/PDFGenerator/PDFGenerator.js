@@ -23,8 +23,15 @@ class PDFGenerator {
 		return PDF;
 	}
 	async getPDFTrans() {
-		const templateHTML = fs.readFileSync(path.join(process.cwd(), CONFIG_PDFGENERATOR.pathTemplateExito), 'utf-8');
+		let plantilla;
+		if (this.transferencia.estatus_stp != 'Exito') {
+			plantilla = CONFIG_PDFGENERATOR.pathTemplateError;
+		} else {
+			plantilla = CONFIG_PDFGENERATOR.pathTemplateExito;
+		}
+		const templateHTML = fs.readFileSync(path.join(process.cwd(), plantilla), 'utf-8');
 		const template = await handlebars.compile(templateHTML)({ ...this.transferencia._doc });
+		console.log(this.transferencia);
 		console.log(this.transferencia);
 		const browser = await puppeteer.launch(CONFIG_PDFGENERATOR.launcher);
 		const page = await browser.newPage();

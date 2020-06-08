@@ -68,13 +68,11 @@ class PropietarioController {
 			const propietario = new this.model();
 			propietario.id_terceros = params.id_terceros;
 			propietario.rfc = params.rfc;
-			propietario.razon_social = params.razon_social || `${params.nombre} ${params.apellidoPaterno} ${params.apellidoMaterno}`;
+			propietario.razon_social = params.razon_social || params.nombre;
 			propietario.correo1 = params.correo1;
 			propietario.correo2 = params.correo2;
 			propietario.genero = params.genero;
 			propietario.paisNacimiento = params.paisNacimiento;
-			propietario.apellidoPaterno = params.apellidoPaterno;
-			propietario.apellidoMaterno = params.apellidoMaterno;
 			propietario.nombre = params.nombre;
 			propietario.entidadFederativa = params.entidadFederativa;
 			propietario.municipio = params.municipio;
@@ -415,9 +413,14 @@ class PropietarioController {
 						institucion = dato.institucion;
 						propietario = dato.propietario;
 						tipoReg = dato.tipo_registro;
+						console.log(tipoC);
+						console.log(institucion);
+						console.log(propietario);
+
 						var queryTipoCuenta = await Tipo.find({ clave: tipoC }).exec();
 						var queryInstitucion = await Institucion.find({ clabe: institucion }).exec();
 						var queryPropietario = await PropietarioModel.find({ id_terceros: id_terceros }).exec();
+
 						tipoCuenta.descripcion = descripcion;
 						tipoCuenta.clabe = clabe;
 						tipoCuenta.tipo_cuenta = queryTipoCuenta[0]._id;
@@ -518,8 +521,6 @@ class PropietarioController {
 					// INICIO FOREACH
 
 					let nombre = '';
-					let paterno = '';
-					let materno = '';
 					let alias = '';
 					let rfc = '';
 					let razon_social = '';
@@ -541,8 +542,6 @@ class PropietarioController {
 						const owner = new PropietarioModel();
 						//Creamos el objeto transferencia cada que recorremos el ciclo y le pasamos los datos
 						nombre = dato.nombre;
-						paterno = dato.paterno;
-						materno = dato.materno;
 						alias = dato.alias;
 						rfc = dato.rfc;
 						correo1 = dato.correo1;
@@ -560,8 +559,6 @@ class PropietarioController {
 						cp = dato.cp;
 
 						owner.nombre = nombre;
-						owner.apellidoPaterno = paterno;
-						owner.apellidoMaterno = materno;
 						owner.id_terceros = alias;
 						owner.rfc = rfc;
 						owner.razon_social = razon_social;
