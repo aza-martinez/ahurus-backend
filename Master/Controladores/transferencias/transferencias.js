@@ -36,8 +36,9 @@ const controller = {
 		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
+		console.log(SERVER_BD);
 		let nombreEmpresa;
-		if (node_env == 'development') {
+		if (node_env == 'development' && SERVER_BD == 'demo') {
 			nombreEmpresa = 'DEMOAHURUS';
 		} else {
 			nombreEmpresa = params.centro_costo.nombreCentro;
@@ -55,7 +56,6 @@ const controller = {
 			function(error, counter) {
 				if (error) return next(error);
 				let last_invoice = counter.invoice + 1;
-				//const aleatorio = Math.round(Math.random() * 1000);
 				const transferencias = new Transferencia();
 				//INICIO
 				transferencias.institucionContraparte = params.cuenta.institucion.clabe;
@@ -414,6 +414,7 @@ const controller = {
 			.tz('America/Mexico_City')
 			.format('YYYYMMDD');
 		const SERVER_BD = req.user[`${data}`].empresa;
+		console.log(SERVER_BD);
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 

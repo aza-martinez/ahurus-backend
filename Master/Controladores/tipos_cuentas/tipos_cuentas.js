@@ -12,7 +12,7 @@ if (node_env == 'production') {
 } else {
 	var data = envJSON[node_env].METADATA_D;
 }
-//TODO: asd
+
 
 var controller = {
 	save: async (req, res) => {
