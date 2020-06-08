@@ -522,11 +522,8 @@ const controller = {
 		const { idSTP, empresa, estado, detalle, folioOrigen } = req.body;
 		let id = req.params.id;
 		const mongo = new MongooseConnect();
-		if (node_env == 'development') {
-			await mongo.connect('demo');
-		} else {
-			await mongo.connect(empresa.toLowerCase());
-		}
+		const SERVER_BD = req.user[`${data}`].empresa;
+		await mongo.connect(SERVER_BD.toLowerCase());
 		try {
 			console.log(id);
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
