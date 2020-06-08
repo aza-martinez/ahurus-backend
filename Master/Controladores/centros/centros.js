@@ -41,6 +41,7 @@ const controller = {
 
 	getCCA: async (req, res) => {
 		const mongo = new MongooseConnect();
+		console.log(data);
 		const SERVER_BD = req.user[`${data}`].empresa;
 		const cnx = await mongo.connect(SERVER_BD);
 		try {
