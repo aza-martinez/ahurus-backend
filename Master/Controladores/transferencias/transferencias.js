@@ -463,6 +463,7 @@ const controller = {
 		// DESTRUCTURING CAMBIO DE ESTADO
 		let { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
+		console.log(id, empresa, estado, detalle, folioOrigen);
 		if (node_env == 'development') {
 			await mongo.connect('demo');
 		} else {
