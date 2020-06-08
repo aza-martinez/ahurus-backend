@@ -35,7 +35,6 @@ var controller = {
 		// Conexión a la BD
 		console.log(data.empresa);
 		const SERVER_BD = req.user[`${data}`].empresa;
-
 		console.log(SERVER_BD);
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
