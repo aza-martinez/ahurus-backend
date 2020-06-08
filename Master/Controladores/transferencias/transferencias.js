@@ -55,12 +55,18 @@ const controller = {
 			},
 			function(error, counter) {
 				if (error) return next(error);
+				let mail;
+				if (params.mail === undefined || params.mail === false) {
+					mail = false;
+				} else {
+					mail = true;
+				}
 				let last_invoice = counter.invoice + 1;
 				const transferencias = new Transferencia();
 				//INICIO
 				transferencias.institucionContraparte = params.cuenta.institucion.clabe;
 				transferencias.empresa = params.centro_costo.nombreCentro;
-				transferencias.mail = params.mail;
+				transferencias.mail = mail;
 				transferencias.usuario = user;
 				transferencias.fechaOperacion = params.fecha_aplicacion;
 				const folioOrigen = '';
@@ -143,6 +149,7 @@ const controller = {
 				const private_key = fs.readFileSync(certificado, 'utf-8');
 				const signer = crypto.createSign('sha256');
 				console.log(cadenaOriginal);
+				console.log(transferencias.mail);
 				signer.update(cadenaOriginal);
 				signer.end();
 				const signature = signer.sign(
