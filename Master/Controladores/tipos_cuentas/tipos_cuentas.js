@@ -1,8 +1,17 @@
 'use strict';
 
+//REVISAR SI SE ESTA UTILIZANDO
+
 var validator = require('validator');
 var Tipo = require('../../Modelos/tipos_cuentas/tipos_cuentas');
 const MongooseConnect = require('./../../MongooseConnect');
+var envJSON = require('../../../env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+if (node_env == 'production') {
+	var data = envJSON[node_env].METADATA_P;
+} else {
+	var data = envJSON[node_env].METADATA_D;
+}
 
 var controller = {
 	save: async (req, res) => {
@@ -14,7 +23,7 @@ var controller = {
 			return res.status(400).send({});
 		}
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -46,7 +55,7 @@ var controller = {
 		} catch (err) {
 			return res.status(200).send({});
 		}
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -81,7 +90,7 @@ var controller = {
 			query.limit(5);
 		}
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -104,7 +113,7 @@ var controller = {
 			query.limit(5);
 		}
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -124,7 +133,7 @@ var controller = {
 
 		if (!tipoId || tipoId == null) return res.status(404).send({});
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -141,7 +150,7 @@ var controller = {
 
 	search: async (req, res) => {
 		var searchString = req.params.search;
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 

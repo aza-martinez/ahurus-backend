@@ -20,20 +20,22 @@ if (node_env == 'production') {
 	var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
 	var endpoint_stp_track = envJSON[node_env].ENDPOINT_STP_TRACK_P;
 	var endpoint_stp_balance = envJSON[node_env].ENDPOINT_STP_BALANCE_P;
+	var data = envJSON[node_env].METADATA_P;
 } else {
 	var certificado = envJSON[node_env].CERTS_URL_D;
 	var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
 	var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
 	var endpoint_stp_track = envJSON[node_env].ENDPOINT_STP_TRACK_D;
 	var endpoint_stp_balance = envJSON[node_env].ENDPOINT_STP_BALANCE_D;
+	var data = envJSON[node_env].METADATA_D;
 }
 
 var controller = {
 	getReportTransfer: async (req, res) => {
 		// Conexión a la BD
-		//const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
-		await mongo.connect('sefince');
+		await mongo.connect(SERVER_BD);
 
 		try {
 			const params = req.body;
@@ -64,7 +66,7 @@ var controller = {
 	},
 	getBalance: async (req, res) => {
 		var params = req.body;
-		const SERVER_BD = 'SEFINCE'; //loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const cuentaOrdenante = params.cuentaOrdenante; // ejemplo: '20190326'
 		let cadenaOriginal = cuentaOrdenante;
 		const private_key = fs.readFileSync(certificado, 'utf-8');
@@ -106,9 +108,9 @@ var controller = {
 	},
 
 	getReportDisper: async (req, res) => {
-		//const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
-		await mongo.connect('sefince');
+		await mongo.connect(SERVER_BD);
 
 		try {
 			const { fechaInicial, fechaFinal, filtro } = req.body;

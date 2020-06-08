@@ -2,12 +2,19 @@
 
 var Institucion = require('../../Modelos/instituciones/instituciones');
 const MongooseConnect = require('./../../MongooseConnect');
+var envJSON = require('../../../env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+if (node_env == 'production') {
+	var data = envJSON[node_env].METADATA_P;
+} else {
+	var data = envJSON[node_env].METADATA_D;
+}
 
 var controller = {
 	save: async (req, res) => {
 		var params = req.body;
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -27,7 +34,7 @@ var controller = {
 			query.limit(5);
 		}
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -42,7 +49,7 @@ var controller = {
 
 	getInstitucion: async (req, res) => {
 		var institucionId = req.params.id;
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -57,7 +64,7 @@ var controller = {
 	search: async (req, res) => {
 		var searchString = req.params.search;
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 

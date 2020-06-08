@@ -1,6 +1,13 @@
 const validator = require('validator');
 const CC = require('../../Modelos/centros/centros');
 const MongooseConnect = require('./../../MongooseConnect');
+var envJSON = require('../../../env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+if (node_env == 'production') {
+	var data = envJSON[node_env].METADATA_P;
+} else {
+	var data = envJSON[node_env].METADATA_D;
+}
 
 const controller = {
 	save: (req, res) => {
@@ -34,7 +41,7 @@ const controller = {
 
 	getCCA: async (req, res) => {
 		const mongo = new MongooseConnect();
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const cnx = await mongo.connect(SERVER_BD);
 		try {
 			const centro = await CC.find({ estatus: true });

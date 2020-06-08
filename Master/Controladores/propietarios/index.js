@@ -29,6 +29,7 @@ if (node_env == 'production') {
 	var account = envJSON[node_env].AZURE_SACCOUNT_P;
 	var container = envJSON[node_env].AZURE_SCONTAINER_ACCOUNTS_P;
 	var containerUser = envJSON[node_env].AZURE_SCONTAINER_USERS_P;
+	var data = envJSON[node_env].METADATA_P;
 } else {
 	var certificado = envJSON[node_env].CERTS_URL_D;
 	var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
@@ -37,6 +38,7 @@ if (node_env == 'production') {
 	var account = envJSON[node_env].AZURE_SACCOUNT_D;
 	var container = envJSON[node_env].AZURE_SCONTAINER_ACCOUNTS_D;
 	var containerUser = envJSON[node_env].AZURE_SCONTAINER_USERS_D;
+	var data = envJSON[node_env].METADATA_D;
 }
 const KEY_STORAGE = key;
 const STORAGE_ACCOUNT = account;
@@ -54,7 +56,7 @@ class PropietarioController {
 		try {
 			const params = req.body;
 
-			const SERVER_BD = loginEmpresa.empresa;
+			const SERVER_BD = req.user[`${data}`].empresa;
 			const mongo = new MongooseConnect();
 			await mongo.connect(SERVER_BD);
 
@@ -165,7 +167,7 @@ class PropietarioController {
 			return res.status(200).send({});
 		}
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -190,7 +192,7 @@ class PropietarioController {
 	}
 
 	async getPropietariosPFA(req, res) {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -215,7 +217,7 @@ class PropietarioController {
 	}
 
 	async getPropietario(req, res) {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -233,7 +235,7 @@ class PropietarioController {
 	}
 
 	async getPropietarios(req, res) {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -253,7 +255,7 @@ class PropietarioController {
 	}
 
 	async getPropietariosPMI(req, res) {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -273,7 +275,7 @@ class PropietarioController {
 		});
 	}
 	async getPropietariosPMA(req, res) {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -294,7 +296,7 @@ class PropietarioController {
 	}
 
 	async getPropietariosPFI(req, res) {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -316,12 +318,12 @@ class PropietarioController {
 	async importAccounts(req, res) {
 		let id_terceros = req.body.propietario;
 		var file_name = 'Documento no subido..';
-		const user = loginEmpresa.user;
+		const user = req.user[`${data}`].user;
 		var params = req.body;
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(
@@ -436,13 +438,13 @@ class PropietarioController {
 	}
 	async importOwners(req, res) {
 		var file_name = 'Documento no subido..';
-		const user = loginEmpresa.user;
+		const user = req.user[`${data}`].user;
 		console.log(user);
 		var params = req.body;
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(
@@ -592,7 +594,7 @@ class PropietarioController {
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		const SERVER_BD = 'master'; //loginEmpresa.empresa;
+		const SERVER_BD = 'master'; //loginEmpresa
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(

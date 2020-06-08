@@ -22,6 +22,7 @@ if (node_env == 'production') {
 	var key = envJSON[node_env].AZURE_KEY_STORAGE_P;
 	var account = envJSON[node_env].AZURE_SACCOUNT_P;
 	var container = envJSON[node_env].AZURE_SCONTAINER_DISPERSION_P;
+	var data = envJSON[node_env].METADATA_P;
 } else {
 	var certificado = envJSON[node_env].CERTS_URL_D;
 	var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
@@ -29,6 +30,7 @@ if (node_env == 'production') {
 	var key = envJSON[node_env].AZURE_KEY_STORAGE_D;
 	var account = envJSON[node_env].AZURE_SACCOUNT_D;
 	var container = envJSON[node_env].AZURE_SCONTAINER_DISPERSION_D;
+	var data = envJSON[node_env].METADATA_D;
 }
 const KEY_STORAGE = key;
 const STORAGE_ACCOUNT = account;
@@ -39,12 +41,12 @@ const { nextTick } = require('process');
 var controller = {
 	saveFile: async (req, res) => {
 		var file_name = 'Documento no subido..';
-		const user = loginEmpresa.user;
+		const user = req.user[`${data}`].user;
 		var params = req.body;
 		if (!req.files) {
 			return res.status(404).send({});
 		}
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const folio = await Counter.findByIdAndUpdate(
@@ -151,7 +153,7 @@ var controller = {
 					dispersion.estatus_stp = 'Pendiente';
 					dispersion.fechaOperacion = fechaOperacion;
 					dispersion.entorno = node_env;
-					dispersion.empresa = loginEmpresa.empresa;
+					dispersion.empresa = loginEmpresa;
 					// INICIO FOREACH
 					for await (let dato of data) {
 						const folioTrans = await Counter.findByIdAndUpdate(
@@ -294,7 +296,7 @@ var controller = {
 	},
 
 	getTransferenciasC: async (req, res) => {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -312,7 +314,7 @@ var controller = {
 		var transID = req.params.id;
 		const estatusCancel = 'Cancelada';
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -342,7 +344,7 @@ var controller = {
 		);
 	},
 	getAllDispersion: async (req, res) => {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		await Dispersion.find({
@@ -356,7 +358,7 @@ var controller = {
 		});
 	},
 	buscarDispersion: async (req, res) => {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		var searchString = req.params.search;
@@ -372,7 +374,7 @@ var controller = {
 		});
 	},
 	getDispersiones: async (req, res) => {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -394,7 +396,7 @@ var controller = {
 		const { id: idDispersion } = req.params;
 
 		// 2 - CONEXIÓN A BD
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 

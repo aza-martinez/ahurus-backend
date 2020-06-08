@@ -21,21 +21,19 @@ if (node_env == 'production') {
 	var certificado = envJSON[node_env].CERTS_URL_P;
 	var passphrase = envJSON[node_env].PASSPHRASE_CERT_P;
 	var endpoint_stp = envJSON[node_env].ENDPOINT_STP_P;
-	var loginUser = envJSON[node_env].DATA_USER_P;
-	var loginEmpresa = envJSON[node_env].EMPRESA_USER_P;
+	var data = envJSON[node_env].METADATA_P;
 } else {
 	var certificado = envJSON[node_env].CERTS_URL_D;
 	var passphrase = envJSON[node_env].PASSPHRASE_CERT_D;
 	var endpoint_stp = envJSON[node_env].ENDPOINT_STP_D;
-	var loginUser = envJSON[node_env].DATA_USER_P;
-	var loginEmpresa = envJSON[node_env].EMPRESA_USER_P;
+	var data = envJSON[node_env].METADATA_D;
 }
 
 const controller = {
 	save: async (req, res) => {
 		var params = req.body;
-		const user = loginEmpresa.user;
-		const SERVER_BD = loginEmpresa.empresa;
+		const user = req.user[`${data}`].user;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		let nombreEmpresa;
@@ -62,7 +60,7 @@ const controller = {
 				//INICIO
 				transferencias.institucionContraparte = params.cuenta.institucion.clabe;
 				transferencias.empresa = params.centro_costo.nombreCentro;
-				transferencias.mail = false; //params.mail;
+				transferencias.mail = params.mail;
 				transferencias.usuario = user;
 				transferencias.fechaOperacion = params.fecha_aplicacion;
 				const folioOrigen = '';
@@ -171,7 +169,7 @@ const controller = {
 	async ejecutar(req, res) {
 		var transID = req.params.id;
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const agent = new https.Agent({
@@ -246,7 +244,7 @@ const controller = {
 		var tranferenciaID = req.params.id;
 		var params = req.body;
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -376,7 +374,7 @@ const controller = {
 		var transID = req.params.id;
 		const estatusCancel = 'Cancelada';
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -411,13 +409,11 @@ const controller = {
 		});
 	},
 	getTransferenciasA: async (req, res) => {
-		// NUEVO OBTENER EMPRESA
 		const now = new Date();
 		const fechaMX = moment(now)
 			.tz('America/Mexico_City')
 			.format('YYYYMMDD');
-		console.log(loginEmpresa);
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -442,7 +438,7 @@ const controller = {
 
 	getTransferenciasDispersion: async (req, res) => {
 		var id = req.params.id;
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		await Transferencia.find({
@@ -459,8 +455,6 @@ const controller = {
 		// DESTRUCTURING CAMBIO DE ESTADO
 		let { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
-		console.log(id, empresa, estado, detalle);
-		console.log(req.body);
 		if (node_env == 'development') {
 			await mongo.connect('demo');
 		} else {
@@ -515,7 +509,11 @@ const controller = {
 		const { idSTP, empresa, estado, detalle, folioOrigen } = req.body;
 		let id = req.params.id;
 		const mongo = new MongooseConnect();
-		await mongo.connect('sefince' /* empresa.toLowerCase() */);
+		if (node_env == 'development') {
+			await mongo.connect('demo');
+		} else {
+			await mongo.connect(empresa.toLowerCase());
+		}
 		try {
 			console.log(id);
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
@@ -534,7 +532,6 @@ const controller = {
 			return res.status(500).send('Error Interno');
 		}
 	},
-	//COM
 	getTransferenciasC: (req, res) => {
 		Transferencia.find({
 			estatus_stp: 'Cancelada',
@@ -576,21 +573,6 @@ const controller = {
 			}
 			return res.status(200).send(transferencias);
 		});
-	},
-	generarFirmaEmpresa: (req, res) => {
-		const cadenaOriginal2 = '|||SEFINCE||||||||||||||||||||||||||||||||||';
-		const private_key = fs.readFileSync(certificado, 'utf-8');
-		const signer2 = crypto.createSign('sha256');
-		signer2.update(cadenaOriginal2);
-		signer2.end();
-		const signature2 = signer2.sign(
-			{
-				key: private_key,
-				passphrase,
-			},
-			'base64'
-		);
-		return res.send(signature2);
 	},
 };
 module.exports = controller;

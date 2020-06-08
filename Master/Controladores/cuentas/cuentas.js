@@ -5,6 +5,13 @@ const Propietario = require('../../Modelos/propietarios/propietarios');
 const Cuenta = require('../../Modelos/cuentas/cuentas');
 const MongooseConnect = require('./../../MongooseConnect');
 const moment = require('moment');
+var envJSON = require('../../../env.variables.json');
+var node_env = process.env.NODE_ENV || 'development';
+if (node_env == 'production') {
+	var data = envJSON[node_env].METADATA_P;
+} else {
+	var data = envJSON[node_env].METADATA_D;
+}
 
 const controller = {
 	delete: (req, res) => {
@@ -32,7 +39,7 @@ const controller = {
 	update: async (req, res) => {
 		var cuentaID = req.params.id;
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -70,7 +77,7 @@ const controller = {
 	},
 
 	save: async (req, res) => {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		const params = req.body;
@@ -105,7 +112,7 @@ const controller = {
 	},
 
 	getCuentasPA: async (req, res) => {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -127,7 +134,7 @@ const controller = {
 	},
 
 	getCuentasCA: async (req, res) => {
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
@@ -149,7 +156,7 @@ const controller = {
 	},
 	getPropietariosA: async (req, res) => {
 		const idPropietario = req.params.last;
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 		try {
@@ -219,7 +226,7 @@ const controller = {
 			return res.status(200).send({});
 		}
 
-		const SERVER_BD = loginEmpresa.empresa;
+		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
