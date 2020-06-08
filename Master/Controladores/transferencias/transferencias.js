@@ -30,7 +30,7 @@ if (node_env == 'production') {
 }
 
 const controller = {
-	save: async (req, res) => {
+	save: async (req, res, next) => {
 		var params = req.body;
 		const user = req.user[`${data}`].user;
 		const SERVER_BD = req.user[`${data}`].empresa;
@@ -165,6 +165,7 @@ const controller = {
 					const close = await mongo.close();
 
 					if (err || !transferenciaStored) return res.status(400).send(err);
+					next();
 					return res.status(200).send({
 						...transferenciaStored._doc,
 					});
@@ -173,7 +174,7 @@ const controller = {
 		);
 	},
 
-	async ejecutar(req, res) {
+	async ejecutar(req, res, next) {
 		var transID = req.params.id;
 
 		const SERVER_BD = req.user[`${data}`].empresa;
@@ -243,11 +244,12 @@ const controller = {
 				})
 				.catch(async error => {
 					const close = await mongo.close();
+					next();
 					return res.status(400).send(error);
 				});
 		});
 	},
-	update: async (req, res) => {
+	update: async (req, res, next) => {
 		var tranferenciaID = req.params.id;
 		var params = req.body;
 
@@ -357,19 +359,19 @@ const controller = {
 			{
 				new: true,
 			},
-			async (err, transferenciaUpdated) => {
+			async (err, transferenciaUpdated, next) => {
 				const close = await mongo.close();
 
 				if (err)
 					return res.status(500).send({
 						err,
 					});
-
+				next();
 				if (!transferenciaUpdated)
 					return res.status(404).send({
 						err,
 					});
-
+				next();
 				return res.status(200).send({
 					transferenciaUpdated,
 				});
@@ -377,7 +379,7 @@ const controller = {
 		);
 	},
 
-	hide: async (req, res) => {
+	hide: async (req, res, next) => {
 		var transID = req.params.id;
 		const estatusCancel = 'Cancelada';
 
@@ -395,12 +397,13 @@ const controller = {
 			},
 			async (err, transferenciaUpdated) => {
 				const close = await mongo.close();
+				next();
 				return res.status(200).send('Transferencia Cancelada.');
 			}
 		);
 	},
 
-	getTransferencia: (req, res) => {
+	getTransferencia: (req, res, next) => {
 		var searchString = req.params.search;
 		Transferencia.find({
 			rfcCurpBeneficiario: searchString,
@@ -408,14 +411,14 @@ const controller = {
 			if (err) {
 				return res.status(500).send({});
 			}
-
+			next();
 			if (!transferencias || transferencias.length <= 0) {
 			}
 
 			return res.status(200).send(transferencias);
 		});
 	},
-	getTransferenciasA: async (req, res) => {
+	getTransferenciasA: async (req, res, next) => {
 		const now = new Date();
 		const fechaMX = moment(now)
 			.tz('America/Mexico_City')
@@ -437,14 +440,14 @@ const controller = {
 			.exec(async (err, Transferencias) => {
 				const close = await mongo.close();
 				if (err) return res.status(500).send({});
-
+				next();
 				if (!Transferencias && Transferencias.length <= 0) return res.status(404).send({});
 
 				return res.status(200).send(Transferencias);
 			});
 	},
 
-	getTransferenciasDispersion: async (req, res) => {
+	getTransferenciasDispersion: async (req, res, next) => {
 		var id = req.params.id;
 		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
@@ -459,7 +462,7 @@ const controller = {
 				return res.status(200).send(Transferencias);
 			});
 	},
-	response: async (req, res) => {
+	response: async (req, res, next) => {
 		// DESTRUCTURING CAMBIO DE ESTADO
 		let { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
@@ -510,6 +513,7 @@ const controller = {
 		} catch (error) {
 			await mongo.close();
 			console.log(error);
+			next();
 			return res.status(500).send('Error Interno');
 		}
 	},
