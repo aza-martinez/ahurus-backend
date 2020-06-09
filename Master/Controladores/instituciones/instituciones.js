@@ -38,7 +38,7 @@ var controller = {
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
-		query.sort('-_id').exec(async (err, instituciones) => {
+		query.sort({participante:1}).exec(async (err, instituciones) => {
 			const close = await mongo.close();
 
 			if (err) return res.status(500).send({});
