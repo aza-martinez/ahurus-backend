@@ -23,7 +23,7 @@ const validatePropietario = (req, res, next) => {
               throw new Error();
             }
         }
-        }
+        
 
         next();
     }
