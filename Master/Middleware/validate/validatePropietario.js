@@ -13,10 +13,7 @@ const validatePropietario = (req, res, next) => {
         validar_nombre_contacto = !validator.isEmpty(params.nombre_contacto);
     }
 
-    if (params.tipo_propietario === "personaFisica") {
-      validar_nombrePF = !validator.isEmpty(params.nombre);
-    }
-
+   
     const validar_correo1 = !validator.isEmpty(params.correo1);
     const validar_telefono = !validator.isEmpty(params.telefono);
 
@@ -26,11 +23,6 @@ const validatePropietario = (req, res, next) => {
               throw new Error();
             }
         }
-
-        if (params.tipo_propietario === "personaFisica") {
-          if (!validar_nombrePF ) {
-            throw new Error();
-          }
         }
 
         next();
