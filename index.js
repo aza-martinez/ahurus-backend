@@ -21,12 +21,14 @@ if (node_env === "production") {
 	}); */
   const key = envJSON[node_env].KEY_SSL_P;
   const cert = envJSON[node_env].CERT_SSL_P;
+  app.setMaxListeners(0);
   https
     .createServer(
       {
         key: fs.readFileSync(key),
         cert: fs.readFileSync(cert),
       },
+    
       app
     )
     .listen(puerto, function () {
@@ -38,6 +40,7 @@ if (node_env === "production") {
     console.log("ENTORNO: " + node_env);
   });
 } else {
+  app.setMaxListeners(0)
   app.listen(puertoDev, () => {
     console.log("Servidor corriendo en http://localhost: " + puertoDev);
     console.log("ENTORNO: " + node_env);
