@@ -413,14 +413,9 @@ class PropietarioController {
 						institucion = dato.institucion;
 						propietario = dato.propietario;
 						tipoReg = dato.tipo_registro;
-						console.log(tipoC);
-						console.log(institucion);
-						console.log(propietario);
-
 						var queryTipoCuenta = await Tipo.find({ clave: tipoC }).exec();
 						var queryInstitucion = await Institucion.find({ clabe: institucion }).exec();
 						var queryPropietario = await PropietarioModel.find({ id_terceros: id_terceros }).exec();
-
 						tipoCuenta.descripcion = descripcion;
 						tipoCuenta.clabe = clabe;
 						tipoCuenta.tipo_cuenta = queryTipoCuenta[0]._id;

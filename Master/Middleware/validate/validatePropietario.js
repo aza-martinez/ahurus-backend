@@ -6,7 +6,7 @@ const validatePropietario = (req, res, next) => {
     const validar_id_terceros = !validator.isEmpty(params.id_terceros);
     const validar_rfc = !validator.isEmpty(params.rfc);
     const validar_tipo_propietario = !validator.isEmpty(params.tipo_propietario);
-    let validar_razon_social, validar_nombrePF, validar_apellidoPPF, validar_apellidoMPF, validar_nombre_contacto;
+    let validar_razon_social, validar_nombrePF, validar_nombre_contacto;
 
     if (params.tipo_propietario && params.tipo_propietario === "personaMoral") {
         validar_razon_social = !validator.isEmpty(params.razon_social);
@@ -15,8 +15,6 @@ const validatePropietario = (req, res, next) => {
 
     if (params.tipo_propietario === "personaFisica") {
       validar_nombrePF = !validator.isEmpty(params.nombre);
-      validar_apellidoPPF = !validator.isEmpty(params.apellidoPaterno);
-      validar_apellidoMPF = !validator.isEmpty(params.apellidoMaterno);
     }
 
     const validar_correo1 = !validator.isEmpty(params.correo1);
