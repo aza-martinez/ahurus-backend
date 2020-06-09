@@ -48,7 +48,7 @@ const controller = {
 			const centro = await CC.find({ estatus: true });
 
 			if (!centro) return res.status(404).send({});
-
+console.log(centro)
 			await mongo.close();
 			return res.status(200).send({ centro });
 		} catch (error) {

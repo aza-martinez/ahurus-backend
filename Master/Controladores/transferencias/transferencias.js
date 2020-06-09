@@ -184,24 +184,13 @@ const controller = {
 			rejectUnauthorized: false,
 		});
 
-		Transferencia.findById(transID, async (err, transferenciaFind) => {
+		await Transferencia.findById(transID,{estatus_stp:0,timestamp:0,idSTP:0, descripcionError:0,resultado:0,medio:0,estatus:0,_id:0,mail:0,entorno:0,usuario:0}, async (err, transferenciaFind) => {
 			const estatusError = 'Error';
 			const estatusOk = 'Ejecutada';
+		
 			const transferencia = {
 				...transferenciaFind._doc,
 			};
-
-			delete transferencia.estatus_stp;
-			delete transferencia.timestamp;
-			delete transferencia.idSTP;
-			delete transferencia.descripcionError;
-			delete transferencia.resultado;
-			delete transferencia.medio;
-			delete transferencia.estatus;
-			delete transferencia._id;
-			delete transferencia.mail;
-			delete transferencia.entorno;
-			delete transferencia.usuario;
 			console.log(transferencia);
 			await axios
 				.put(endpoint_stp, transferencia, {
@@ -445,6 +434,7 @@ const controller = {
 
 				return res.status(200).send(Transferencias);
 			});
+			Transferencia.setMaxListeners(0);
 	},
 
 	getTransferenciasDispersion: async (req, res, next) => {

@@ -17,11 +17,12 @@ mongoose.Promise = global.Promise;
 if (node_env === "production") {
   /* 	app.listen(puerto, () => {
 		console.log('Servidor corriendo en http://localhost: ' + puerto);
-		console.log('ENTORNO: ' + node_env);
+    console.log('ENTORNO: ' + node_env);
+    var p = MyModel.find({}).exec();
+  p.setMaxListeners(0);
 	}); */
   const key = envJSON[node_env].KEY_SSL_P;
   const cert = envJSON[node_env].CERT_SSL_P;
-  app.setMaxListeners(0);
   https
     .createServer(
       {
@@ -40,7 +41,6 @@ if (node_env === "production") {
     console.log("ENTORNO: " + node_env);
   });
 } else {
-  app.setMaxListeners(0)
   app.listen(puertoDev, () => {
     console.log("Servidor corriendo en http://localhost: " + puertoDev);
     console.log("ENTORNO: " + node_env);
