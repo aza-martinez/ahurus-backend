@@ -28,7 +28,7 @@ var controller = {
 	},
 
 	getInstituciones: async (req, res) => {
-		var query = Institucion.find({});
+		var query = Institucion.find({}).sort({participante: 1});
 		var last = req.params.last;
 		if (last || last != undefined) {
 			query.limit(5);
@@ -38,7 +38,7 @@ var controller = {
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
 
-		query.sort({participante:1}).exec(async (err, instituciones) => {
+		query.exec(async (err, instituciones) => {
 			const close = await mongo.close();
 
 			if (err) return res.status(500).send({});

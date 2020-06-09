@@ -16,5 +16,6 @@ router.put('/transferencia/modificar/:id', [auth0], TransferenciasController.upd
 router.get('/transferencias/listarTD/:id', [auth0], TransferenciasController.getTransferenciasDispersion);
 router.put('/cambioDeEstado/', TransferenciasController.response);
 router.get('/pdf/:id', [auth0], TransferenciasController.generatePDF);
+router.get('/pdf/dispersion/:id', /* [auth0] */ TransferenciasController.generatePDFDispersion);
 
 module.exports = router;

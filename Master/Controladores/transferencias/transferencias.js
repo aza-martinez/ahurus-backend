@@ -1,5 +1,6 @@
 'use strict';
 const https = require('https');
+var Dispersion = require('../../Modelos/dispersiones/dispersiones');
 const Transferencia = require('../../Modelos/transferencias/transferencias');
 const CentroCosto = require('./../../Modelos/centros/centros');
 const MongooseConnect = require('./../../MongooseConnect');
@@ -184,59 +185,63 @@ const controller = {
 			rejectUnauthorized: false,
 		});
 
-		await Transferencia.findById(transID,{estatus_stp:0,timestamp:0,idSTP:0, descripcionError:0,resultado:0,medio:0,estatus:0,_id:0,mail:0,entorno:0,usuario:0}, async (err, transferenciaFind) => {
-			const estatusError = 'Error';
-			const estatusOk = 'Ejecutada';
-		
-			const transferencia = {
-				...transferenciaFind._doc,
-			};
-			console.log(transferencia);
-			await axios
-				.put(endpoint_stp, transferencia, {
-					httpsAgent: agent,
-				})
-				.then(response => {
-					if (response.data.resultado.descripcionError) {
-						Transferencia.findOneAndUpdate(
-							{
-								_id: transID,
-							},
-							{
-								descripcionError: response.data.resultado.descripcionError,
-								idSTP: response.data.resultado.id,
-								estatus_stp: estatusError,
-							},
-							async (err, transferenciaUpdated) => {
-								const close = await mongo.close();
-								return res.status(400).send('ERROR: ' + response.data.resultado.descripcionError);
-							}
-						);
-					}
-					console.log(response.data);
-					if (!response.data.resultado.descripcionError) {
-						Transferencia.findOneAndUpdate(
-							{
-								_id: transID,
-							},
-							{
-								descripcionError: response.data.resultado.descripcionError,
-								idSTP: response.data.resultado.id,
-								estatus_stp: estatusOk,
-							},
-							async (err, transferenciaUpdated) => {
-								const close = await mongo.close();
-								return res.status(200).send('EJECUTADA CON EL ID: ' + response.data.resultado.id);
-							}
-						);
-					}
-				})
-				.catch(async error => {
-					const close = await mongo.close();
-					next();
-					return res.status(400).send(error);
-				});
-		});
+		await Transferencia.findById(
+			transID,
+			{ estatus_stp: 0, timestamp: 0, idSTP: 0, descripcionError: 0, resultado: 0, medio: 0, estatus: 0, _id: 0, mail: 0, entorno: 0, usuario: 0 },
+			async (err, transferenciaFind) => {
+				const estatusError = 'Error';
+				const estatusOk = 'Ejecutada';
+
+				const transferencia = {
+					...transferenciaFind._doc,
+				};
+				console.log(transferencia);
+				await axios
+					.put(endpoint_stp, transferencia, {
+						httpsAgent: agent,
+					})
+					.then(response => {
+						if (response.data.resultado.descripcionError) {
+							Transferencia.findOneAndUpdate(
+								{
+									_id: transID,
+								},
+								{
+									descripcionError: response.data.resultado.descripcionError,
+									idSTP: response.data.resultado.id,
+									estatus_stp: estatusError,
+								},
+								async (err, transferenciaUpdated) => {
+									const close = await mongo.close();
+									return res.status(400).send('ERROR: ' + response.data.resultado.descripcionError);
+								}
+							);
+						}
+						console.log(response.data);
+						if (!response.data.resultado.descripcionError) {
+							Transferencia.findOneAndUpdate(
+								{
+									_id: transID,
+								},
+								{
+									descripcionError: response.data.resultado.descripcionError,
+									idSTP: response.data.resultado.id,
+									estatus_stp: estatusOk,
+								},
+								async (err, transferenciaUpdated) => {
+									const close = await mongo.close();
+									return res.status(200).send('EJECUTADA CON EL ID: ' + response.data.resultado.id);
+								}
+							);
+						}
+					})
+					.catch(async error => {
+						const close = await mongo.close();
+						next();
+						return res.status(400).send(error);
+					});
+			}
+		);
 	},
 	update: async (req, res, next) => {
 		var tranferenciaID = req.params.id;
@@ -434,7 +439,7 @@ const controller = {
 
 				return res.status(200).send(Transferencias);
 			});
-			Transferencia.setMaxListeners(0);
+		Transferencia.setMaxListeners(0);
 	},
 
 	getTransferenciasDispersion: async (req, res, next) => {
@@ -522,6 +527,30 @@ const controller = {
 			await mongo.close();
 			let pdfg = new PDFGenerator(transferencia);
 			const PDF = await pdfg.getPDFTrans();
+			console.log(PDF);
+			res.set({ 'Content-Type': 'application/pdf', 'Content-Length': PDF.length });
+			return res.status(200).send(PDF);
+		} catch (error) {
+			await mongo.close();
+			next();
+			console.log(error);
+			return res.status(500).send('Error Interno');
+		}
+	},
+	generatePDFDispersion: async (req, res, next) => {
+		const { idSTP, empresa, estado, detalle, folioOrigen } = req.body;
+		let id = req.params.id;
+		const mongo = new MongooseConnect();
+		const SERVER_BD = req.user[`${data}`].empresa;
+		await mongo.connect(SERVER_BD);
+		try {
+			console.log(id);
+			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
+			let dispersion = await Dispersion.findById({ _id: id });
+			if (!dispersion) return res.status(404).send('La dispersion de la cual solicita el PDF no existe');
+			await mongo.close();
+			let pdfg = new PDFGenerator(dispersion);
+			const PDF = await pdfg.getPDFDispersion();
 			console.log(PDF);
 			res.set({ 'Content-Type': 'application/pdf', 'Content-Length': PDF.length });
 			return res.status(200).send(PDF);
