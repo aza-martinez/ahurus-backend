@@ -68,7 +68,7 @@ class PropietarioController {
 			const propietario = new this.model();
 			propietario.id_terceros = params.id_terceros;
 			propietario.rfc = params.rfc;
-			propietario.razon_social = params.razon_social;
+			propietario.razon_social = params.razon_social || params.nombre;
 			propietario.correo1 = params.correo1;
 			propietario.correo2 = params.correo2;
 			propietario.genero = params.genero;
