@@ -28,7 +28,7 @@ const validatePropietario = (req, res, next) => {
         }
 
         if (params.tipo_propietario === "personaFisica") {
-          if (!validar_nombrePF && !validar_apellidoMPF && !validar_apellidoPPF) {
+          if (!validar_nombrePF ) {
             throw new Error();
           }
         }
