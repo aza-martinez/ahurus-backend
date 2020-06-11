@@ -155,7 +155,7 @@ var controller = {
 					dispersion.entorno = node_env;
 					console.log(req);
 					console.log(SERVER_BD);
-					dispersion.empresa = req.user[`${data}`].empresa;
+					dispersion.empresa = centro_costo.nombreCentro; //req.user[`${data}`].empresa;
 					// INICIO FOREACH
 					for await (let dato of data) {
 						const folioTrans = await Counter.findByIdAndUpdate(
