@@ -168,7 +168,7 @@ const controller = {
 				.populate('tipo_cuenta')
 				.populate('institucion')
 				.sort([['date', 'descending']]);
-console.log(cuentas)
+			console.log(cuentas);
 			if (!cuentas) return res.status(404).send({});
 
 			await mongo.close();

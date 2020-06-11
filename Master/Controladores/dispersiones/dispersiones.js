@@ -155,7 +155,7 @@ var controller = {
 					dispersion.entorno = node_env;
 					console.log(req);
 					console.log(SERVER_BD);
-					dispersion.empresa = 'SEFINCE'; /* req.user['http://localhost:3000/user_metadata'].empresa; */
+					dispersion.empresa = req.user[`${data}`].empresa;
 					// INICIO FOREACH
 					for await (let dato of data) {
 						const folioTrans = await Counter.findByIdAndUpdate(

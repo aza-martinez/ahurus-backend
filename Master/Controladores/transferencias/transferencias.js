@@ -375,26 +375,27 @@ const controller = {
 
 	hide: async (req, res, next) => {
 		var transID = req.params.id;
-		const estatusCancel = 'Cancelada';
-
 		const SERVER_BD = req.user[`${data}`].empresa;
 		const mongo = new MongooseConnect();
 		await mongo.connect(SERVER_BD);
-
-		Transferencia.findOneAndUpdate(
+		console.log(transID);
+		await Transferencia.findOneAndUpdate(
 			{
 				_id: transID,
 			},
 			{
-				estatus_stp: estatusCancel,
+				estatus_stp: 'Cancelada',
 				estatus: false,
 			},
-			async (err, transferenciaUpdated) => {
-				const close = await mongo.close();
-				next();
-				return res.status(200).send('Transferencia Cancelada.');
-			}
-		);
+			async (err, transferenciaUpdated) => {}
+		).catch(async error => {
+			next();
+
+			return res.status(400).send(error);
+		});
+
+		const close = await mongo.close();
+		return res.status(200).send();
 	},
 
 	getTransferencia: (req, res, next) => {
