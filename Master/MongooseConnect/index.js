@@ -5,6 +5,7 @@ var envJSON = require('../../env.variables.json');
 var node_env = process.env.NODE_ENV || 'development';
 let cnx = '';
 let dbDEV = 'development';
+process.setMaxListeners(0);
 
 class MongooseConncect {
 	async connect(nameBD) {

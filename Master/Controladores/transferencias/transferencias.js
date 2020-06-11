@@ -463,11 +463,11 @@ const controller = {
 		let { id, empresa, estado, detalle, folioOrigen } = req.body;
 		const mongo = new MongooseConnect();
 		console.log(id, empresa, estado, detalle, folioOrigen);
-		if (node_env == 'development') {
+		/* 		if (node_env == 'development') {
 			await mongo.connect('demo');
-		} else {
-			await mongo.connect(empresa.toLowerCase());
-		}
+		} else { */
+		await mongo.connect(empresa.toLowerCase());
+		/* } */
 		try {
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
 			let transferencia = await Transferencia.findOne({
