@@ -360,12 +360,10 @@ const controller = {
 					return res.status(500).send({
 						err,
 					});
-				next();
 				if (!transferenciaUpdated)
 					return res.status(404).send({
 						err,
 					});
-				next();
 				return res.status(200).send({
 					transferenciaUpdated,
 				});
@@ -550,6 +548,7 @@ const controller = {
 			let dispersion = await Dispersion.findById({ _id: id });
 			if (!dispersion) return res.status(404).send('La dispersion de la cual solicita el PDF no existe');
 			await mongo.close();
+			console.log(dispersion);
 			let pdfg = new PDFGenerator(dispersion);
 			const PDF = await pdfg.getPDFDispersion();
 			console.log(PDF);

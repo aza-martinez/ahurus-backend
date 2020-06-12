@@ -42,6 +42,7 @@ class PDFGenerator {
 	}
 	async getPDFDispersion() {
 		let plantilla;
+		console.log(this.dispersion);
 		if (this.dispersion.estatus_stp != 'Ejecutada') {
 			plantilla = CONFIG_PDFGENERATOR.pathTemplateErrorD;
 		} else {
