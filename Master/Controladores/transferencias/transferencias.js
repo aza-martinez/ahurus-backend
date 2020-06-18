@@ -545,13 +545,12 @@ const controller = {
 		try {
 			console.log(id);
 			// CONSULTAMOS QUE EXISTA LA TRANSFERENCIA SEGUN ID DE CAMBIO DE ESTADO
-			let dispersion = await Dispersion.findById({ _id: id });
+			let dispersion = await Dispersion.findById({ _id: id }).populate('idTransferencia').lean();
+			console.log(dispersion);
 			if (!dispersion) return res.status(404).send('La dispersion de la cual solicita el PDF no existe');
 			await mongo.close();
-			console.log(dispersion);
 			let pdfg = new PDFGenerator(dispersion);
 			const PDF = await pdfg.getPDFDispersion();
-			console.log(PDF);
 			res.set({ 'Content-Type': 'application/pdf', 'Content-Length': PDF.length });
 			return res.status(200).send(PDF);
 		} catch (error) {
