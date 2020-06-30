@@ -11,7 +11,7 @@ class MongooseConncect {
 	async connect(nameBD) {
 		await mongoose.connection.close();
 		await mongoose
-			.connect(`mongodb+srv://ahurusmdb:J5XdyP5oRicrF8wF@ahuruscluster-5ryx6.azure.mongodb.net/ahurus_${nameBD}?retryWrites=true&w=majority`, {
+			.connect(`mongodb+srv://ahurusmdb:EcQR7P9uFec4RS@ahuruscluster-5ryx6.azure.mongodb.net/ahurus_${nameBD}?retryWrites=true&w=majority`, {
 				useNewUrlParser: true,
 				useFindAndModify: false,
 				useCreateIndex: true,
